@@ -1,0 +1,132 @@
+%%%%%
+%%
+%% Sample document ``thesis.tex''
+%%
+%% Version: v0.2
+%% Authors: Jean Martina, Rok Strnisa, Matej Urbas
+%% Date: 30/07/2008
+%%
+%% Copyright (c) 2008-2011, Rok Strniša, Jean Martina, Matej Urbas
+%% License: Simplified BSD License
+%% License file: ./License
+%% Original License URL: http://www.freebsd.org/copyright/freebsd-license.html
+%%%%%
+
+% Available documentclass options:
+%
+%   <all `report` document class options, e.g.: `a5paper`>
+%   withindex   - enables the index. New index entries can be added through `\index{my entry}`
+%   glossary    - enables the glossary.
+%   techreport  - typesets the thesis in the technical report format.
+%   firstyr     - formats the document as a first-year report.
+%   times       - uses the `Times` font.
+%   backrefs    - add back references in the Bibliography section
+%
+% For more info see `README.md`
+\documentclass[withindex]{cam-thesis}
+
+% Citations using numbers
+\usepackage[numbers]{natbib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Thesis meta-information
+%%
+
+%% The title of the thesis:
+\title{Efficient Language Modeling From\\
+A Cognitive and Analytical Lens}
+
+%% The full name of the author (e.g.: James Smith):
+\author{Richard Diehl Martinez}
+
+%% College affiliation:
+\college{Churchill College}
+
+\collegeshield{CollegeShields/Churchill}
+
+%% Submission date [optional]:
+% \submissiondate{November, 2042}
+
+%% You can redefine the submission notice [optional]:
+% \submissionnotice{A badass thesis submitted on time for the Degree of PhD}
+
+%% Declaration date:
+\date{August, 2025}
+
+%% PDF meta-info:
+\subjectline{Computer Science}
+\keywords{Language Modeling, Efficient Language Modeling}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Abstract:
+%%
+\abstract{%
+Language models continue to grow in size, yet our understanding of their inner workings and ability to train them efficiently, particularly smaller models, remains limited. Small models offer practical benefits like lower costs and enhanced privacy, motivating the need for improved training methodologies. This thesis addresses the challenge of efficient language modeling through two complementary lenses: cognitive inspiration and analytical investigation. Firstly, drawing parallels with efficient human language acquisition, we explore cognitively-inspired techniques. Chapter 2 investigates curriculum learning strategies based on infant development within data constraints, while Chapter 3 introduces Syntactic Smoothing to mitigate frequency bias and anisotropy, improving the representation of infrequent words by leveraging syntactic information. Secondly, we adopt an analytical perspective to understand training dynamics and bottlenecks in small models. Chapter 4 examines convergence challenges and saturation phenomena by analyzing layer dynamics in the Pythia model suite, linking slower convergence to parameter rank issues. Chapter 5 presents Pico, a lightweight, modular framework comprising pico-train and pico-analyze, designed specifically to facilitate the training and fine-grained analysis of model learning dynamics (weights, gradients, activations) at smaller scales. Ultimately, this work contributes novel methods and tools aimed at making the training of small language models more efficient and understandable.
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Acknowledgements:
+%%
+\acknowledgements{%
+    My thesis was supported by the Gates Cambridge Trust (grant OPP1144 from the Bill \& Melinda Gates Foundation). Part of the work in this thesis was funded by a grant from the Accelerate Programme for Scientific Discovery, made possible by a donation from Schmidt Futures.
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Contents:
+%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Title page, abstract, declaration etc.:
+%% -    the title page (is automatically omitted in the technical report mode).
+\frontmatter{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Thesis body:
+
+\input{chapters/introduction/main}
+
+\input{chapters/climb/main}
+
+\input{chapters/syntatic-smoothing/main}
+
+\input{chapters/tending-towards-stability/main}
+
+\input{chapters/pico/main}
+
+\input{chapters/conclusion/main}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References:
+%%
+% If you include some work not referenced in the main text (e.g. using \nocite{}), consider changing "References" to "Bibliography".
+%
+
+% \renewcommand to change default "Bibliography" to "References"
+\renewcommand{\bibname}{References}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{plainnat}
+\bibliography{thesis}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Appendix:
+%%
+
+\appendix
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Index:
+%%
+\printthesisindex
+
+\end{document}

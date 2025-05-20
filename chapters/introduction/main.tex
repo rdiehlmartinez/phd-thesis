@@ -1,0 +1,92 @@
+\chapter{Introduction}
+
+
+
+When I began this PhD in the autumn of 2021, the research community was still marveling at OpenAI’s GPT-3 \citep{brown2020gpt3}, a language model with \textbf{175 billion parameters}—a number so vast it felt, at the time, like a ceiling. This impression of scale was even more striking when compared with the \textbf{86 billion neurons} in the adult human brain \citep{azevedo2009neurons}. To many, this parallel symbolized the astonishing pace at which artificial systems appeared to be encroaching on biological complexity.
+
+Yet in the short span of four years, that sense of awe has been recontextualized. \textbf{GPT-4}, though not officially disclosed, is widely estimated to contain \textbf{around 1.8 trillion parameters}, while Google’s \textbf{Gemini Ultra} has been reported at roughly \textbf{1.5 trillion}. These figures mark an \emph{order-of-magnitude leap} from GPT-3 and reflect a broader trend: the frontier of large-scale language models is rapidly expanding—both in scale and in sophistication.
+
+This expansion has been accompanied by clear gains in capability. Tasks once viewed as aspirational—such as reasoning over long contexts, synthesizing code, or interpreting multi-step instructions—have become tractable for these large models. Performance is typically benchmarked on standard evaluations like MMLU \citep{hendrycks2021mmlu}, BIG-bench \citep{srivastava2023bigbench}, and HellaSwag \citep{zellers2019hellaswag}, where state-of-the-art models have seen rapid gains since 2021.
+
+What I mean by small language model is itself a moving goalpost. 
+
+
+% provide some definition for what a small model is 
+
+% Show that smalle models perform the same on MMLU while large models keep getting larger and getting better 
+
+% Mention that what small is itself keeps changing
+ 
+However, this progress has been \emph{uneven}. 
+
+% Scientific endeavor should be done the correct way; lack of scientific method 
+
+While large models have seen dramatic improvements, \textbf{smaller language models have advanced more modestly}, with persistent gaps in performance, generalization, and stability.
+
+This discrepancy raises a key research question:
+
+\begin{quote}
+\textbf{Can small language models be trained more effectively—not simply scaled down, but optimized through strategic methods to unlock their full potential?}
+\end{quote}
+
+
+This dissertation is driven by that question. While large models continue to push boundaries, \textbf{small models remain essential} for practical deployment. They offer advantages in compute efficiency, privacy, customization for domain-specific data, and environmental sustainability. They also support better interpretability and accessibility for researchers with limited resources.
+
+% The final point on interpretability should maybe be along the lines of us being able to more easily interpret why a model is doing something or aligning it
+
+\section*{Research Objectives}
+
+The central aim of this thesis is to investigate how small language models can be trained \emph{more efficiently}, improving their performance through principled strategies rather than brute-force scaling. This goal is pursued along two complementary research threads:
+
+
+\subsection*{1. Cognitive Inspiration}
+
+The first approach draws insight from the most efficient language learner we know: the human brain. Humans acquire language with \emph{far less data} than large language models. A thirteen-year-old child may have been exposed to approximately \textbf{100 million words}, whereas today’s models are trained on over \textbf{10 billion tokens}. This contrast motivates the integration of cognitive principles—such as curriculum learning, syntactic generalization, and frequency-independent representation—into model training.
+
+\begin{quote}
+\textbf{To what extent can we take inspiration from the human brain when designing learning paradigms for smaller models?} 
+\end{quote}
+
+\subsection*{2. Analytical Examination}
+
+The second approach is analytical. It focuses on building tools and frameworks to observe and understand the \emph{learning dynamics} of small language models. This includes examining how models learn, where training breaks down, and why certain configurations fail to converge. Fine-grained diagnostics of weights, gradients, and activation patterns help identify and mitigate inefficiencies in small model training.
+
+\section*{Thesis Overview}
+
+This thesis is organized into two parts, reflecting the two research threads:
+
+\subsection*{Part I: Cognitive Insights for Efficient Training (Chapters 2–3)}
+
+\begin{itemize}
+    \item \textbf{Chapter 2:} \emph{Curriculum Learning for Infant-Inspired Model Building}  
+    explores curriculum strategies inspired by human language acquisition, using the BabyLM Challenge’s strict 10-million-word cap as a testbed for evaluating data-efficient learning.
+
+    \item \textbf{Chapter 3:} \emph{Mitigating Frequency Bias and Anisotropy in Language Model Pre-Training with Syntactic Smoothing}  
+    introduces a novel technique to improve the representation of infrequent tokens by distributing learning signals through syntactic similarity, reducing reliance on frequency and improving robustness.
+\end{itemize}
+
+\subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 4–5)}
+
+\begin{itemize}
+    \item \textbf{Chapter 4:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models}  
+    investigates why small models often saturate during training. Using the Pythia model suite, it analyzes activation patterns, parameter rank, and convergence behavior.
+
+    \item \textbf{Chapter 5:} \emph{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}  
+    presents Pico, a modular framework for transparent training and in-depth analysis of learning dynamics, enabling reproducible experiments with small models.
+\end{itemize}
+
+\subsection*{Chapter 6: Concluding Remarks}
+
+Summarizes the core findings of this thesis and outlines promising directions for future research.
+
+\section*{Contributions}
+
+This work contributes to the field by:
+
+\begin{enumerate}
+    \item Providing a theoretical and empirical basis for cognitive strategies that reduce the data and compute required to train language models.
+    \item Introducing novel methods—such as syntactic smoothing and structured curricula—for improving small model generalization.
+    \item Developing analysis tools and frameworks to diagnose and optimize training dynamics in small-scale models.
+\end{enumerate}
+
+Together, these contributions aim to support a more \textbf{accessible, efficient, and sustainable future} for language modeling—particularly for researchers and developers working under real-world constraints.
