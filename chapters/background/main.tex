@@ -1,0 +1,39 @@
+
+\section{Language Modeling Task}
+
+In this section, we will explore some of the key concepts and techniques used in language modeling. 
+
+To begin, language modeling refers to the task of assigning probabilities to sequences of words or tokens. The goal is to model the likelihood of a sequence in a language. In the case of a sequence of words, $w = w_1, w_2, \ldots, w_n$, the probability of the sequence is given by the product of the probabilities of the words occurring in the sequence:
+
+\begin{equation}    
+    P(w) = P(w_1, w_2, \ldots, w_n) = \prod_{i=1}^n P(w_i | w_1, \ldots, w_{i-1})
+\end{equation}
+
+Training a language model is then equivalent to estimating the parameters of this probability distribution. In practice, this is done by estimating the parameters of a neural network that maps a sequence of words to a probability distribution over the next word. 
+
+
+
+
+
+\section{Word Embeddings}
+
+The adoption of deep learning in NLP marked a watershed moment for language modeling. Due to the availability of greater computational resources by the early 2010s, the field of NLP shifted away from n-gram language modeling and towards distributed representations of word embeddings. The work by \cite{pennington2014glove} into GloVe embeddings, along with the publication of the CBOW \citep{mikolov2013efficient} and Skipgram \citep{mikolov2013distributed, mikolov2013efficient} word embedding algorithms, demonstrated that the syntax and semantics of word sequences could be encapsulated into real-dimensional vectors. Despite using a novel approach to language modeling, these algorithms were trained with a similar objective to the earlier n-gram models: predict the probability of a word occurring, given a part of its surrounding context. Unlike n-gram language models, however, these approaches relied on deep recurrent neural network architectures, such as Long Short-Term Memory Networks (LSTMs) \citep{hochreiter1997long} and Gated Recurrent Units (GRUs) \citep{cho2014properties}, to learn the occurrence probabilities of word sequences. 
+
+
+The notion of word embeddings, moreover, popularized the paradigm of pre-training and finetuning in NLP. Once pre-trained, word embeddings could be used for a variety of downstream NLU tasks, including named entity recognition \citep{lample2016neural}, relation extraction \citep{nguyen2015relation} and machine translation \citep{qi-etal-2018-pre}. In spite of their initial success, these types of embeddings were limited by their static nature: no matter the context that a word occurred in, the same embedding was used to represent that word. 
+
+
+\section{Language Models}
+
+The introduction of the attention mechanism solved this issue and has become a cornerstone of modern language modeling architectures. The attention mechanism was developed to resolve the so-called sequence alignment problem of machine translation \citep{bahdanau2014neural,luong2015effective}. Translation systems read in a sequence of words in a source language and are trained to produce a new sequence of words in a target language. Note that the length of the two sequences is likely to differ, as well as the the position of a given word in the source and target texts. The use of attention solves the alignment mismatch, by enabling the model to dynamically select words in the input sequence to focus more on, as it builds up the translated sequence. 
+
+Initially, attention was used as one module of a generative sequence-to-sequence (seq-2-seq) model \citep{sutskever2014sequence}. At a high level, this type of model architecture is composed of an encoder and a decoder. The encoder module first reads in an input sequence and compresses the pertinent semantic and syntactic information into a real-dimensional context vector. The decoder module then uses this compressed representation and generates a target output sequence. In order to facilitate the decoding process, an attention mechanism is inserted to act as a bridge between the encoder and the decoder. At each time step, the attention mechanism reads in the hidden model states of the encoder, along with the current hidden state of the decoder\footnote{Hidden states refer to intermediary model representations that are passed into a network's middle layers}. It then calculates an alignment score for each word in the input that represents the relative importance of this word for decoding the next word of the output. Finally, the module uses these scores to compute a weighted context vector that represents the most relevant semantic and syntatic information of the input text.
+
+%  ---- Early context vectors [This first sentence is used in the paragraph below if this paragraph is commented out] ---- 
+Although conceived of for machine translation, attention has become a pivotal part of language modeling. In 2017, \cite{mccann2017learned} realize that, in addition to solving the alignment problem, attention mechanisms can more broadly be used to contextualize word embeddings. The authors introduce the concept of context vectors that leverage the attention mechanism from a translation model to imbue pre-trained word embeddings with contextual information. Around the same time, \cite{peters2018deep} develop a method to extract contextual word embeddings directly from the hidden state of a pre-trained LSTM model. As with earlier word embeddings, these contextualized embeddings can then be used for any abitrary downstream NLU task. The use of context vectors might have become standard practice had it not been for the development of the transformer architecture in 2018 \citep{vaswani2017attention}.
+
+Although conceived of for machine translation, attention has become a pivotal part of language modeling. In their ground-breaking transformer paper, \cite{vaswani2017attention} demonstrate that a novel mechanism, known as `self-attention', can be used to generate versatile, contextual embeddings. \cite{vaswani2017attention} build an encoder model that is composed entirely of attention mechanisms stacked on top of one another (so-called self-attention layers).
+%Instead of applying attention as a connection between the decoder and encoder hidden states of a seq-2-seq model \citep{sutskever2014sequence}, \cite{vaswani2017attention} employ attention between the hidden states of an encoder model. 
+% Whereas the traditional alignment score is a function of a decoder hidden state and the hidden states of the encoder, the transformer model establishes an alignment score between each hidden state of the encoder to the remaining hidden states.
+The output of these self-attention mechanisms is a set of embeddings representing a dense contextualized version of the input sequence that encode complex semantic information. One important modeling decision popularized by BERT is the use of WordPiece subwords \citep{wu2016google}. Instead of tokenizing the input text into individual words, the authors use the WordPiece algorithm to split words into subword units that maximize the likelihood of the training data. As a result, BERT learns embeddings for subword tokens rather than words. The decision to model subword units is a common feature of modern language models, with the majority of models using either WordPiece \citep{wu2016google}, SentiencePiece \citep{kudo-2018-subword} or BytePairEncoding (BPE) \citep{sennrich2015neural} tokenization. %\cite{vaswani2017attention} additionally propose stacking multiple self-attention modules on-top of each other, in order for the output subword embeddings to encode more complex semantic information. The transformer architecture showed definitely that attention mechanisms alone can outperform convolutional and recurrent architectures. However, as initially presented by \cite{vaswani2017attention}, the transformer model did not constitute a language model.
+

@@ -594,7 +594,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 
 % number formatting 
 \usepackage{siunitx}
-\sisetup{mode = math, text-family-to-math = true, text-series-to-math = true, reset-math-version = false}
+\sisetup{mode = math}
 \usepackage{xspace} 
 
 % math symbols 
@@ -698,11 +698,11 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \newcommand{\snum}[1]{\num{#1}\xspace}
 
 \newcommand{\q}[2]{\qty[mode=math]{#1}{#2}\xspace}
-\DeclareSIUnit[quantity-product = {}, reset-math-version = false]\percent{\%}
-\DeclareSIUnit[quantity-product = {}, reset-math-version = false]\thousand{k}
-\DeclareSIUnit[quantity-product = {}, reset-math-version = false]\million{M}
-\DeclareSIUnit[quantity-product = {}, reset-math-version = false]\billion{B}
-\DeclareSIUnit[quantity-product = {}, reset-math-version = false]\trillion{T}
+\DeclareSIUnit[quantity-product = {}]\percent{\%}
+\DeclareSIUnit[quantity-product = {}]\thousand{k}
+\DeclareSIUnit[quantity-product = {}]\million{M}
+\DeclareSIUnit[quantity-product = {}]\billion{B}
+\DeclareSIUnit[quantity-product = {}]\trillion{T}
 
 % Results Theorem Style  
 

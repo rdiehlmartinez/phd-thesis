@@ -7,7 +7,7 @@
   title = {Hydra -- A framework for elegantly configuring complex applications},
   howpublished = {Github},
   year = {2019},
-  url =          {https://github.com/facebookresearch/hydra}
+  url = {https://github.com/facebookresearch/hydra}
 }
 
 % HuggingFace
@@ -113,70 +113,6 @@ author = {Biewald, Lukas},
   year={2009},
   publisher={" O'Reilly Media, Inc."}
 }
-
-
-% ---- Architectures ---- 
-
-% ROPE Embeddings 
-@article{su2024rope,
-  title={Roformer: Enhanced transformer with rotary position embedding},
-  author={Su, Jianlin and Ahmed, Murtadha and Lu, Yu and Pan, Shengfeng and Bo, Wen and Liu, Yunfeng},
-  journal={Neurocomputing},
-  volume={568},
-  pages={127063},
-  year={2024},
-  publisher={Elsevier}
-}
-
-
-% Zhang, Biao 2019 - Root mean square layer normalization
-@article{zhang2019rms,
-  title={Root mean square layer normalization},
-  author={Zhang, Biao and Sennrich, Rico},
-  journal={Advances in Neural Information Processing Systems},
-  volume={32},
-  year={2019}
-}
-
-% Unknown 2022 - Flashattention: Fast and memory-efficient exact attention with io-awareness
-@article{dao2022flashattention,
-  title={Flashattention: Fast and memory-efficient exact attention with io-awareness},
-  author={Dao, Tri and Fu, Dan and Ermon, Stefano and Rudra, Atri and R{\'e}, Christopher},
-  journal={Advances in neural information processing systems},
-  volume={35},
-  pages={16344--16359},
-  year={2022}
-}
-
-% Shazeer, Noam 2020 - Glu variants improve transformer
-@article{shazeer2020glu,
-  title={Glu variants improve transformer},
-  author={Shazeer, Noam},
-  journal={arXiv preprint arXiv:2002.05202},
-  year={2020}
-}
-
-% Ainslie, Joshua 2023 - GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints
-@inproceedings{ainslie2023gqa,
-  title={GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints},
-  author={Ainslie, Joshua and Lee-Thorp, James and de Jong, Michiel and Zemlyanskiy, Yury and Lebron, Federico and Sanghai, Sumit},
-  booktitle={Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing},
-  pages={4895--4901},
-  year={2023}
-}
-
-
-% Attention Is All You Need
-@inproceedings{vaswani2017attention,
-  title = {Attention Is All You Need},
-  booktitle = {Advances in {{Neural Information Processing Systems}}},
-  author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
-  year = {2017},
-  volume = {30},
-  publisher = {Curran Associates, Inc.},
-  url = {https://papers.nips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html}
-}
-
 
 % ---- Benchmarks ----
 
@@ -386,6 +322,57 @@ author = {Biewald, Lukas},
     pages = "217--235",
 }
 
+% ---- NGram Models ----
+
+% Jurafsky, Daniel and Martin, James H. 2025 - Speech and Language Processing: An Introduction to
+% Introduces NGram models
+@Book{jurafsky2025speech,
+  author =       "Daniel Jurafsky and James H. Martin",
+  title =        "Speech and Language Processing: An Introduction to
+                 Natural Language Processing, Computational Linguistics,
+                 and Speech Recognition with Language Models",
+  year =         "2025",
+  url = {https://web.stanford.edu/~jurafsky/slp3/},
+  note = "Online manuscript released January 12, 2025",
+  edition =         "3rd",
+  }
+
+% Katz, Slava 2003 - Estimation of probabilities from sparse data for the language model component of a speech recognizer
+@article{katz2003estimation,
+  title={Estimation of probabilities from sparse data for the language model component of a speech recognizer},
+  author={Katz, Slava},
+  journal={IEEE transactions on acoustics, speech, and signal processing},
+  volume={35},
+  number={3},
+  pages={400--401},
+  year={2003},
+  publisher={IEEE}
+}
+
+% Kneser, Reinhard and Ney, Hermann 1995 - Improved backing-off for m-gram language modeling
+
+@inproceedings{kneser1995improved,
+  title={Improved backing-off for m-gram language modeling},
+  author={Kneser, Reinhard and Ney, Hermann},
+  booktitle={1995 international conference on acoustics, speech, and signal processing},
+  volume={1},
+  pages={181--184},
+  year={1995},
+  organization={IEEE}
+}
+
+An Empirical Study of Smoothing Techniques for Language Modeling
+@article{chen1999empirical,
+  title={An empirical study of smoothing techniques for language modeling},
+  author={Chen, Stanley F and Goodman, Joshua},
+  journal={Computer Speech \& Language},
+  volume={13},
+  number={4},
+  pages={359--394},
+  year={1999},
+  publisher={Elsevier}
+}
+
 % ---- Tokenization  ----
 
 % Gage, Philip 1994 - A new algorithm for data compression
@@ -418,8 +405,17 @@ author = {Biewald, Lukas},
     pages = "1715--1725"
 }
 
+% Wu, Yonghui 2016 - Google's neural machine translation system: Bridging the gap between human and machine translation
+% Introduces the WordPiece tokenization algorithm -- adopted in BERT (crurical for handling rare words + transformers)
+@article{wu2016google,
+  title={Google's neural machine translation system: Bridging the gap between human and machine translation},
+  author={Wu, Yonghui and Schuster, Mike and Chen, Zhifeng and Le, Quoc V and Norouzi, Mohammad and Macherey, Wolfgang and Krikun, Maxim and Cao, Yuan and Gao, Qin and Macherey, Klaus and others},
+  journal={arXiv preprint arXiv:1609.08144},
+  year={2016}
+}
+
 % Kudo, Taku 2018 - Sentencepiece 
-@inproceedings{kudo2018sentencepiece,
+@inproceedings{kudo2018unigram,
     title = "Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates",
     author = "Kudo, Taku",
     editor = "Gurevych, Iryna  and
@@ -434,7 +430,54 @@ author = {Biewald, Lukas},
     pages = "66--75",
 }
 
+% Kudo, Taku 2018 - Sentencepiece
+% Introduces the SentencePiece tokenization algorithm 
+@inproceedings{kudo2018sentencepiece,
+  title={SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing},
+  author={Kudo, Taku and Richardson, John},
+  booktitle={Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing: System Demonstrations},
+  pages={66--71},
+  year={2018}
+}
+
+% Tokenization Free Approaches 
+
+% Clark, Jonathan H 2022 - Canine: Pre-training an efficient tokenization-free encoder for language representation
+@article{clark2022canine,
+  title={Canine: Pre-training an efficient tokenization-free encoder for language representation},
+  author={Clark, Jonathan H and Garrette, Dan and Turc, Iulia and Wieting, John},
+  journal={Transactions of the Association for Computational Linguistics},
+  volume={10},
+  pages={73--91},
+  year={2022},
+  publisher={MIT Press One Rogers Street, Cambridge, MA 02142-1209, USA journals-info~…}
+}
+
+% Xue, Linting 2022 - Byt5: Towards a token-free future with pre-trained byte-to-byte models
+@article{xue2022byt5,
+  title={Byt5: Towards a token-free future with pre-trained byte-to-byte models},
+  author={Xue, Linting and Barua, Aditya and Constant, Noah and Al-Rfou, Rami and Narang, Sharan and Kale, Mihir and Roberts, Adam and Raffel, Colin},
+  journal={Transactions of the Association for Computational Linguistics},
+  volume={10},
+  pages={291--306},
+  year={2022},
+  publisher={MIT Press One Broadway, 12th Floor, Cambridge, Massachusetts 02142, USA~…}
+}
+
+
 % --- Optimization Algorithms --- 
+
+% Rumelhart, David E 1986 - Learning representations by back-propagating errors (OG Backprop paper)
+@article{rumelhart1986learning,
+  title={Learning representations by back-propagating errors},
+  author={Rumelhart, David E and Hinton, Geoffrey E and Williams, Ronald J},
+  journal={Nature},
+  volume={323},
+  number={6088},
+  pages={533--536},
+  year={1986},
+  doi={10.1038/323533a0}
+}
 
 % Ilya Loshchilov 2019 - Decoupled Weight Decay Regularization (AdamW)
 @article{
@@ -447,6 +490,28 @@ author = {Biewald, Lukas},
 
 % --- Language/Semantics --- 
 
+% Bengio, Yoshua 2003 - A neural probabilistic language model
+% Defines the language modeling task
+@article{bengio2003neural,
+  title={A neural probabilistic language model},
+  author={Bengio, Yoshua and Ducharme, R{\'e}jean and Vincent, Pascal and Jauvin, Christian},
+  journal={Journal of machine learning research},
+  volume={3},
+  number={Feb},
+  pages={1137--1155},
+  year={2003}
+}
+
+% Jozefowicz, Rafal 2016 - Exploring the limits of language modeling
+% Formarlizes the next-token prediction task
+# Shows that architecture and training data affect PPL
+@article{jozefowicz2016exploring,
+  title={Exploring the limits of language modeling},
+  author={Jozefowicz, Rafal and Vinyals, Oriol and Schuster, Mike and Shazeer, Noam and Wu, Yonghui},
+  journal={arXiv preprint arXiv:1602.02410},
+  year={2016}
+}
+
 % Zipf's law 
 @book{manning2009introduction,
   title={An introduction to information retrieval},
@@ -456,74 +521,74 @@ author = {Biewald, Lukas},
 }
 
 @book{zipf1935zipflaw,
-    author = "George K. Zipf",
-    title = "The Psychobiology of Language",
-    publisher = "Boston: Houghton-Mifflin",
-    year = {1935}
+  author = "George K. Zipf",
+  title = "The Psychobiology of Language",
+  publisher = "Boston: Houghton-Mifflin",
+  year = {1935}
 }
 
 @inproceedings{petrov2012universalpos,
-    title = "A Universal Part-of-Speech Tagset",
-    author = "Petrov, Slav  and
-      Das, Dipanjan  and
-      McDonald, Ryan",
-    editor = "Calzolari, Nicoletta  and
-      Choukri, Khalid  and
-      Declerck, Thierry  and
-      Do{\u{g}}an, Mehmet U{\u{g}}ur  and
-      Maegaard, Bente  and
-      Mariani, Joseph  and
-      Moreno, Asuncion  and
-      Odijk, Jan  and
-      Piperidis, Stelios",
-    booktitle = "Proceedings of the Eighth International Conference on Language Resources and Evaluation ({LREC}`12)",
-    month = may,
-    year = "2012",
-    address = "Istanbul, Turkey",
-    publisher = "European Language Resources Association (ELRA)",
-    url = "https://aclanthology.org/L12-1115/",
-    pages = "2089--2096",
+  title = "A Universal Part-of-Speech Tagset",
+  author = "Petrov, Slav  and
+    Das, Dipanjan  and
+    McDonald, Ryan",
+  editor = "Calzolari, Nicoletta  and
+    Choukri, Khalid  and
+    Declerck, Thierry  and
+    Do{\u{g}}an, Mehmet U{\u{g}}ur  and
+    Maegaard, Bente  and
+    Mariani, Joseph  and
+    Moreno, Asuncion  and
+    Odijk, Jan  and
+    Piperidis, Stelios",
+  booktitle = "Proceedings of the Eighth International Conference on Language Resources and Evaluation ({LREC}`12)",
+  month = may,
+  year = "2012",
+  address = "Istanbul, Turkey",
+  publisher = "European Language Resources Association (ELRA)",
+  url = "https://aclanthology.org/L12-1115/",
+  pages = "2089--2096",
 }
 
 % Salazar, Julian 2020 - Masked Language Model Scoring (Pseudo-Perplexity )
 @inproceedings{salazar2020masked,
-    title = "Masked Language Model Scoring",
-    author = "Salazar, Julian  and
-      Liang, Davis  and
-      Nguyen, Toan Q.  and
-      Kirchhoff, Katrin",
-    editor = "Jurafsky, Dan  and
-      Chai, Joyce  and
-      Schluter, Natalie  and
-      Tetreault, Joel",
-    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
-    month = jul,
-    year = "2020",
-    address = "Online",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2020.acl-main.240",
-    doi = "10.18653/v1/2020.acl-main.240",
-    pages = "2699--2712",
+  title = "Masked Language Model Scoring",
+  author = "Salazar, Julian  and
+    Liang, Davis  and
+    Nguyen, Toan Q.  and
+    Kirchhoff, Katrin",
+  editor = "Jurafsky, Dan  and
+    Chai, Joyce  and
+    Schluter, Natalie  and
+    Tetreault, Joel",
+  booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+  month = jul,
+  year = "2020",
+  address = "Online",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/2020.acl-main.240",
+  doi = "10.18653/v1/2020.acl-main.240",
+  pages = "2699--2712",
 }
 
 % Alfred V. Aho 1972 - The Theory of Parsing, Translation and Compiling
 @book{aho1972parsing,
-    author  = {Alfred V. Aho and Jeffrey D. Ullman},
-    title   = {The Theory of Parsing, Translation and Compiling},
-    year    = "1972",
-    volume  = "1",
-    publisher = {Prentice-Hall},
-    address = {Englewood Cliffs, NJ}
+  author  = {Alfred V. Aho and Jeffrey D. Ullman},
+  title   = {The Theory of Parsing, Translation and Compiling},
+  year    = "1972",
+  volume  = "1",
+  publisher = {Prentice-Hall},
+  address = {Englewood Cliffs, NJ}
 }
 
 % Dan Gusfield 1997 - Algorithms on Strings, Trees and Sequences
 @book{gusfield1997algorithms,
-    author  = {Dan Gusfield},
-    title   = {Algorithms on Strings, Trees and Sequences},
-    year    = "1997",
-    publisher = {Cambridge University Press},
-    address = {Cambridge, UK},
-    url={https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/F0B095049C7E6EF5356F0A26686C20D3}
+  author  = {Dan Gusfield},
+  title   = {Algorithms on Strings, Trees and Sequences},
+  year    = "1997",
+  publisher = {Cambridge University Press},
+  address = {Cambridge, UK},
+  url={https://www.cambridge.org/core/books/algorithms-on-strings-trees-and-sequences/F0B095049C7E6EF5356F0A26686C20D3}
 }
 
 % --- Datasets ---
@@ -539,11 +604,492 @@ author = {Biewald, Lukas},
 
 % Leo Gao 2020 - The Pile: An 800GB Dataset of Diverse Text for Language Modeling
 @misc{gao2020pile,
-    title={The Pile: An 800GB Dataset of Diverse Text for Language Modeling}, 
-    author={Leo Gao and Stella Biderman and Sid Black and Laurence Golding and Travis Hoppe and Charles Foster and Jason Phang and Horace He and Anish Thite and Noa Nabeshima and Shawn Presser and Connor Leahy},
-    year={2020},
-    journal={arXiv preprint arXiv:2101.00027}
+  title={The Pile: An 800GB Dataset of Diverse Text for Language Modeling}, 
+  author={Leo Gao and Stella Biderman and Sid Black and Laurence Golding and Travis Hoppe and Charles Foster and Jason Phang and Horace He and Anish Thite and Noa Nabeshima and Shawn Presser and Connor Leahy},
+  year={2020},
+  journal={arXiv preprint arXiv:2101.00027}
 }
+
+% ---- Historical Models ----
+
+% Bengio, Yoshua 2003 - A neural probabilistic language model
+@article{bengio2003neural,
+  title={A neural probabilistic language model},
+  author={Bengio, Yoshua and Ducharme, R{\'e}jean and Vincent, Pascal and Jauvin, Christian},
+  journal={Journal of machine learning research},
+  volume={3},
+  number={Feb},
+  pages={1137--1155},
+  year={2003}
+}
+
+% Mikolov, Tomas 2010 - Recurrent neural network based language model
+@inproceedings{mikolov2010recurrent,
+  title     = {Recurrent neural network based language model},
+  author    = {Tomáš Mikolov and Martin Karafiát and Lukáš Burget and Jan Černocký and Sanjeev Khudanpur},
+  year      = {2010},
+  booktitle = {Interspeech 2010},
+  pages     = {1045--1048},
+  doi       = {10.21437/Interspeech.2010-343},
+  issn      = {2958-1796},
+}
+
+% Bengio, Yoshua 1994 - Learning long-term dependencies with gradient descent is difficult
+@article{bengio1994learning,
+  title={Learning long-term dependencies with gradient descent is difficult},
+  author={Bengio, Yoshua and Simard, Patrice and Frasconi, Paolo},
+  journal={IEEE transactions on neural networks},
+  volume={5},
+  number={2},
+  pages={157--166},
+  year={1994},
+  publisher={IEEE}
+}
+
+% Hochreiter, Sepp 1997 - Long short-term memory
+@article{hochreiter1997lstm,
+  title={Long short-term memory},
+  author={Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  journal={Neural computation},
+  volume={9},
+  number={8},
+  pages={1735--1780},
+  year={1997},
+  publisher={MIT press}
+}
+
+% Cho, Kyunghyun 2014 - Learning Phrase Representations using {RNN} Encoder{--}Decoder for Statistical Machine Translation
+@inproceedings{cho-etal-2014-learning,
+  title = "Learning Phrase Representations using {RNN} Encoder{--}Decoder for Statistical Machine Translation",
+  author = {Cho, Kyunghyun  and
+    van Merri{\"e}nboer, Bart  and
+    Gulcehre, Caglar  and
+    Bahdanau, Dzmitry  and
+    Bougares, Fethi  and
+    Schwenk, Holger  and
+    Bengio, Yoshua},
+  editor = "Moschitti, Alessandro  and
+    Pang, Bo  and
+    Daelemans, Walter",
+  booktitle = "Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing ({EMNLP})",
+  month = oct,
+  year = "2014",
+  address = "Doha, Qatar",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/D14-1179/",
+  doi = "10.3115/v1/D14-1179",
+    pages = "1724--1734"
+}
+
+% Sutskever, Ilya 2014 - Sequence to sequence learning with neural networks
+@article{sutskever2014sequence,
+  title={Sequence to sequence learning with neural networks},
+  author={Sutskever, Ilya and Vinyals, Oriol and Le, Quoc V},
+  journal={Advances in neural information processing systems},
+  volume={27},
+  year={2014}
+}
+
+% Peters, Matthew E. 2018 - Deep Contextualized Word Representations (ELMo)
+@inproceedings{peters-etal-2018-deep,
+  title = "Deep Contextualized Word Representations",
+  author = "Peters, Matthew E.  and
+    Neumann, Mark  and
+    Iyyer, Mohit  and
+    Gardner, Matt  and
+    Clark, Christopher  and
+    Lee, Kenton  and
+    Zettlemoyer, Luke",
+  editor = "Walker, Marilyn  and
+    Ji, Heng  and
+    Stent, Amanda",
+  booktitle = "Proceedings of the 2018 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers)",
+  month = jun,
+  year = "2018",
+  address = "New Orleans, Louisiana",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/N18-1202/",
+  doi = "10.18653/v1/N18-1202",
+  pages = "2227--2237",
+}
+
+% Howard, Jeremy 2018 - Universal Language Model Fine-tuning for Text Classification
+@inproceedings{howard-ruder-2018-universal,
+  title = "Universal Language Model Fine-tuning for Text Classification",
+  author = "Howard, Jeremy  and
+    Ruder, Sebastian",
+  editor = "Gurevych, Iryna  and
+    Miyao, Yusuke",
+  booktitle = "Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+  month = jul,
+  year = "2018",
+  address = "Melbourne, Australia",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/P18-1031/",
+  doi = "10.18653/v1/P18-1031",
+  pages = "328--339",
+}
+
+
+
+
+% --- Transformer Models ---
+
+% Bahdanau, Dzmitry 2015 - Neural machine translation by jointly learning to align and translate
+@inproceedings{bahdanau2015neural,
+  title={Neural machine translation by jointly learning to align and translate},
+  author={Bahdanau, Dzmitry and Cho, Kyung Hyun and Bengio, Yoshua},
+  booktitle={3rd International Conference on Learning Representations, ICLR 2015},
+  year={2015}
+}
+
+% Vaswani, Ashish 2017 - Attention is all you need
+@inproceedings{vaswani2017attention,
+  title = {Attention Is All You Need},
+  booktitle = {Advances in {{Neural Information Processing Systems}}},
+  author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  year = {2017},
+  volume = {30},
+  publisher = {Curran Associates, Inc.},
+  url = {https://papers.nips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html}
+}
+
+% Devlin, Jacob 2019 - Bert: Pre-training of deep bidirectional transformers for language understanding
+@inproceedings{devlin2019bert,
+  title={Bert: Pre-training of deep bidirectional transformers for language understanding},
+  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle={Proceedings of the 2019 conference of the North American chapter of the association for computational linguistics: human language technologies, volume 1 (long and short papers)},
+  pages={4171--4186},
+  year={2019}
+}
+
+% ---- BERT Variants ----
+
+% Liu, Yinhan 2019 - RoBERTa: A Robustly Optimized BERT Pretraining Approach
+@article{liu2019roberta,
+    title = {{RoBERTa}: A Robustly Optimized {BERT} Pretraining Approach}, 
+    author = {Yinhan Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and Mike Lewis and Luke Zettlemoyer and Veselin Stoyanov},
+    year = {2019},
+    volume = {arXiv:1907.11692},
+    journal = {arXiv preprint arXiv:1907.11692},
+    url = {https://arxiv.org/abs/1907.11692},
+}
+
+% Lan, Zhenzhong 2019 - ALBERT: A Lite BERT for Self-supervised Learning of Language Representations
+@inproceedings{lan2019albert,
+  title={ALBERT: A Lite BERT for Self-supervised Learning of Language Representations},
+  author={Lan, Zhenzhong and Chen, Mingda and Goodman, Sebastian and Gimpel, Kevin and Sharma, Piyush and Soricut, Radu},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2020}
+}
+
+% Joshi, Mandar 2020 - SpanBERT: Improving Pre-training by Representing and Predicting Spans
+@article{joshi2020spanbert,
+  title={SpanBERT: Improving Pre-training by Representing and Predicting Spans},
+  author={Joshi, Mandar and Chen, Danqi and Liu, Yinhan and Weld, Daniel S and Zettlemoyer, Luke and Levy, Omer},
+  journal={Transactions of the Association for Computational Linguistics},
+  volume={8},
+  pages={64--77},
+  year={2020},
+  publisher={MIT Press}
+}
+
+% Sanh, Victor 2019 - DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter
+@inproceedings{sanh2019distilbert,
+  title={DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter},
+  author={Sanh, Victor and Debut, Lysandre and Chaumond, Julien and Wolf, Thomas},
+  booktitle={Advances in Neural Information Processing Systems Workshop},
+  year={2019}
+}
+
+@inproceedings{he2021deberta,
+  title={DeBERTa: Decoding-enhanced BERT with Disentangled Attention},
+  author={He, Pengcheng and Liu, Xiaodong and Gao, Jianfeng and Chen, Weizhu},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2021}
+}
+
+
+% ---- GPT Variants ----
+
+% Radford, Alec 2018 - Improving Language Understanding by Generative Pre-Training
+@misc{radford2018gpt1,
+  title={Improving Language Understanding by Generative Pre-Training},
+  author={Radford, Alec and Narasimhan, Karthik and Salimans, Tim and Sutskever, Ilya},
+  year={2018},
+  note={Technical report, OpenAI},
+  howpublished={\url{https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf}}
+}
+
+% Radford, Alec 2019 - Language Models are Unsupervised Multitask Learners
+@misc{radford2019gpt2,
+  title={Language Models are Unsupervised Multitask Learners},
+  author={Radford, Alec and Wu, Jeffrey and Child, Rewon and Luan, David and Amodei, Dario and Sutskever, Ilya},
+  year={2019},
+  note={Technical report, OpenAI},
+  howpublished={\url{https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf}}
+}
+
+% Brown, Tom 2020 - Language Models are Few-Shot Learners
+@inproceedings{brown2020gpt3,
+  title={Language Models are Few-Shot Learners},
+  author={Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and others},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={33},
+  pages={1877--1901},
+  year={2020}
+}
+
+
+% ---- Transformer Combination Models ----
+
+@inproceedings{dai2019transformer,
+  title={Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context},
+  author={Dai, Zihang and Yang, Zhilin and Yang, Yiming and Carbonell, Jaime and Le, Quoc V and Salakhutdinov, Ruslan},
+  booktitle={Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics},
+  year={2019},
+  pages={2978--2988},
+  url={https://aclanthology.org/P19-1285},
+}
+
+@misc{keskar2019ctrl,
+  title={CTRL: A Conditional Transformer Language Model for Controllable Generation},
+  author={Keskar, Nitish Shirish and McCann, Bryan and Varshney, Lav R and Xiong, Caiming and Socher, Richard},
+  year={2019},
+  eprint={1909.05858},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/1909.05858}
+}
+
+@inproceedings{clark2020electra,
+  title={ELECTRA: Pre-training Text Encoders as Discriminators Rather Than Generators},
+  author={Clark, Kevin and Luong, Minh-Thang and Le, Quoc V and Manning, Christopher D},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2020},
+  url={https://arxiv.org/abs/2003.10555}
+}
+
+@article{raffel2020t5,
+  title={Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer},
+  author={Raffel, Colin and Shazeer, Noam and Roberts, Adam and Lee, Katherine and Narang, Sharan and Matena, Michael and Zhou, Yanqi and Li, Wei and Liu, Peter J},
+  journal={Journal of Machine Learning Research},
+  volume={21},
+  number={140},
+  pages={1--67},
+  year={2020},
+  url={http://jmlr.org/papers/v21/20-074.html}
+}
+
+@inproceedings{lewis2020bart,
+  title={BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension},
+  author={Lewis, Mike and Liu, Yinhan and Goyal, Naman and Ghazvininejad, Marjan and Mohamed, Abdelrahman and Levy, Omer and Stoyanov, Veselin and Zettlemoyer, Luke},
+  booktitle={Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics},
+  pages={7871--7880},
+  year={2020},
+  url={https://aclanthology.org/2020.acl-main.703}
+}
+
+@inproceedings{yang2019xlnet,
+  title={XLNet: Generalized Autoregressive Pretraining for Language Understanding},
+  author={Yang, Zhilin and Dai, Zihang and Yang, Yiming and Carbonell, Jaime and Salakhutdinov, Ruslan and Le, Quoc V},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={32},
+  year={2019},
+  url={https://arxiv.org/abs/1906.08237}
+}
+
+% ---- Model Architectures/Design ---- 
+
+
+% - Layer Normalization - 
+
+% Ioffe, Sergey 2015 - Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift
+@inproceedings{ioffe2015batchnorm,
+  title={Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift},
+  author={Ioffe, Sergey and Szegedy, Christian},
+  booktitle={Proceedings of the 32nd International Conference on Machine Learning (ICML)},
+  pages={448--456},
+  year={2015},
+  url={https://proceedings.mlr.press/v37/ioffe15.html}
+}
+
+% Ba, Jimmy Lei 2016 - Layer Normalization
+@misc{ba2016layernorm,
+  title={Layer Normalization},
+  author={Ba, Jimmy Lei and Kiros, Jamie Ryan and Hinton, Geoffrey E},
+  year={2016},
+  eprint={1607.06450},
+  archivePrefix={arXiv},
+  primaryClass={stat.ML},
+  url={https://arxiv.org/abs/1607.06450}
+}
+
+% RMSNorm
+@misc{zhang2019rmsnorm,
+  title={Root Mean Square Layer Normalization},
+  author={Zhang, Yuxuan and Sennrich, Rico},
+  year={2019},
+  eprint={1910.07467},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/1910.07467}
+}
+
+% Xiong, Ruibin 2020 - On Layer Normalization in the Transformer Architecture
+@misc{xiong2020layer,
+  title={On Layer Normalization in the Transformer Architecture},
+  author={Xiong, Ruibin and Yang, Yi and He, Di and Zheng, Kai and Zheng, Shuo and Xing, Chang and Zhang, Yanyan and Lan, Yingce and Wang, Liwei and Liu, Tie-Yan},
+  year={2020},
+  eprint={2002.04745},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2002.04745}
+}
+
+
+
+
+% - Positional Encodings - 
+
+@inproceedings{shaw2018self,
+  title={Self-Attention with Relative Position Representations},
+  author={Shaw, Peter and Uszkoreit, Jakob and Vaswani, Ashish},
+  booktitle={Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  pages={464--468},
+  year={2018},
+  url={https://aclanthology.org/N18-2074}
+}
+
+
+@misc{press2021train,
+  title={Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation},
+  author={Press, Ofir and Smith, Noah A. and Levy, Omer},
+  year={2021},
+  eprint={2108.12409},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/2108.12409}
+}
+
+
+% ROPE Embeddings 
+@article{su2024rope,
+  title={Roformer: Enhanced transformer with rotary position embedding},
+  author={Su, Jianlin and Ahmed, Murtadha and Lu, Yu and Pan, Shengfeng and Bo, Wen and Liu, Yunfeng},
+  journal={Neurocomputing},
+  volume={568},
+  pages={127063},
+  year={2024},
+  publisher={Elsevier}
+}
+
+% - Activation Functions - 
+
+% LeCun, Yann 1998 - Efficient backprop (tanh and sigmoid)
+@incollection{lecun1998efficient,
+  title={Efficient backprop},
+  author={LeCun, Yann and Bottou, L{\'e}on and Orr, Genevieve B and M{\"u}ller, Klaus-Robert},
+  booktitle={Neural Networks: Tricks of the Trade},
+  pages={9--50},
+  publisher={Springer},
+  year={1998},
+  doi={10.1007/3-540-49430-8_2}
+}
+
+
+% Glorot, Xavier 2010 - Understanding the difficulty of training deep feedforward neural networks
+@inproceedings{glorot2010understanding,
+  title={Understanding the difficulty of training deep feedforward neural networks},
+  author={Glorot, Xavier and Bengio, Yoshua},
+  booktitle={Proceedings of the 13th International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  pages={249--256},
+  year={2010},
+  url={http://proceedings.mlr.press/v9/glorot10a.html}
+}
+
+@inproceedings{nair2010rectified,
+  title={Rectified linear units improve restricted boltzmann machines},
+  author={Nair, Vinod and Hinton, Geoffrey E},
+  booktitle={Proceedings of the 27th International Conference on Machine Learning (ICML)},
+  pages={807--814},
+  year={2010},
+  url={http://www.cs.toronto.edu/~hinton/absps/relus.pdf}
+}
+
+@inproceedings{maas2013rectifier,
+  title={Rectifier nonlinearities improve neural network acoustic models},
+  author={Maas, Andrew L and Hannun, Awni Y and Ng, Andrew Y},
+  booktitle={Proc. ICML},
+  year={2013},
+  note={Workshop on Deep Learning for Audio, Speech and Language Processing},
+  url={https://web.stanford.edu/~awni/papers/relu_hybrid_icml2013_final.pdf}
+}
+@misc{hendrycks2016gaussian,
+  title={Gaussian Error Linear Units (GELUs)},
+  author={Hendrycks, Dan and Gimpel, Kevin},
+  year={2016},
+  eprint={1606.08415},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/1606.08415}
+}
+
+@misc{ramachandran2017searching,
+  title={Searching for Activation Functions},
+  author={Ramachandran, Prajit and Zoph, Barret and Le, Quoc V},
+  year={2017},
+  eprint={1710.05941},
+  archivePrefix={arXiv},
+  primaryClass={cs.NE},
+  url={https://arxiv.org/abs/1710.05941}
+}
+
+% Shazeer, Noam 2020 - Glu variants improve transformer
+@article{shazeer2020glu,
+  title={Glu variants improve transformer},
+  author={Shazeer, Noam},
+  journal={arXiv preprint arXiv:2002.05202},
+  year={2020}
+}
+
+% - Regularization - 
+
+
+% Dropout
+@article{srivastava2014dropout,
+  title={Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
+  author={Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan},
+  journal={Journal of Machine Learning Research},
+  volume={15},
+  number={56},
+  pages={1929--1958},
+  year={2014},
+  url={http://jmlr.org/papers/v15/srivastava14a.html}
+}
+
+% Pascanu, Razvan 2013 - On the Difficulty of Training Recurrent Neural Networks (introduce vanishing/exploding gradients)
+@inproceedings{pascanu2013difficulty,
+  title={On the Difficulty of Training Recurrent Neural Networks},
+  author={Pascanu, Razvan and Mikolov, Tomas and Bengio, Yoshua},
+  booktitle={Proceedings of the 30th International Conference on Machine Learning (ICML)},
+  pages={1310--1318},
+  year={2013},
+  url={https://proceedings.mlr.press/v28/pascanu13.html}
+}
+
+% - Modern Transformer Architectures - 
+
+% Ainslie, Joshua 2023 - GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints
+@inproceedings{ainslie2023gqa,
+  title={GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints},
+  author={Ainslie, Joshua and Lee-Thorp, James and de Jong, Michiel and Zemlyanskiy, Yury and Lebron, Federico and Sanghai, Sumit},
+  booktitle={Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing},
+  pages={4895--4901},
+  year={2023}
+}
+
+
 
 % --- Models/ Model Frameworks ----
 
@@ -556,22 +1102,6 @@ author = {Biewald, Lukas},
     journal = {arXiv preprint arXiv:2303.18223}
 }
 
-@article{liu2019roberta,
-    title = {{RoBERTa}: A Robustly Optimized {BERT} Pretraining Approach}, 
-    author = {Yinhan Liu and Myle Ott and Naman Goyal and Jingfei Du and Mandar Joshi and Danqi Chen and Omer Levy and Mike Lewis and Luke Zettlemoyer and Veselin Stoyanov},
-    year = {2019},
-    volume = {arXiv:1907.11692},
-    journal = {arXiv preprint arXiv:1907.11692},
-    url = {https://arxiv.org/abs/1907.11692},
-}
-
-@inproceedings{devlin2019bert,
-  title={Bert: Pre-training of deep bidirectional transformers for language understanding},
-  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  booktitle={Proceedings of the 2019 conference of the North American chapter of the association for computational linguistics: human language technologies, volume 1 (long and short papers)},
-  pages={4171--4186},
-  year={2019}
-}
 
 % Touvron, Hugo 2023 - Llama 2: Open foundation and fine-tuned chat models
 @article{touvron2023llama,
@@ -616,7 +1146,7 @@ author = {Biewald, Lukas},
   organization={PMLR}
 }
 
-% Unknown 2023 - Bloom: A 176b-parameter open-access multilingual language model
+% Le Scao, Teven (Big Science) 2023 - Bloom: A 176b-parameter open-access multilingual language model
 @article{le2023bloom,
   title={Bloom: A 176b-parameter open-access multilingual language model},
   author={Le Scao, Teven and Fan, Angela and Akiki, Christopher and Pavlick, Ellie and Ili{\'c}, Suzana and Hesslow, Daniel and Castagn{\'e}, Roman and Luccioni, Alexandra Sasha and Yvon, Fran{\c{c}}ois and Gall{\'e}, Matthias and others},
@@ -633,16 +1163,6 @@ author = {Biewald, Lukas},
   number={240},
   pages={1--113},
   year={2023}
-}
-
-% Brown, Tom 2020 - GPT3
-@article{brown2020gpt3,
-  title={Language models are few-shot learners},
-  author={Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and others},
-  journal={Advances in Neural Information Processing Systems},
-  volume={33},
-  pages={1877--1901},
-  year={2020}
 }
 
 % Zhang, Susan 2022 - Opt: Open pre-trained transformer language models
@@ -672,18 +1192,6 @@ author = {Biewald, Lukas},
   journal={ arXiv preprint arXiv:2109.01652},
 }
 
-
-% Raffel, Colin 2020 - Exploring the limits of transfer learning with a unified text-to-text transformer (T5 and C4 dataset)
-@article{raffel2020t5,
-  title={Exploring the limits of transfer learning with a unified text-to-text transformer},
-  author={Raffel, Colin and Shazeer, Noam and Roberts, Adam and Lee, Katherine and Narang, Sharan and Matena, Michael and Zhou, Yanqi and Li, Wei and Liu, Peter J},
-  journal={The Journal of Machine Learning Research},
-  volume={21},
-  number={1},
-  pages={5485--5551},
-  year={2020},
-  publisher={JMLRORG}
-}
 
 % Deepseek r1
 @article{guo2025deepseekr1,
@@ -1966,9 +2474,100 @@ url = {https://arxiv.org/abs/2402.04362}
     pages = "292--301",
 }
 
-% === Word Embeddings  ===
+% === Word/Token Representations  ===
 
-% Character-level embeddings 
+% --- Origin/Historical Approaches ---
+
+% Mikolov, Tomas 2013 - Efficient estimation of word representations in vector space
+@article{mikolov2013efficient,
+  title={Efficient estimation of word representations in vector space},
+  author={Mikolov, Tomas and Chen, Kai and Corrado, Greg and Dean, Jeffrey},
+  journal={arXiv preprint arXiv:1301.3781},
+  year={2013}
+}
+
+% Mikolov, Tomas 2013 - Distributed representations of words and phrases and their compositionality
+@article{mikolov2013distributed,
+  title={Distributed representations of words and phrases and their compositionality},
+  author={Mikolov, Tomas and Sutskever, Ilya and Chen, Kai and Corrado, Greg S and Dean, Jeff},
+  journal={Advances in neural information processing systems},
+  volume={26},
+  year={2013}
+}
+
+% Pennington, Jeffrey 2014 - Glove: Global vectors for word representation
+@inproceedings{pennington2014glove,
+  title={Glove: Global vectors for word representation},
+  author={Pennington, Jeffrey and Socher, Richard and Manning, Christopher D},
+  booktitle={Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP)},
+  pages={1532--1543},
+  year={2014}
+}
+
+% ---- Historical Applications of Embeddings ----
+
+% Lample, Guillaume 2016 - Neural Architectures for Named Entity Recognition
+@inproceedings{lample-etal-2016-neural,
+    title = "Neural Architectures for Named Entity Recognition",
+    author = "Lample, Guillaume  and
+      Ballesteros, Miguel  and
+      Subramanian, Sandeep  and
+      Kawakami, Kazuya  and
+      Dyer, Chris",
+    editor = "Knight, Kevin  and
+      Nenkova, Ani  and
+      Rambow, Owen",
+    booktitle = "Proceedings of the 2016 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jun,
+    year = "2016",
+    address = "San Diego, California",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/N16-1030/",
+    doi = "10.18653/v1/N16-1030",
+    pages = "260--270"
+}
+
+% Kim, Yoon 2014 - Convolutional Neural Networks for Sentence Classification
+@inproceedings{kim-2014-convolutional,
+    title = "Convolutional Neural Networks for Sentence Classification",
+    author = "Kim, Yoon",
+    editor = "Moschitti, Alessandro  and
+      Pang, Bo  and
+      Daelemans, Walter",
+    booktitle = "Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing ({EMNLP})",
+    month = oct,
+    year = "2014",
+    address = "Doha, Qatar",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D14-1181/",
+    doi = "10.3115/v1/D14-1181",
+    pages = "1746--1751"
+}
+
+% Qi, Ye 2018 - When and Why Are Pre-Trained Word Embeddings Useful for Neural Machine Translation?
+@inproceedings{qi-etal-2018-pre,
+    title = "When and Why Are Pre-Trained Word Embeddings Useful for Neural Machine Translation?",
+    author = "Qi, Ye  and
+      Sachan, Devendra  and
+      Felix, Matthieu  and
+      Padmanabhan, Sarguna  and
+      Neubig, Graham",
+    editor = "Walker, Marilyn  and
+      Ji, Heng  and
+      Stent, Amanda",
+    booktitle = "Proceedings of the 2018 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 2 (Short Papers)",
+    month = jun,
+    year = "2018",
+    address = "New Orleans, Louisiana",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/N18-2084/",
+    doi = "10.18653/v1/N18-2084",
+    pages = "529--535",
+}
+
+% ---- Non-word/Character-level Embeddings ----
+
+% Kim, Yoon 2016 - Character-aware neural language models
 @inproceedings{kim2016character,
   title={Character-aware neural language models},
   author={Kim, Yoon and Jernite, Yacine and Sontag, David and Rush, Alexander},
@@ -1976,6 +2575,33 @@ url = {https://arxiv.org/abs/2402.04362}
   volume={30},
   number={1},
   year={2016}
+}
+
+% Goriely, Zebulon 2024 - From Babble to Words: Pre-Training Language Models on Continuous Streams of Phonemes
+@inproceedings{goriely-etal-2024-babble,
+    title = "From Babble to Words: Pre-Training Language Models on Continuous Streams of Phonemes",
+    author = "Goriely, Z{\'e}bulon  and
+      Diehl Martinez, Richard  and
+      Caines, Andrew  and
+      Buttery, Paula  and
+      Beinborn, Lisa",
+    editor = "Hu, Michael Y.  and
+      Mueller, Aaron  and
+      Ross, Candace  and
+      Williams, Adina  and
+      Linzen, Tal  and
+      Zhuang, Chengxu  and
+      Choshen, Leshem  and
+      Cotterell, Ryan  and
+      Warstadt, Alex  and
+      Wilcox, Ethan Gotlieb",
+    booktitle = "The 2nd BabyLM Challenge at the 28th Conference on Computational Natural Language Learning",
+    month = nov,
+    year = "2024",
+    address = "Miami, FL, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.conll-babylm.4/",
+    pages = "37--53",
 }
 
 

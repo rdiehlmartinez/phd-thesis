@@ -1,0 +1,21 @@
+# git ignore all compiled files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.pdf
+*.toc
+
+*.files
+*.idx
+*.ind
+*.ilg
+
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex
+
+.DS_Store

@@ -165,7 +165,7 @@ We examine activating the tasks in sequential order (first word class prediction
 
 \begin{figure*}
 \centering
-\includegraphics[height=9.5cm]{chapters/chapter 1/figures/babylm_blimp_diffs_boxplots.png}
+\includegraphics[height=9.5cm]{chapters/climb/figures/babylm_blimp_diffs_boxplots.png}
 \caption{\label{fig:blimp-boxplots} Comparison of the BabyLM baselines with our BabyBERTa-style vanilla models (left), and our vanilla models against our curriculum learning models (right) -- using BabyBERTa-small trained on clean data as a reference point (asterisked) to show the difference in scores on BLiMP and BLiMP-supplement tasks. For combination models, all pacing is logarithmic, and `multitask' refers to the 2-task objective curriculum, 10 POS-tags and MLM from the outset. Absolute values may be found in Appendix Tables~\ref{tbl:result-vocab-cl}--\ref{tbl:submission-comparison}.
 }
 \end{figure*}
@@ -271,14 +271,13 @@ We also evaluate how well our POS tagger predicts POS tags, compared to the  sup
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5 \textwidth]{chapters/chapter 1/figures/baseline_vs_obj_cl_blimp_supp_new.png}
+\includegraphics[width=0.5 \textwidth]{chapters/climb/figures/baseline_vs_obj_cl_blimp_supp_new.png}
 \caption{\label{fig:baseline_obj_cl_blimp_supp} Comparison between our vanilla model and the best objective curriculum learning setting on the BLiMP supplementary tasks.}
 \end{figure}
 
-
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5 \textwidth]{chapters/chapter 1/figures/baseline_vs_obj_cl_superglue.png}
+\includegraphics[width=0.5 \textwidth]{chapters/climb/figures/baseline_vs_obj_cl_superglue.png}
 \caption{\label{fig:baseline_obj_cl_superglue} Comparison between our vanilla model and the best objective curriculum learning setting on the (Super)GLUE tasks.}
 \end{figure}
 
@@ -286,7 +285,7 @@ We also evaluate how well our POS tagger predicts POS tags, compared to the  sup
 
 \begin{figure*}
 \centering
-\includegraphics[height=9.5cm]{chapters/chapter 1/figures/babylm_superglue_diffs_boxplots.png}
+\includegraphics[height=9.5cm]{chapters/climb/figures/babylm_superglue_diffs_boxplots.png}
 \caption{\label{fig:glue-boxplots} Comparison of the BabyLM baselines with our BabyBERTa-style vanilla models (left), and our vanilla models against our curriculum learning models (right) -- using BabyBERTa-small trained on clean data as a reference point (asterisked) to show the difference in scores on SuperGLUE tasks. For combination models, all pacing is logarithmic, and `multitask' refers to the 2-task objective curriculum, 10 POS-tags and MLM from the outset. 
 }
 \end{figure*}
@@ -430,7 +429,7 @@ Objective Curriculum      & CLIMB-multitask & 9.30 & 74.80 & 67.55  & 69.89 & 67
 \end{table*}
 \begin{figure*}
 \centering
-\includegraphics[width=.75\textwidth]{chapters/chapter 1/figures/pacing_fns.png}
+\includegraphics[width=.75\textwidth]{chapters/climb/figures/pacing_fns.png}
     \caption{Illustration of the linear and logarithmic pacing functions used in our vocabulary curriculum experiments. The red dotted lines denote the curriculum regime, during which the percentage of unmasked words available to the model grows according to the respective function.}
     \label{fig:pacing_fn}
 \end{figure*}
