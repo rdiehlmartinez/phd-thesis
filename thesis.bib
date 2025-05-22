@@ -70,39 +70,39 @@ author = {Biewald, Lukas},
 }
 
 @inproceedings{transformers,
-    title = "Transformers: State-of-the-Art Natural Language Processing",
-    author = "Wolf, Thomas  and
-      Debut, Lysandre  and
-      Sanh, Victor  and
-      Chaumond, Julien  and
-      Delangue, Clement  and
-      Moi, Anthony  and
-      Cistac, Pierric  and
-      Rault, Tim  and
-      Louf, Remi  and
-      Funtowicz, Morgan  and
-      Davison, Joe  and
-      Shleifer, Sam  and
-      von Platen, Patrick  and
-      Ma, Clara  and
-      Jernite, Yacine  and
-      Plu, Julien  and
-      Xu, Canwen  and
-      Le Scao, Teven  and
-      Gugger, Sylvain  and
-      Drame, Mariama  and
-      Lhoest, Quentin  and
-      Rush, Alexander",
-    editor = "Liu, Qun  and
-      Schlangen, David",
-    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
-    month = "oct",
-    year = "2020",
-    address = "Online",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2020.emnlp-demos.6/",
-    doi = "10.18653/v1/2020.emnlp-demos.6",
-    pages = "38--45",
+  title = "Transformers: State-of-the-Art Natural Language Processing",
+  author = "Wolf, Thomas  and
+    Debut, Lysandre  and
+    Sanh, Victor  and
+    Chaumond, Julien  and
+    Delangue, Clement  and
+    Moi, Anthony  and
+    Cistac, Pierric  and
+    Rault, Tim  and
+    Louf, Remi  and
+    Funtowicz, Morgan  and
+    Davison, Joe  and
+    Shleifer, Sam  and
+    von Platen, Patrick  and
+    Ma, Clara  and
+    Jernite, Yacine  and
+    Plu, Julien  and
+    Xu, Canwen  and
+    Le Scao, Teven  and
+    Gugger, Sylvain  and
+    Drame, Mariama  and
+    Lhoest, Quentin  and
+    Rush, Alexander",
+  editor = "Liu, Qun  and
+    Schlangen, David",
+  booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
+  month = "oct",
+  year = "2020",
+  address = "Online",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/2020.emnlp-demos.6/",
+  doi = "10.18653/v1/2020.emnlp-demos.6",
+  pages = "38--45",
 }
 
 
@@ -148,12 +148,12 @@ author = {Biewald, Lukas},
 
 % MMLU
 @inproceedings{
-    hendrycks2021mmlu,
-    title={Measuring Massive Multitask Language Understanding},
-    author={Dan Hendrycks and Collin Burns and Steven Basart and Andy Zou and Mantas Mazeika and Dawn Song and Jacob Steinhardt},
-    booktitle={International Conference on Learning Representations},
-    year={2021},
-    url={https://openreview.net/forum?id=d7KBjmI3GmQ}
+  hendrycks2021mmlu,
+  title={Measuring Massive Multitask Language Understanding},
+  author={Dan Hendrycks and Collin Burns and Steven Basart and Andy Zou and Mantas Mazeika and Dawn Song and Jacob Steinhardt},
+  booktitle={International Conference on Learning Representations},
+  year={2021},
+  url={https://openreview.net/forum?id=d7KBjmI3GmQ}
 }
 
 % BigBenchHard
@@ -730,9 +730,6 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   pages = "328--339",
 }
 
-
-
-
 % --- Transformer Models ---
 
 % Bahdanau, Dzmitry 2015 - Neural machine translation by jointly learning to align and translate
@@ -948,8 +945,6 @@ An Empirical Study of Smoothing Techniques for Language Modeling
 }
 
 
-
-
 % - Positional Encodings - 
 
 @inproceedings{shaw2018self,
@@ -1055,7 +1050,6 @@ An Empirical Study of Smoothing Techniques for Language Modeling
 
 % - Regularization - 
 
-
 % Dropout
 @article{srivastava2014dropout,
   title={Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
@@ -1080,6 +1074,15 @@ An Empirical Study of Smoothing Techniques for Language Modeling
 
 % - Modern Transformer Architectures - 
 
+% He, Kaiming 2016 - Deep Residual Learning for Image Recognition - Residual (Skip) Connections
+@inproceedings{he2016deep,
+  title={Deep Residual Learning for Image Recognition},
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={770--778},
+  year={2016}
+}
+
 % Ainslie, Joshua 2023 - GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints
 @inproceedings{ainslie2023gqa,
   title={GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints},
@@ -1089,9 +1092,32 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   year={2023}
 }
 
+% --- Architecture Search ---
 
+@inproceedings{zoph2017nejural,
+  title={Neural Architecture Search with Reinforcement Learning},
+  author={Zoph, Barret and Le, Quoc V},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2017}
+}
 
-% --- Models/ Model Frameworks ----
+@inproceedings{chen2021autoformer,
+  title={AutoFormer: Searching Transformers for Visual Recognition},
+  author={Chen, Minghao and Peng, Houwen and Fu, Jianlong and Ling, Haibin},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+  pages={12270--12280},
+  year={2021}
+}
+
+@article{xu2021nasbert,
+  title={NAS-BERT: Task-Agnostic and Adaptive-Size BERT Compression with Neural Architecture Search},
+  author={Xu, Jin and Tan, Xu and Luo, Renqian and Song, Kaitao and Li, Jian and Qin, Tao and Liu, Tie-Yan},
+  journal={arXiv preprint arXiv:2105.14444},
+  year={2021}
+
+}
+
+% --- Large Language Models ---
 
 % Zhao, Wayne Xin 2023 - A survey of large language models
 @article{zhao2023llmsurvey,
@@ -1102,6 +1128,22 @@ An Empirical Study of Smoothing Techniques for Language Modeling
     journal = {arXiv preprint arXiv:2303.18223}
 }
 
+@misc{openai2023gpt4,
+  title = {GPT-4 Technical Report},
+  author = {OpenAI and Brockman, Greg and Bubnov, Sandhini Agarwal and Chowdhery, Aditi and Dohan, David and Mann, Jacob and Murati, Mira and Ndousse, Jan and Power, Rewon Child and Radford, Alec and Sutskever, Ilya and Zoph, Barret},
+  year = {2023},
+  howpublished = {\url{https://arxiv.org/abs/2303.08774}},
+  note = {arXiv:2303.08774 [cs.CL]}
+}
+
+
+% Touvron, Hugo 2023 - LLaMA: Open and Efficient Foundation Language Models
+@article{touvron2023llama,
+  title={LLaMA: Open and Efficient Foundation Language Models},
+  author={Touvron, Hugo and Lavril, Thibaut and Izacard, Gautier and Martinet, Xavier and Lachaux, Marie-Anne and Lacroix, Timothée and Rozière, Baptiste and Goyal, Naman and Hambro, Eric and Azhar, Faisal and Rodriguez, Aur{\'e}lien and Joulin, Armand and Grave, Edouard and Lample, Guillaume},
+  howpublished={arXiv preprint arXiv:2302.13971},
+  year={2023}
+}
 
 % Touvron, Hugo 2023 - Llama 2: Open foundation and fine-tuned chat models
 @article{touvron2023llama,
@@ -1111,6 +1153,47 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   year={2023}
 }
 
+@misc{jiang2023mistral,
+  title = {Mistral 7B},
+  author = {Jiang, Albert Q. and Sablayrolles, Alexandre and Mensch, Arthur and Bamford, Chris and Chaplot, Devendra Singh and de las Casas, Diego and Bressand, Florian and Lengyel, Gianna and Lample, Guillaume and Saulnier, Lucile and Lavaud, Lélio Renard and Lachaux, Marie-Anne and Stock, Pierre and Le Scao, Teven and Lavril, Thibaut and Wang, Thomas and Lacroix, Timothée and El Sayed, William},
+  year = {2023},
+  howpublished = {\url{https://arxiv.org/abs/2310.06825}},
+  note = {arXiv:2310.06825 [cs.CL]}
+}
+
+% Anthropic - Claude 3 Model Family
+@misc{anthropic2024claude3,
+  title = {The Claude 3 Model Family: Opus, Sonnet, Haiku},
+  author = {{Anthropic}},
+  year = {2024},
+  howpublished = {\url{https://www.anthropic.com/news/claude-3-family}},
+  note = {Accessed: 2025-05-22}
+}
+
+@misc{anthropic2024claude35,
+  title = {Claude 3.5 Sonnet},
+  author = {{Anthropic}},
+  year = {2024},
+  howpublished = {\url{https://www.anthropic.com/news/claude-3-5-sonnet}},
+  note = {Accessed: 2025-05-22}
+}
+
+@misc{anthropic2025claude37,
+  title = {Claude 3.7 Sonnet},
+  author = {{Anthropic}},
+  year = {2025},
+  howpublished = {\url{https://www.anthropic.com/claude}},
+  note = {Accessed: 2025-05-22}
+}
+
+% Gopher - Rae, Jack W. 2021 - Scaling Language Models: Methods, Analysis & Insights from Training Gopher
+@article{rae2021scaling,
+  title={Scaling Language Models: Methods, Analysis & Insights from Training Gopher},
+  author={Rae, Jack W. and Borgeaud, Sebastian and Cai, Trevor and Millican, Katie and Hoffmann, Jordan and Song, Francis and Aslanides, John and Henderson, Sarah and Ring, Roman and Young, Susannah and Rutherford, Eliza and Hennigan, Tom and Menick, Jacob and Cassirer, Albin and Powell, Richard and van den Driessche, George and Hendricks, Lisa Anne and Rauh, Maribeth and Huang, Po-Sen and Glaese, Amelia and Welbl, Johannes and Dathathri, Sumanth and Huang, Saffron and Uesato, Jonathan and Mellor, John and Higgins, Irina and Creswell, Antonia and McAleese, Nat and Wu, Amy and Elsen, Erich and Jayakumar, Siddhant and Buchatskaya, Elena and Budden, David and Sutherland, Esme and Simonyan, Karen and Paganini, Michela and Sifre, Laurent and Martens, Lena and Li, Xiang Lorraine and Kuncoro, Adhiguna and Nematzadeh, Aida and Gribovskaya, Elena and Donato, Domenic and Lazaridou, Angeliki and Mensch, Arthur and Lespiau, Jean-Baptiste and Tsimpoukelli, Maria and Grigorev, Nikolai and Fritz, Doug and Sottiaux, Thibault and Pajarskas, Mantas and Pohlen, Toby and Gong, Zhitao and Toyama, Daniel and de Masson d'Autume, Cyprien and Li, Yujia and Terzi, Tayfun and Mikulik, Vladimir and Babuschkin, Igor and Clark, Aidan and de Las Casas, Diego and Guy, Aurelia and Jones, Chris and Bradbury, James and Johnson, Matthew and Hechtman, Blake and Weidinger, Laura and Gabriel, Iason and Isaac, William and Lockhart, Ed and Osindero, Simon and Rimell, Laura and Dyer, Chris and Vinyals, Oriol and Ayoub, Kareem and Stanway, Jeff and Bennett, Lorrayne and Hassabis, Demis and Kavukcuoglu, Koray and Irving, Geoffrey},
+  journal={arXiv preprint arXiv:2112.11446},
+  year={2021}
+}
+
 @inproceedings{hoffman2022chinchilla,
     title={Training Compute-Optimal Large Language Models}, 
     author={Jordan Hoffmann and Sebastian Borgeaud and Arthur Mensch and Elena Buchatskaya and Trevor Cai and Eliza Rutherford and Diego de Las Casas and Lisa Anne Hendricks and Johannes Welbl and Aidan Clark and Tom Hennigan and Eric Noland and Katie Millican and George van den Driessche and Bogdan Damoc and Aurelia Guy and Simon Osindero and Karen Simonyan and Erich Elsen and Jack W. Rae and Oriol Vinyals and Laurent Sifre},
@@ -1118,33 +1201,30 @@ An Empirical Study of Smoothing Techniques for Language Modeling
     booktitle = {Proceedings of the 36th Conference on Neural Information Processing Systems (NeurIPS)}
 }
 
-@article{black2021gptneo,
-  title={Gpt-neo: Large scale autoregressive language modeling with mesh-tensorflow},
-  author={Black, Sid and Gao, Leo and Wang, Phil and Leahy, Connor and Biderman, Stella},
-  journal={If you use this software, please cite it using these metadata},
-  volume={58},
-  number={2},
-  year={2021}
-}
-
-% Groeneveld, Dirk 2024 - OLMo: Accelerating the Science of Language Models
-@inproceedings{groeneveld2024olmo,
-  title={OLMo: Accelerating the Science of Language Models},
-  author={Groeneveld, Dirk and Beltagy, Iz and Walsh, Evan and Bhagia, Akshita and Kinney, Rodney and Tafjord, Oyvind and Jha, Ananya and Ivison, Hamish and Magnusson, Ian and Wang, Yizhong and others},
-  booktitle={Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
-  pages={15789--15809},
-  year={2024}
-}
-
-% Biderman, Stella 2023 - Pythia: A suite for analyzing large language models across training and scaling
-@inproceedings{biderman2023pythia,
-  title={Pythia: A suite for analyzing large language models across training and scaling},
-  author={Biderman, Stella and Schoelkopf, Hailey and Anthony, Quentin Gregory and Bradley, Herbie and O’Brien, Kyle and Hallahan, Eric and Khan, Mohammad Aflah and Purohit, Shivanshu and Prashanth, USVSN Sai and Raff, Edward and others},
-  booktitle={International Conference on Machine Learning},
-  pages={2397--2430},
+@article{deepmind2023gemini,
+  title={Gemini: A Family of Highly Capable Multimodal Models},
+  author={DeepMind},
+  journal={arXiv preprint arXiv:2312.11805},
   year={2023},
-  organization={PMLR}
+  url={https://arxiv.org/abs/2312.11805}
 }
+
+@misc{baidu2023ernie4,
+  title={ERNIE 4.0: Baidu's Next-Generation Foundation Model},
+  author={Baidu},
+  year={2023},
+  howpublished={\url{https://research.baidu.com/Blog/index-view?id=183}},
+  note={Accessed: 2025-05-22}
+}
+
+@misc{alibaba2023qwen,
+  title={Qwen: Open-Source Chinese-Centric Language Models},
+  author={Alibaba Cloud},
+  year={2023},
+  howpublished={\url{https://github.com/QwenLM/Qwen}},
+  note={Accessed: 2025-05-22}
+}
+
 
 % Le Scao, Teven (Big Science) 2023 - Bloom: A 176b-parameter open-access multilingual language model
 @article{le2023bloom,
@@ -1173,14 +1253,70 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   year={2022}
 }
 
-% Black, Sidney 2022 - GPT-NeoX-20B: An Open-Source Autoregressive Language Model
-@inproceedings{black2022gpt,
-	title        = {GPT-NeoX-20B: An Open-Source Autoregressive Language Model},
-	author       = {Black, Sidney and Biderman, Stella and Hallahan, Eric and Anthony, Quentin and Gao, Leo and Golding, Laurence and He, Horace and Leahy, Connor and McDonell, Kyle and Phang, Jason and others},
-	year         = 2022,
-	booktitle    = {Proceedings of BigScience Episode\# 5--Workshop on Challenges \& Perspectives in Creating Large Language Models},
-	pages        = {95--136}
+% Deepseek - Scaling Open-Source Language Models with Longtermism
+@misc{deepseek2024llm,
+  title = {DeepSeek LLM: Scaling Open-Source Language Models with Longtermism},
+  author = {DeepSeek-AI and Xiao Bi and Deli Chen and Guanting Chen and Shanhuang Chen and Damai Dai and Chengqi Deng and Honghui Ding and Kai Dong and Qiushi Du and Zhe Fu and Huazuo Gao and Kaige Gao and Wenjun Gao and Ruiqi Ge and Kang Guan and Daya Guo and Jianzhong Guo and Guangbo Hao and Zhewen Hao and Ying He and Wenjie Hu and Panpan Huang and Erhang Li and Guowei Li and Jiashi Li and Yao Li and Y. K. Li and Wenfeng Liang and Fangyun Lin and A. X. Liu and Bo Liu and Wen Liu and Xiaodong Liu and Xin Liu and Yiyuan Liu and Haoyu Lu and Shanghao Lu and Fuli Luo and Shirong Ma and Xiaotao Nie and Tian Pei and Yishi Piao and Junjie Qiu and Hui Qu and Tongzheng Ren and Zehui Ren and Chong Ruan and Zhangli Sha and Zhihong Shao and Junxiao Song and Xuecheng Su and Jingxiang Sun and Yaofeng Sun and Minghui Tang and Bingxuan Wang and Peiyi Wang and Shiyu Wang and Yaohui Wang and Yongji Wang and Tong Wu and Y. Wu and Xin Xie and Zhenda Xie and Ziwei Xie and Yiliang Xiong and Hanwei Xu and R. X. Xu and Yanhong Xu and Dejian Yang and Yuxiang You and Shuiping Yu and Xingkai Yu and B. Zhang and Haowei Zhang and Lecong Zhang and Liyue Zhang and Mingchuan Zhang and Minghua Zhang and Wentao Zhang and Yichao Zhang and Chenggang Zhao and Yao Zhao and Shangyan Zhou and Shunfeng Zhou and Qihao Zhu and Yuheng Zou},
+  year = {2024},
+  howpublished = {\url{https://arxiv.org/abs/2401.02954}},
+  note = {arXiv:2401.02954 [cs.CL]}
 }
+
+
+% --- Post-training/ Models --- 
+
+
+% RAG / Retrieval models 
+
+@article{lewis2020retrieval,
+  title={Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks},
+  author={Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and K{\"u}ttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rockt{\"a}schel, Tim and Riedel, Sebastian and Kiela, Douwe},
+  journal={arXiv preprint arXiv:2005.11401},
+  year={2020}
+}
+
+@misc{cohere2024commandrplus,
+  title        = {c4ai-command-r-plus-08-2024},
+  author       = {{Cohere Labs}},
+  year         = {2024},
+  howpublished = {\url{https://huggingface.co/CohereLabs/c4ai-command-r-plus-08-2024}},
+  note         = {Accessed: 2025-05-22}
+}
+
+
+% Instruction Tuned / Preference Tuning 
+
+
+% RLHF 
+@article{christiano2017deep,
+  title={Deep reinforcement learning from human preferences},
+  author={Christiano, Paul F and Leike, Jan and Brown, Tom B and Martic, Miljan and Legg, Shane and Amodei, Dario},
+  journal={Advances in Neural Information Processing Systems},
+  volume={30},
+  year={2017},
+  url={https://arxiv.org/abs/1706.03741}
+}
+
+
+% PPO 
+@article{schulman2017proximal,
+  title={Proximal Policy Optimization Algorithms},
+  author={Schulman, John and Wolski, Filip and Dhariwal, Prafulla and Radford, Alec and Klimov, Oleg},
+  journal={arXiv preprint arXiv:1707.06347},
+  year={2017},
+  url={https://arxiv.org/abs/1707.06347}
+}
+
+
+% DPO 
+@inproceedings{rafailov2023direct,
+  title={Direct Preference Optimization: Your Language Model is Secretly a Reward Model},
+  author={Rafailov, Rafael and Sharma, Archit and Mitchell, Eric and Ermon, Stefano and Manning, Christopher D. and Finn, Chelsea},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2023},
+  url={https://arxiv.org/abs/2305.18290}
+}
+
 
 % Jason Wei 2021 - FLAN
 @article{wei2021flan,
@@ -1193,6 +1329,25 @@ An Empirical Study of Smoothing Techniques for Language Modeling
 }
 
 
+% Ouyang, Long 2022 - Training language models to follow instructions with human feedback
+@article{ouyang2022training,
+  title={Training language models to follow instructions with human feedback},
+  author={Ouyang, Long and Wu, Jeff and Jiang, Xu and Almeida, Diogo and Wainwright, Carroll L and Mishkin, Pamela and Zhang, Chong and Agarwal, Sandhini and Slama, Katarina and Ray, Alex and Schulman, John and Hilton, Jacob and Kelton, Fraser and Miller, Luke and Simens, Maddie and Askell, Amanda and Welinder, Peter and Christiano, Paul and Leike, Jan and Lowe, Ryan},
+  journal={arXiv preprint arXiv:2203.02155},
+  year={2022},
+  url={https://arxiv.org/abs/2203.02155}
+}
+
+
+@misc{huggingface2023zephyr,
+  title        = {Zephyr-7B-β},
+  author       = {Tunstall, Lewis and Beeching, Edward and Lambert, Nathan and Rajani, Nazneen and Rasul, Kashif and Belkada, Younes and Huang, Shengyi and von Werra, Leandro and Fourrier, Clémentine and Habib, Nathan and Sarrazin, Nathan and Sanseviero, Omar and Rush, Alexander M. and Wolf, Thomas},
+  year         = {2023},
+  howpublished = {\url{https://huggingface.co/HuggingFaceH4/zephyr-7b-beta}},
+  note         = {Accessed: 2025-05-22}
+}
+
+
 % Deepseek r1
 @article{guo2025deepseekr1,
   title={Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning},
@@ -1201,12 +1356,49 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   year={2025}
 }
 
-% Deepseek v3 base model 
-@article{liu2024deepseek,
-  title={Deepseek-v3 technical report},
-  author={Liu, Aixin and Feng, Bei and Xue, Bing and Wang, Bingxuan and Wu, Bochao and Lu, Chengda and Zhao, Chenggang and Deng, Chengqi and Zhang, Chenyu and Ruan, Chong and others},
-  journal={arXiv preprint arXiv:2412.19437},
-  year={2024}
+% Tuning Approaches 
+
+
+
+% --- Non-Transformer Models ---
+
+% Gu, Albert 2020 - HiPPO: Recurrent Memory with Optimal Polynomial Projections
+@inproceedings{gu2020hippo,
+  title={HiPPO: Recurrent Memory with Optimal Polynomial Projections},
+  author={Gu, Albert and Dao, Tri and Ermon, Stefano and Rudra, Atri and R{\'e}, Christopher},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={33},
+  pages={14744--14756},
+  year={2020}
+}
+
+% Gu, Albert 2021 - Efficiently Modeling Long Sequences with Structured State Spaces
+@inproceedings{gu2021efficiently,
+  title={Efficiently Modeling Long Sequences with Structured State Spaces},
+  author={Gu, Albert and Goel, Karan and R{\'e}, Christopher},
+  booktitle={International Conference on Learning Representations},
+  year={2022}
+}
+
+% Gu, Albert 2023 - Mamba: Linear-Time Sequence Modeling with Selective State Spaces
+@article{gu2023mamba,
+  title={Mamba: Linear-Time Sequence Modeling with Selective State Spaces},
+  author={Gu, Albert and Dao, Tri},
+  journal={arXiv preprint arXiv:2312.00752},
+  year={2023}
+}
+
+@inproceedings{peng-etal-2023-rwkv,
+  title = "{RWKV}: Reinventing {RNN}s for the Transformer Era",
+  author = {Peng, Bo and Alcaide, Eric and Anthony, Quentin and Albalak, Alon and Arcadinho, Samuel and Biderman, Stella and Cao, Huanqi and Cheng, Xin and Chung, Michael and Derczynski, Leon and Du, Xingjian and Grella, Matteo and GV, Kranthi Kiran and He, Xuzheng and Hou, Haowen and Kazienko, Przemyslaw and Kocon, Jan and Kong, Jiaming and Koptyra, Bart{\l}omiej and Lau, Hayden and Lin, Jiaju and Mantri, Krishna Sri Ipsit and Mom, Ferdinand and Saito, Atsushi and Song, Guangyu and Tang, Xiangru and Wind, Johan and Wo{\'z}niak, Stanis{\l}aw and Zhang, Zhenyuan and Zhou, Qinghua and Zhu, Jian and Zhu, Rui-Jie},
+  booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2023",
+  month = dec,
+  year = "2023",
+  address = "Singapore",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/2023.findings-emnlp.936/",
+  doi = "10.18653/v1/2023.findings-emnlp.936",
+  pages = "14048--14077"
 }
 
 
