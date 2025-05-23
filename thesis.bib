@@ -125,6 +125,77 @@ author = {Biewald, Lukas},
   year={2018}
 }
 
+
+% - GLUE Tasks 
+
+% MNLI 
+@inproceedings{williams2018mnli,
+  title={A Broad-Coverage Challenge Corpus for Sentence Understanding through Inference},
+  author={Williams, Adina and Nangia, Nikita and Bowman, Samuel R},
+  booktitle={Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  pages={1112--1122},
+  year={2018}
+}
+
+% SST 
+@inproceedings{socher2013sst,
+  title={Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank},
+  author={Socher, Richard and Perelygin, Alex and Wu, Jean and Chuang, Jason and Manning, Christopher D and Ng, Andrew and Potts, Christopher},
+  booktitle={Proceedings of the 2013 Conference on Empirical Methods in Natural Language Processing},
+  pages={1631--1642},
+  year={2013}
+}
+
+% CoLA 
+@article{warstadt2019cola,
+  title={Neural Network Acceptability Judgments},
+  author={Warstadt, Alex and Singh, Amanpreet and Bowman, Samuel R},
+  journal={Transactions of the Association for Computational Linguistics},
+  volume={7},
+  pages={625--641},
+  year={2019}
+}
+
+% sts-b 
+@inproceedings{cer2017stsb,
+  title={SemEval-2017 Task 1: Semantic Textual Similarity—Multilingual and Cross-lingual Focused Evaluation},
+  author={Cer, Daniel and Diab, Mona and Agirre, Eneko and Lopez-Gazpio, Inigo and Specia, Lucia},
+  booktitle={Proceedings of the 11th International Workshop on Semantic Evaluation (SemEval-2017)},
+  pages={1--14},
+  year={2017}
+}
+
+% MRPC 
+@inproceedings{dolan2005mrpc,
+  title={Automatically Constructing a Corpus of Sentential Paraphrases},
+  author={Dolan, William B and Brockett, Chris},
+  booktitle={Proceedings of the Third International Workshop on Paraphrasing (IWP@IJCNLP)},
+  year={2005}
+}
+
+% RTE 
+@inproceedings{dagan2006rte,
+  title={The PASCAL Recognising Textual Entailment Challenge},
+  author={Dagan, Ido and Glickman, Oren and Magnini, Bernardo},
+  booktitle={Machine Learning Challenges Workshop},
+  pages={177--190},
+  year={2006},
+  organization={Springer}
+}
+
+% Winograd Scheme 
+@inproceedings{levesque2011winograd,
+  title={The Winograd Schema Challenge},
+  author={Levesque, Hector and Davis, Ernest and Morgenstern, Leora},
+  booktitle={Proceedings of the Twenty-Fifth AAAI Conference on Artificial Intelligence},
+  pages={552--557},
+  year={2011}
+}
+
+
+% - GLUE Tasks
+
+
 % Super GLUE
 @article{wang2019superglue,
   title={{SuperGLUE}: A stickier benchmark for general-purpose language understanding systems},
@@ -134,153 +205,48 @@ author = {Biewald, Lukas},
   year={2019}
 }
 
-% BLIMP
-@article{warstadt2020blimp,
-  title={{BLiMP}: The benchmark of linguistic minimal pairs for English},
-  author={Warstadt, Alex and Parrish, Alicia and Liu, Haokun and Mohananey, Anhad and Peng, Wei and Wang, Sheng-Fu and Bowman, Samuel R},
-  journal={Transactions of the Association for Computational Linguistics},
-  volume={8},
-  pages={377--392},
-  year={2020},
-  publisher={MIT Press One Rogers Street, Cambridge, MA 02142-1209, USA journals-info~…}
+
+% - Super GLUE Tasks 
+
+
+% ReCoRD
+@inproceedings{zhang2018record,
+  title={ReCoRD: Bridging the Gap between Human and Machine Commonsense Reading Comprehension},
+  author={Zhang, Shuailong and Sheng, Haoyu and Dong, Xingxing and Xu, Xu and Feng, Yansong and Lapata, Mirella and Zhao, Dongyan},
+  booktitle={Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing},
+  pages={2174--2184},
+  year={2018}
 }
 
-
-% MMLU
-@inproceedings{
-  hendrycks2021mmlu,
-  title={Measuring Massive Multitask Language Understanding},
-  author={Dan Hendrycks and Collin Burns and Steven Basart and Andy Zou and Mantas Mazeika and Dawn Song and Jacob Steinhardt},
-  booktitle={International Conference on Learning Representations},
-  year={2021},
-  url={https://openreview.net/forum?id=d7KBjmI3GmQ}
-}
-
-% BigBenchHard
-@inproceedings{suzgun2023bigbenchhard,
-    title = "Challenging {BIG}-Bench Tasks and Whether Chain-of-Thought Can Solve Them",
-    author = {Suzgun, Mirac  and
-      Scales, Nathan  and
-      Sch{\"a}rli, Nathanael  and
-      Gehrmann, Sebastian  and
-      Tay, Yi  and
-      Chung, Hyung Won  and
-      Chowdhery, Aakanksha  and
-      Le, Quoc  and
-      Chi, Ed  and
-      Zhou, Denny  and
-      Wei, Jason},
-    editor = "Rogers, Anna  and
-      Boyd-Graber, Jordan  and
-      Okazaki, Naoaki",
-    booktitle = "Findings of the Association for Computational Linguistics: ACL 2023",
-    month = jul,
-    year = "2023",
-    address = "Toronto, Canada",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2023.findings-acl.824",
-    doi = "10.18653/v1/2023.findings-acl.824",
-    pages = "13003--13051",
-}
-
-% Aarohi Srivastava 2023 - Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models
-@article{
-    srivastava2023bigbench,
-    title={Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models},
-    author={Aarohi Srivastava and Abhinav Rastogi and Abhishek Rao and others},
-    journal={Transactions on Machine Learning Research},
-    issn={2835-8856},
-    year={2023},
-    url={https://openreview.net/forum?id=uyTL5Bvosj},
-}
-
-% Zellers, Rowan 2019 - HellaSwag: Can a Machine Really Finish Your Sentence?
-@inproceedings{zellers2019hellaswag,
-  title={HellaSwag: Can a Machine Really Finish Your Sentence?},
-  author={Zellers, Rowan and Holtzman, Ari and Bisk, Yonatan and Farhadi, Ali and Choi, Yejin},
-  booktitle={Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics},
-  pages={4791--4800},
+% WiC
+@inproceedings{pilehvar2019wic,
+  title={WiC: The Word-in-Context Dataset for Evaluating Context-Sensitive Meaning Representations},
+  author={Pilehvar, Mohammad Taher and Camacho-Collados, Jose},
+  booktitle={Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  pages={1267--1273},
   year={2019}
 }
 
-% Cobbe, Karl 2021 - GSM8K
-@article{cobbe2021gsm8k,
-    title={Training Verifiers to Solve Math Word Problems},
-    author={Cobbe, Karl and Kosaraju, Vineet and Bavarian, Mohammad and Chen, Mark and Jun, Heewoo and Kaiser, Lukasz and Plappert, Matthias and Tworek, Jerry and Hilton, Jacob and Nakano, Reiichiro and Hesse, Christopher and Schulman, John},
-      journal={arXiv preprint arXiv:2110.14168},
-      year={2021}
+% MultiRC
+@inproceedings{khashabi2018multirc,
+  title={Looking Beyond the Surface: A Challenge Set for Reading Comprehension over Multiple Sentences},
+  author={Khashabi, Daniel and Chaturvedi, Snigdha and Roth, Dan and Upadhyay, Shyam},
+  booktitle={Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  pages={252--257},
+  year={2018}
 }
 
-% Magnusson, Ian 2024 - Paloma: A benchmark for evaluating language model fit
-@article{magnusson2024paloma,
-  title={Paloma: A benchmark for evaluating language model fit},
-  author={Magnusson, Ian and Bhagia, Akshita and Hofmann, Valentin and Soldaini, Luca and Jha, Ananya Harsh and Tafjord, Oyvind and Schwenk, Dustin and Walsh, Evan and Elazar, Yanai and Lo, Kyle and others},
-  journal={Advances in Neural Information Processing Systems},
-  volume={37},
-  pages={64338--64376},
-  year={2024}
+% COPA
+@inproceedings{roemmele2011copa,
+  title={Choice of Plausible Alternatives: An Evaluation of Commonsense Causal Reasoning},
+  author={Roemmele, Melissa and Bejan, Cosmin Adrian and Gordon, Andrew S},
+  booktitle={Proceedings of the 2011 AAAI Spring Symposium Series: Logical Formalizations of Commonsense Reasoning},
+  year={2011}
 }
 
-@article{warstadt2019cola,
-    title = "Neural Network Acceptability Judgments",
-    author = "Warstadt, Alex  and
-      Singh, Amanpreet  and
-      Bowman, Samuel R.",
-    editor = "Lee, Lillian  and
-      Johnson, Mark  and
-      Roark, Brian  and
-      Nenkova, Ani",
-    journal = "Transactions of the Association for Computational Linguistics",
-    volume = "7",
-    year = "2019",
-    address = "Cambridge, MA",
-    publisher = "MIT Press",
-    url = "https://aclanthology.org/Q19-1040/",
-    doi = "10.1162/tacl_a_00290",
-    pages = "625--641",
-}
+% - Super GLUE Tasks 
 
-@inproceedings{socher2013sst,
-    title = "Recursive Deep Models for Semantic Compositionality Over a Sentiment Treebank",
-    author = "Socher, Richard  and
-      Perelygin, Alex  and
-      Wu, Jean  and
-      Chuang, Jason  and
-      Manning, Christopher D.  and
-      Ng, Andrew  and
-      Potts, Christopher",
-    editor = "Yarowsky, David  and
-      Baldwin, Timothy  and
-      Korhonen, Anna  and
-      Livescu, Karen  and
-      Bethard, Steven",
-    booktitle = "Proceedings of the 2013 Conference on Empirical Methods in Natural Language Processing",
-    month = oct,
-    year = "2013",
-    address = "Seattle, Washington, USA",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/D13-1170/",
-    pages = "1631--1642"
-}
-
-@inproceedings{williams2018mnli,
-    title = "A Broad-Coverage Challenge Corpus for Sentence Understanding through Inference",
-    author = "Williams, Adina  and
-      Nangia, Nikita  and
-      Bowman, Samuel",
-    editor = "Walker, Marilyn  and
-      Ji, Heng  and
-      Stent, Amanda",
-    booktitle = "Proceedings of the 2018 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers)",
-    month = jun,
-    year = "2018",
-    address = "New Orleans, Louisiana",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/N18-1101/",
-    doi = "10.18653/v1/N18-1101",
-    pages = "1112--1122",
-}
-
+% SQuAD 1.0
 @inproceedings{rajpurkar2016squad,
     title = "{SQ}u{AD}: 100,000+ Questions for Machine Comprehension of Text",
     author = "Rajpurkar, Pranav  and
@@ -299,6 +265,132 @@ author = {Biewald, Lukas},
     doi = "10.18653/v1/D16-1264",
     pages = "2383--2392"
 }
+
+% SQuAD 2.0
+@inproceedings{rajpurkar2018squad2,
+  title={Know What You Don't Know: Unanswerable Questions for SQuAD},
+  author={Rajpurkar, Pranav and Jia, Robin and Liang, Percy},
+  booktitle={Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers)},
+  pages={784--789},
+  year={2018}
+}
+
+
+
+% Zellers, Rowan 2019 - HellaSwag: Can a Machine Really Finish Your Sentence?
+@inproceedings{zellers2019hellaswag,
+  title={HellaSwag: Can a Machine Really Finish Your Sentence?},
+  author={Zellers, Rowan and Holtzman, Ari and Bisk, Yonatan and Farhadi, Ali and Choi, Yejin},
+  booktitle={Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics},
+  pages={4791--4800},
+  year={2019}
+}
+
+% MMLU
+@inproceedings{hendrycks2021mmlu,
+  title={Measuring Massive Multitask Language Understanding},
+  author={Dan Hendrycks and Collin Burns and Steven Basart and Andy Zou and Mantas Mazeika and Dawn Song and Jacob Steinhardt},
+  booktitle={International Conference on Learning Representations},
+  year={2021},
+  url={https://openreview.net/forum?id=d7KBjmI3GmQ}
+}
+
+% Aarohi Srivastava 2023 - Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models
+@article{srivastava2023bigbench,
+  title={Beyond the Imitation Game: Quantifying and extrapolating the capabilities of language models},
+  author={Aarohi Srivastava and Abhinav Rastogi and Abhishek Rao and others},
+  journal={Transactions on Machine Learning Research},
+  issn={2835-8856},
+  year={2023},
+  url={https://openreview.net/forum?id=uyTL5Bvosj},
+}
+
+% BigBenchHard
+@inproceedings{suzgun2023bigbenchhard,
+  title = "Challenging {BIG}-Bench Tasks and Whether Chain-of-Thought Can Solve Them",
+  author = {Suzgun, Mirac  and
+    Scales, Nathan  and
+    Sch{\"a}rli, Nathanael  and
+    Gehrmann, Sebastian  and
+    Tay, Yi  and
+    Chung, Hyung Won  and
+    Chowdhery, Aakanksha  and
+    Le, Quoc  and
+    Chi, Ed  and
+    Zhou, Denny  and
+    Wei, Jason},
+  editor = "Rogers, Anna  and
+    Boyd-Graber, Jordan  and
+    Okazaki, Naoaki",
+  booktitle = "Findings of the Association for Computational Linguistics: ACL 2023",
+  month = jul,
+  year = "2023",
+  address = "Toronto, Canada",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/2023.findings-acl.824",
+  doi = "10.18653/v1/2023.findings-acl.824",
+  pages = "13003--13051",
+}
+
+% ARC
+@inproceedings{clark2018arc,
+  title={Think you have solved question answering? Try ARC, the AI2 Reasoning Challenge},
+  author={Clark, Peter and Cowhey, Isaac and Etzioni, Oren and Khot, Tushar and Sabharwal, Ashish and Schoenick, Carissa and Tafjord, Oyvind},
+  booktitle={Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages={4144--4153},
+  year={2018}
+}
+
+% Cobbe, Karl 2021 - GSM8K
+@article{cobbe2021gsm8k,
+    title={Training Verifiers to Solve Math Word Problems},
+    author={Cobbe, Karl and Kosaraju, Vineet and Bavarian, Mohammad and Chen, Mark and Jun, Heewoo and Kaiser, Lukasz and Plappert, Matthias and Tworek, Jerry and Hilton, Jacob and Nakano, Reiichiro and Hesse, Christopher and Schulman, John},
+      journal={arXiv preprint arXiv:2110.14168},
+      year={2021}
+}
+
+% TruthfulQA
+@inproceedings{lin2022truthfulqa,
+  title={TruthfulQA: Measuring How Models Mimic Human Falsehoods},
+  author={Lin, Stephanie and Hilton, Jacob and Askell, Amanda},
+  booktitle={Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages={3214--3235},
+  year={2022}
+}
+
+% GAIA
+@inproceedings{efrat2023gaia,
+  title={GAIA: A Benchmark for General AI Assistants},
+  author={Efrat, Avia and Jiang, Sheng and Wallace, Eric and Lin, Stephanie and Kiela, Douwe and Le, Phu Mon and Khashabi, Daniel},
+  booktitle={Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year={2023}
+}
+
+
+% - Intrinsic Evaluation Tasks - 
+
+% BLIMP
+@article{warstadt2020blimp,
+  title={{BLiMP}: The benchmark of linguistic minimal pairs for English},
+  author={Warstadt, Alex and Parrish, Alicia and Liu, Haokun and Mohananey, Anhad and Peng, Wei and Wang, Sheng-Fu and Bowman, Samuel R},
+  journal={Transactions of the Association for Computational Linguistics},
+  volume={8},
+  pages={377--392},
+  year={2020},
+  publisher={MIT Press One Rogers Street, Cambridge, MA 02142-1209, USA journals-info~…}
+}
+
+
+% Magnusson, Ian 2024 - Paloma: A benchmark for evaluating language model fit
+@article{magnusson2024paloma,
+  title={Paloma: A benchmark for evaluating language model fit},
+  author={Magnusson, Ian and Bhagia, Akshita and Hofmann, Valentin and Soldaini, Luca and Jha, Ananya Harsh and Tafjord, Oyvind and Schwenk, Dustin and Walsh, Evan and Elazar, Yanai and Lo, Kyle and others},
+  journal={Advances in Neural Information Processing Systems},
+  volume={37},
+  pages={64338--64376},
+  year={2024}
+}
+
 
 % Warstadt 2020 - MSGS
 @inproceedings{warstadt2020msgs,
@@ -479,6 +571,55 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   doi={10.1038/323533a0}
 }
 
+% Robbins, Herbert 1951 - A Stochastic Approximation Method
+@article{robbins1951stochastic,
+  title={A Stochastic Approximation Method},
+  author={Robbins, Herbert and Monro, Sutton},
+  journal={The Annals of Mathematical Statistics},
+  volume={22},
+  number={3},
+  pages={400--407},
+  year={1951},
+  publisher={Institute of Mathematical Statistics}
+}
+
+% Duchi, John 2011 - Adaptive Subgradient Methods for Online Learning and Stochastic Optimization
+@inproceedings{duchi2011adaptive,
+  title={Adaptive Subgradient Methods for Online Learning and Stochastic Optimization},
+  author={Duchi, John and Hazan, Elad and Singer, Yoram},
+  booktitle={Proceedings of the 24th International Conference on Neural Information Processing Systems},
+  pages={257--265},
+  year={2011}
+}
+
+% Tieleman, Tijmen 2012 - RMSProp: Divide the Gradient by a Running Average of Its Recent Magnitude
+@misc{tieleman2012lecture,
+  title={Lecture 6.5 - RMSProp: Divide the Gradient by a Running Average of Its Recent Magnitude},
+  author={Tieleman, Tijmen and Hinton, Geoffrey},
+  note={COURSERA: Neural Networks for Machine Learning},
+  year={2012},
+  howpublished={\url{https://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf}}
+}
+
+% Sutskever, Ilya 2013 - On the Importance of Initialization and Momentum in Deep Learning
+@inproceedings{sutskever2013importance,
+  title={On the Importance of Initialization and Momentum in Deep Learning},
+  author={Sutskever, Ilya and Martens, James and Dahl, George and Hinton, Geoffrey},
+  booktitle={Proceedings of the 30th International Conference on Machine Learning},
+  volume={28},
+  pages={1139--1147},
+  year={2013}
+}
+
+% Kingma, Diederik P 2015 - Adam: A Method for Stochastic Optimization
+@article{kingma2015adam,
+  title={Adam: A Method for Stochastic Optimization},
+  author={Kingma, Diederik P and Ba, Jimmy},
+  journal={International Conference on Learning Representations},
+  year={2015}
+}
+
+
 % Ilya Loshchilov 2019 - Decoupled Weight Decay Regularization (AdamW)
 @article{
     loshchilov2019decoupled,
@@ -593,6 +734,46 @@ An Empirical Study of Smoothing Techniques for Language Modeling
 
 % --- Datasets ---
 
+@misc{Gokaslan2019OpenWeb,  
+	title={OpenWebText Corpus},
+	author={Aaron Gokaslan and Vanya Cohen},
+	howpublished={\url{http://Skylion007.github.io/OpenWebTextCorpus}}, 
+	year={2019}
+}
+
+@inproceedings{zhu2015aligning,
+  title={Aligning Books and Movies: Towards Story-like Visual Explanations by Watching Movies and Reading Books},
+  author={Zhu, Yukun and Kiros, Ryan and Zemel, Richard and Salakhutdinov, Ruslan and Urtasun, Raquel and Torralba, Antonio and Fidler, Sanja},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+  pages={19--27},
+  year={2015},
+  url={https://arxiv.org/abs/1506.06724}
+}
+
+
+% Leo Gao 2020 - The Pile: An 800GB Dataset of Diverse Text for Language Modeling
+@misc{gao2020pile,
+  title={The Pile: An 800GB Dataset of Diverse Text for Language Modeling}, 
+  author={Leo Gao and Stella Biderman and Sid Black and Laurence Golding and Travis Hoppe and Charles Foster and Jason Phang and Horace He and Anish Thite and Noa Nabeshima and Shawn Presser and Connor Leahy},
+  year={2020},
+  journal={arXiv preprint arXiv:2101.00027}
+}
+
+@misc{together2023redpajama,
+  title={RedPajama: An Open Dataset for Training Large Language Models},
+  author={Together AI},
+  year={2023},
+  howpublished={\url{https://arxiv.org/abs/2411.12372}}
+}
+
+@article{penedo2023refinedweb,
+  title={The RefinedWeb Dataset for Falcon LLM: Outperforming Curated Corpora with Web Data, and Web Data Only},
+  author={Penedo, Guilherme and Malartic, Quentin and Hesslow, Daniel and Cojocaru, Ruxandra and Cappelli, Alessandro and Alobeidli, Hamza and Pannier, Baptiste and Almazrouei, Ebtesam and Launay, Julien},
+  journal={arXiv preprint arXiv:2306.01116},
+  year={2023},
+  url={https://arxiv.org/abs/2306.01116}
+}
+
 % Soldaini, Luca 2024 - Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research
 @inproceedings{soldaini2024dolma,
   title={Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research},
@@ -602,12 +783,12 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   year={2024}
 }
 
-% Leo Gao 2020 - The Pile: An 800GB Dataset of Diverse Text for Language Modeling
-@misc{gao2020pile,
-  title={The Pile: An 800GB Dataset of Diverse Text for Language Modeling}, 
-  author={Leo Gao and Stella Biderman and Sid Black and Laurence Golding and Travis Hoppe and Charles Foster and Jason Phang and Horace He and Anish Thite and Noa Nabeshima and Shawn Presser and Connor Leahy},
-  year={2020},
-  journal={arXiv preprint arXiv:2101.00027}
+@article{penedo2024fineweb,
+  title={FineWeb: Decanting the Web for the Finest Text Data at Scale},
+  author={Penedo, Guilherme and Kydlíček, Hynek and Ben Allal, Loubna and Lozhkov, Anton and Mitchell, Margaret and Raffel, Colin and Von Werra, Leandro and Wolf, Thomas},
+  journal={arXiv preprint arXiv:2406.17557},
+  year={2024},
+  url={https://arxiv.org/abs/2406.17557}
 }
 
 % ---- Historical Models ----
@@ -897,7 +1078,6 @@ An Empirical Study of Smoothing Techniques for Language Modeling
 }
 
 % ---- Model Architectures/Design ---- 
-
 
 % - Layer Normalization - 
 
