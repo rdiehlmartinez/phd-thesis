@@ -3251,27 +3251,6 @@ url = {https://arxiv.org/abs/2402.04362}
   organization = {IEEE}
 }
 
-% --- Architectural Modification ---
-
-@inproceedings{samuel2023ltgbert,
-    title = "Trained on 100 million words and still in shape: {BERT} meets {B}ritish {N}ational {C}orpus",
-    author = "Samuel, David  and
-      Kutuzov, Andrey  and
-      {\O}vrelid, Lilja  and
-      Velldal, Erik",
-    editor = "Vlachos, Andreas  and
-      Augenstein, Isabelle",
-    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
-    month = may,
-    year = "2023",
-    address = "Dubrovnik, Croatia",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2023.findings-eacl.146/",
-    doi = "10.18653/v1/2023.findings-eacl.146",
-    pages = "1954--1974",
-}
-
-
 % --- Knowledge Distillation --- 
 
 @article{sanh2019distilbert,
@@ -3353,6 +3332,369 @@ url = {https://arxiv.org/abs/2402.04362}
   url = "https://aclanthology.org/2024.conll-babylm.26/",
   pages = "292--301",
 }
+
+% --- Parameter Efficient ----
+
+% -- Adapters
+
+% Rebuffi, Sylvestre-Alvise 2017 - Learning Multiple Visual Domains with Residual Adapters
+@inproceedings{rebuffi2017adapters,
+  author    = {Sylvestre-Alvise Rebuffi and Hakan Bilen and Andrea Vedaldi},
+  title     = {Learning Multiple Visual Domains with Residual Adapters},
+  booktitle = {Advances in Neural Information Processing Systems},
+  pages     = {506--516},
+  year      = {2017}
+}
+
+% Houlsby, Neil 2019 - Parameter-Efficient Transfer Learning for NLP
+@inproceedings{houlsby2019parameter,
+  title     = {Parameter-Efficient Transfer Learning for NLP},
+  author    = {Neil Houlsby and Andrei Giurgiu and Stanislaw Jastrzebski and Bruna Morrone and Quentin de Laroussilhe and Andrea Gesmundo and Mona Attariyan and Sylvain Gelly},
+  booktitle = {Proceedings of the 36th International Conference on Machine Learning},
+  pages     = {2790--2799},
+  year      = {2019},
+  publisher = {PMLR}
+}
+
+% Hu, Edward J 2021 - LoRA: Low-Rank Adaptation of Large Language Models
+@article{hu2021lora,
+  title   = {LoRA: Low-Rank Adaptation of Large Language Models},
+  author  = {Edward J. Hu and Yelong Shen and Phillip Wallis and Zeyuan Allen-Zhu and Yuanzhi Li and Shean Wang and Lu Wang and Weizhu Chen},
+  journal = {arXiv preprint arXiv:2106.09685},
+  year    = {2021}
+}
+
+% Lialin, Vladislav 2023 - ReLoRA: High-Rank Training Through Low-Rank Updates
+@article{lialin2023relora,
+  title   = {ReLoRA: High-Rank Training Through Low-Rank Updates},
+  author  = {Vladislav Lialin and Namrata Shivagunde and Sherin Muckatira and Anna Rumshisky},
+  journal = {arXiv preprint arXiv:2307.05695},
+  year    = {2023}
+}
+
+% -- Other approaches 
+
+% Ben Zaken, Elad 2022 - BitFit: Simple Parameter-Efficient Fine-Tuning for Transformer-Based Masked Language Models
+@inproceedings{benzaken2022bitfit,
+  title     = {BitFit: Simple Parameter-Efficient Fine-Tuning for Transformer-Based Masked Language Models},
+  author    = {Ben Zaken, Elad and Ravfogel, Shauli and Goldberg, Yoav},
+  booktitle = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers)},
+  pages     = {1--9},
+  year      = {2022},
+  address   = {Dublin, Ireland},
+  publisher = {Association for Computational Linguistics},
+  doi       = {10.18653/v1/2022.acl-short.1},
+  url       = {https://aclanthology.org/2022.acl-short.1}
+}
+
+% Liu, Haokun 2022 - Few-Shot Parameter-Efficient Fine-Tuning is Better and Cheaper than In-Context Learning
+@inproceedings{liu2022few,
+  title     = {Few-Shot Parameter-Efficient Fine-Tuning is Better and Cheaper than In-Context Learning},
+  author    = {Liu, Haokun and Tam, Derek and Muqeeth, Mohammed and Mohta, Jay and Huang, Tenghao and Bansal, Mohit and Raffel, Colin},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {35},
+  pages     = {1--15},
+  year      = {2022},
+  url       = {https://arxiv.org/abs/2205.05638}
+}
+
+
+% PEFT: State-of-the-art Parameter-Efficient Fine-Tuning methods
+@Misc{peft,
+  title =        {PEFT: State-of-the-art Parameter-Efficient Fine-Tuning methods},
+  author =       {Sourab Mangrulkar and Sylvain Gugger and Lysandre Debut and Younes Belkada and Sayak Paul and Benjamin Bossan},
+  howpublished = {\url{https://github.com/huggingface/peft}},
+  year =         {2022}
+}
+
+
+% --- Architectural Modification ---
+
+@inproceedings{samuel2023ltgbert,
+    title = "Trained on 100 million words and still in shape: {BERT} meets {B}ritish {N}ational {C}orpus",
+    author = "Samuel, David  and
+      Kutuzov, Andrey  and
+      {\O}vrelid, Lilja  and
+      Velldal, Erik",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Findings of the Association for Computational Linguistics: EACL 2023",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.findings-eacl.146/",
+    doi = "10.18653/v1/2023.findings-eacl.146",
+    pages = "1954--1974",
+}
+
+
+% -- Mixture of Experts
+
+% Jacobs, Robert A 1991 - Adaptive mixtures of local experts
+@article{jacobs1991adaptive,
+  title={Adaptive mixtures of local experts},
+  author={Jacobs, Robert A and Jordan, Michael I and Nowlan, Steven J and Hinton, Geoffrey E},
+  journal={Neural Computation},
+  volume={3},
+  number={1},
+  pages={79--87},
+  year={1991},
+  publisher={MIT Press}
+}
+
+% Shazeer, Noam 2017 - Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer
+@article{shazeer2017outrageously,
+  title={Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer},
+  author={Shazeer, Noam and Mirhoseini, Azalia and Maziarz, Krzysztof and Davis, Andy and Le, Quoc V and Hinton, Geoffrey E and Dean, Jeff},
+  journal={arXiv preprint arXiv:1701.06538},
+  year={2017}
+}
+
+% Fedus, William 2021 - Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity
+@article{fedus2021switch,
+  title={Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity},
+  author={Fedus, William and Zoph, Barret and Shazeer, Noam},
+  journal={arXiv preprint arXiv:2101.03961},
+  year={2021}
+}
+
+
+% Jiang, Albert Q 2024 - Mixtral of Experts
+@misc{jiang2024mixtral,
+  title={Mixtral of Experts},
+  author={Jiang, Albert Q and Sablayrolles, Alexandre and Roux, Antoine and Mensch, Arthur and Savary, Blanche and Bamford, Chris and Chaplot, Devendra Singh and de las Casas, Diego and Bou Hanna, Emma and Bressand, Florian and Lengyel, Gianna and Bour, Guillaume and Lample, Guillaume and Lavaud, Lélio Renard and Saulnier, Lucile and Lachaux, Marie-Anne and Stock, Pierre and Subramanian, Sandeep and Yang, Sophia and Antoniak, Szymon and Le Scao, Teven and Gervet, Théophile and Lavril, Thibaut and Wang, Thomas and Lacroix, Timothée and El Sayed, William},
+  year={2024},
+  eprint={2401.04088},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2401.04088}
+}
+
+% Lepikhin, Dmitry 2020 - GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding
+@article{lepikhin2020gshard,
+  title={GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding},
+  author={Lepikhin, Dmitry and Lee, HyoukJoong and Xu, Yuanzhong and Chen, Dehao and Firat, Orhan and Huang, Yanping and Krikun, Maxim and Shazeer, Noam and Chen, Zhifeng},
+  journal={arXiv preprint arXiv:2006.16668},
+  year={2020}
+}
+
+% DeepSeek-AI 2024 - DeepSeek-V3 Technical Report (MoE model)
+@article{deepseek2024v3,
+  title   = {DeepSeek-V3 Technical Report},
+  author  = {DeepSeek-AI},
+  journal = {arXiv preprint arXiv:2412.19437},
+  year    = {2024},
+  url     = {https://arxiv.org/abs/2412.19437}
+}
+
+% -- Fast Attention
+
+% Luong, Minh-Thang 2015 - Effective Approaches to Attention-based Neural Machine Translation
+@inproceedings{luong2015effective,
+  title     = {Effective Approaches to Attention-based Neural Machine Translation},
+  author    = {Luong, Minh-Thang and Pham, Hieu and Manning, Christopher D.},
+  booktitle = {Proceedings of the 2015 Conference on Empirical Methods in Natural Language Processing},
+  pages     = {1412--1421},
+  year      = {2015},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/D15-1166/},
+  doi       = {10.18653/v1/D15-1166}
+}
+
+% Child, Rewon 2019 - Generating Long Sequences with Sparse Transformers
+@article{child2019generating,
+  title   = {Generating Long Sequences with Sparse Transformers},
+  author  = {Child, Rewon and Gray, Scott and Radford, Alec and Sutskever, Ilya},
+  journal = {arXiv preprint arXiv:1904.10509},
+  year    = {2019},
+  url     = {https://arxiv.org/abs/1904.10509}
+}
+
+% Roy, Aurko 2020 - Efficient Content-Based Sparse Attention with Routing Transformers
+@article{roy2020efficient,
+  title   = {Efficient Content-Based Sparse Attention with Routing Transformers},
+  author  = {Roy, Aurko and Saffar, Mohammad and Vaswani, Ashish and Grangier, David},
+  journal = {arXiv preprint arXiv:2003.05997},
+  year    = {2020},
+  url     = {https://arxiv.org/abs/2003.05997}
+}
+
+% Beltagy, Iz 2020 - Longformer: The Long-Document Transformer
+@article{beltagy2020longformer,
+  title   = {Longformer: The Long-Document Transformer},
+  author  = {Beltagy, Iz and Peters, Matthew E. and Cohan, Arman},
+  journal = {arXiv preprint arXiv:2004.05150},
+  year    = {2020},
+  url     = {https://arxiv.org/abs/2004.05150}
+}
+
+% Zaheer, Manzil 2020 - Big Bird: Transformers for Longer Sequences
+@inproceedings{zaheer2020big,
+  title     = {Big Bird: Transformers for Longer Sequences},
+  author    = {Zaheer, Manzil and Guruganesh, Guru and Dubey, Avinava and Ainslie, Joshua and Alberti, Chris and Ontañón, Santiago and Pham, Philip and Ravula, Anirudh and Wang, Qifan and Yang, Li and Ahmed, Amr},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2020},
+  url       = {https://proceedings.neurips.cc/paper/2020/hash/c8512d142a2d849725f31a9a7a361ab9-Abstract.html}
+}
+
+% Kitaev, Nikita 2020 - Reformer: The Efficient Transformer
+@inproceedings{kitaev2020reformer,
+  title     = {Reformer: The Efficient Transformer},
+  author    = {Kitaev, Nikita and Kaiser, Łukasz and Levskaya, Anselm},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2020},
+  url       = {https://arxiv.org/abs/2001.04451}
+}
+
+% Wang, Sinong 2020 - Linformer: Self-Attention with Linear Complexity
+@article{wang2020linformer,
+  title   = {Linformer: Self-Attention with Linear Complexity},
+  author  = {Wang, Sinong and Li, Belinda Z. and Khabsa, Madian and Fang, Han and Ma, Hao},
+  journal = {arXiv preprint arXiv:2006.04768},
+  year    = {2020},
+  url     = {https://arxiv.org/abs/2006.04768}
+}
+
+
+% Ding, Jiayu 2023 - LongNet: Scaling Transformers to 1,000,000,000 Tokens
+@article{ding2023longnet,
+  title   = {LongNet: Scaling Transformers to 1,000,000,000 Tokens},
+  author  = {Ding, Jiayu and Ma, Shuming and Dong, Li and Zhang, Xingxing and Huang, Shaohan and Wang, Wenhui and Wei, Furu},
+  journal = {arXiv preprint arXiv:2307.02486},
+  year    = {2023},
+  url     = {https://arxiv.org/abs/2307.02486}
+}
+
+% Xiao, Guangxuan 2023 - Efficient Streaming Language Models with Attention Sinks
+@article{xiao2023attentionsink,
+  title   = {Efficient Streaming Language Models with Attention Sinks},
+  author  = {Xiao, Guangxuan and Tian, Yuandong and Chen, Beidi and Han, Song and Lewis, Mike},
+  journal = {arXiv preprint arXiv:2309.17453},
+  year    = {2023},
+  url     = {https://arxiv.org/abs/2309.17453}
+}
+
+% Dao, Tri 2022 - FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness
+@inproceedings{dao2022flashattention,
+  title     = {FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness},
+  author    = {Dao, Tri and Fu, Daniel Y. and Ermon, Stefano and Rudra, Atri and Ré, Christopher},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2022},
+  url       = {https://arxiv.org/abs/2205.14135}
+}
+
+% Dao, Tri 2023 - FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning
+@article{dao2023flashattention2,
+  title   = {FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning},
+  author  = {Tri Dao and Daniel Y. Fu and Stefano Ermon and Atri Rudra and Christopher R{\'e}},
+  journal = {arXiv preprint arXiv:2307.08691},
+  year    = {2023},
+  url     = {https://arxiv.org/abs/2307.08691}
+}
+
+% -- Pruning
+
+% LeCun, Yann 1990 - Optimal Brain Damage
+@inproceedings{lecun1990optimal,
+  title     = {Optimal Brain Damage},
+  author    = {LeCun, Yann and Denker, John S. and Solla, Sara A.},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {2},
+  pages     = {598--605},
+  year      = {1990},
+  publisher = {Morgan Kaufmann}
+}
+
+% Hassibi, Babak 1993 - Second Order Derivatives for Network Pruning: Optimal Brain Surgeon
+@inproceedings{hassibi1993optimal,
+  title     = {Second Order Derivatives for Network Pruning: Optimal Brain Surgeon},
+  author    = {Hassibi, Babak and Stork, David G. and Wolff, Gregory J.},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {6},
+  pages     = {164--171},
+  year      = {1993},
+  publisher = {Morgan Kaufmann}
+}
+
+% Han, Song 2015 - Learning both Weights and Connections for Efficient Neural Networks
+@inproceedings{han2015learning,
+  title     = {Learning both Weights and Connections for Efficient Neural Networks},
+  author    = {Han, Song and Pool, Jeff and Tran, John and Dally, William J.},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {28},
+  pages     = {1135--1143},
+  year      = {2015},
+  publisher = {Curran Associates, Inc.}
+}
+
+% Han, Song 2016 - Deep Compression: Compressing Deep Neural Networks with Pruning, Trained Quantization and Huffman Coding
+@inproceedings{han2016deep,
+  title     = {Deep Compression: Compressing Deep Neural Networks with Pruning, Trained Quantization and Huffman Coding},
+  author    = {Han, Song and Mao, Huizi and Dally, William J.},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2016},
+  url       = {https://arxiv.org/abs/1510.00149}
+}
+
+
+% Frankle, Jonathan 2019 - The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks
+@inproceedings{frankle2019lottery,
+  title     = {The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks},
+  author    = {Frankle, Jonathan and Carbin, Michael},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2019},
+  url       = {https://openreview.net/forum?id=rJl-b3RcF7}
+}
+
+
+% Sun, Mingjie 2024 - A Simple and Effective Pruning Approach for Large Language Models
+@inproceedings{sun2024simple,
+  title     = {A Simple and Effective Pruning Approach for Large Language Models},
+  author    = {Sun, Mingjie and Liu, Zhuang and Bair, Anna and Kolter, J. Zico},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2024},
+  url       = {https://arxiv.org/abs/2306.11695}
+}
+
+% -- Quantization
+
+% Wang, Hongyu 2023 - BitNet: Scaling 1-bit Transformers for Large Language Models
+@article{wang2023bitnet,
+  title   = {BitNet: Scaling 1-bit Transformers for Large Language Models},
+  author  = {Wang, Hongyu and Ma, Shuming and Dong, Li and Huang, Shaohan and Wang, Huaijie and Ma, Lingxiao and Yang, Fan and Wang, Ruiping and Wu, Yi and Wei, Furu},
+  journal = {arXiv preprint arXiv:2310.11453},
+  year    = {2023},
+  url     = {https://arxiv.org/abs/2310.11453}
+}
+
+% Lin, Ji 2023 - AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration
+@article{lin2023awq,
+  title   = {AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration},
+  author  = {Lin, Ji and Tang, Jiaming and Tang, Haotian and Yang, Shang and Chen, Wei-Ming and Wang, Wei-Chen and Xiao, Guangxuan and Dang, Xingyu and Gan, Chuang and Han, Song},
+  journal = {arXiv preprint arXiv:2306.00978},
+  year    = {2023},
+  url     = {https://arxiv.org/abs/2306.00978}
+}
+
+% Dettmers, Tim 2023 - QLoRA: Efficient Finetuning of Quantized LLMs
+@article{dettmers2023qlora,
+  title   = {QLoRA: Efficient Finetuning of Quantized LLMs},
+  author  = {Dettmers, Tim and Pagnoni, Artidoro and Holtzman, Ari and Zettlemoyer, Luke},
+  journal = {arXiv preprint arXiv:2305.14314},
+  year    = {2023},
+  url     = {https://arxiv.org/abs/2305.14314}
+}
+
+% Bengio, Yoshua 2013 - Estimating or Propagating Gradients Through Stochastic Neurons for Conditional Computation
+@article{bengio2013estimating,
+  title   = {Estimating or Propagating Gradients Through Stochastic Neurons for Conditional Computation},
+  author  = {Bengio, Yoshua and Léonard, Nicholas and Courville, Aaron},
+  journal = {arXiv preprint arXiv:1308.3432},
+  year    = {2013},
+  url     = {https://arxiv.org/abs/1308.3432}
+}
+
 
 % --- Data Presentation/Input ----
 
@@ -3526,7 +3868,7 @@ url = {https://arxiv.org/abs/2402.04362}
 }
 
 
-% -- Morphological/Syntatic  Information --
+% -- Morphological/Syntatic Information --
 
 @inproceedings{diehlmartinez2024syntacticsmoothing,
     title = "Mitigating Frequency Bias and Anisotropy in Language Model Pre-Training with Syntactic Smoothing",
