@@ -1,40 +1,73 @@
 \chapter{Introduction}
 
-
-When I began this PhD in the autumn of 2021, the research community was still marveling at OpenAI's GPT-3 \citep{brown2020gpt3}, a language model with \textbf{175 billion parameters}—a number so vast it felt, at the time, like a ceiling. This impression of scale was even more striking when compared with the \textbf{86 billion neurons} in the adult human brain \citep{azevedo2009neurons}. To many, this parallel symbolized the astonishing pace at which artificial systems appeared to be encroaching on biological complexity.
+When I began my PhD, the field of language modeling was already in the midst of rapid change. In 2021, the release of GPT-3—with its \textbf{175 billion parameters}—felt like a watershed moment, a leap that brought artificial systems closer to the scale of biological intelligence. The comparison to the \textbf{86 billion neurons} in the adult human brain \citep{azevedo2009neurons} was irresistible. To many, this parallel symbolized the astonishing pace at which artificial systems appeared to be encroaching on biological complexity.
 
 Yet in the short span of four years, that sense of awe has been recontextualized. \textbf{GPT-4}, though not officially disclosed, is widely estimated to contain \textbf{around 1.8 trillion parameters}, while Google's \textbf{Gemini Ultra} has been reported at roughly \textbf{1.5 trillion}. These figures mark an \emph{order-of-magnitude leap} from GPT-3 and reflect a broader trend: the frontier of large-scale language models is rapidly expanding—both in scale and in sophistication.
 
-This expansion has been accompanied by clear gains in capability. Tasks once viewed as aspirational—such as reasoning over long contexts, synthesizing code, or interpreting multi-step instructions—have become tractable for these large models. Performance is typically benchmarked on standard evaluations like MMLU \citep{hendrycks2021mmlu}, BIG-bench \citep{srivastava2023bigbench}, and HellaSwag \citep{zellers2019hellaswag}, where state-of-the-art models have seen rapid gains since 2021.
+This expansion has been accompanied by clear gains in capability. Tasks once viewed as aspirational—such as reasoning over long contexts \citep{lewis2020retrieval}, synthesizing code \citep{chen2021evaluating}, or interpreting multi-step instructions \citep{wei2022chain}—have become tractable for these large models. Performance is typically benchmarked on standard evaluations like MMLU \citep{hendrycks2021mmlu}, BIG-bench \citep{srivastava2023bigbench}, and HellaSwag \citep{zellers2019hellaswag}, where state-of-the-art models have seen rapid gains since 2021.
 
+This \emph{order-of-magnitude leap} in the size of language models raises a fundamental question: \textbf{Are we building better language models, or simply bigger ones?}
+
+This question becomes particularly salient when we examine model performance over time. As \cref{fig:model_size_vs_performance} demonstrates, there's a striking divergence in the language modeling landscape. While large models (\textbf{\textcolor[HTML]{A0DDFF}{blue} line}) show consistent improvement year after year, smaller models of fixed size (\textbf{\textcolor[HTML]{C1CEFE}{purple} line}, ~100M parameters) have plateaued despite advances in training techniques. This trend suggests that our progress may be more about scaling than about fundamental advances in efficiency.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{chapters/introduction/figures/lm_performance_comparison.pdf}
-    \caption{Performance of small and large language models on the HellaSwag dataset over time.}
+    \caption{Performance of small and large language models on the HellaSwag dataset over time. The plot reveals a striking divergence: while large models (blue) show consistent improvement, smaller models (red) have plateaued despite advances in training techniques.}
     \label{fig:model_size_vs_performance}
 \end{figure}
 
-However, this progress has been \emph{uneven}. In 2020, the best performing model on the HellaSwag dataset (a task that requires reasoning over long contexts) was GPT-3, achieving a score of 78.9\%. In 2024, the best performing model was a novel variant of GPT-4, achieving a nearly perfect score of 96\%. On one hand, this is a testament to the rapid progress of large language models. However, the improvement in performance only tells one half of the story. Between 2020 and 2024, the number of parameters in the best performing model has increased by a factor of 14.5x (from 124M to 1.8T). 
+This question is particularly pressing because, while large models continue to push boundaries, \textbf{small models remain essential} for practical deployment. 
 
-Another problem with studying small language models is that the definition of a `small' language model keeps changing. When GPT-3 was released, 8 versions of the model were released, from GPT-3 Small (125M) to the largest variant (175B) that became commonly referred to as GPT-3. By late 2024, language modeling suites marketed as `small' typically, such as the set of Phi-4 models, contain 14B parameters, with a 3.8B variant labeled as `tiny'.
+\section{Why Do Small Models Matter?}
+
+The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Tiny language models—compact, efficient, and accessible—offer a promising path to address many of these issues.
+
+\paragraph{Large foundation models, as discussed by \citet{bommasani2021foundation}, introduce significant societal risks.} These include the potential for generating disinformation and misinformation at scale, amplifying biases and discrimination present in training data, and memorizing and regurgitating sensitive or copyrighted content. The sheer scale of these models also raises concerns about labor displacement, environmental impact, and the creation of single points of failure—where a widely deployed model, if compromised, could have cascading negative effects across all downstream applications. Notably, the authors highlight that the risks associated with large models are not just technical but also social, as they can entrench power in the hands of a few organizations and make it harder to adapt models to specific, local needs.
+
+\paragraph{Environmental sustainability is another critical concern.} The community has been urged to treat energy efficiency as a first-class evaluation metric alongside accuracy \citep{schwartz2020greenai}. Studies have quantified the financial and carbon costs of training state-of-the-art NLP systems, revealing orders-of-magnitude differences between large and compact models \citep{strubell2019energy}. For example, a modest increase in translation accuracy can result in a dramatic rise in compute cost. Tools like the ML Emissions Calculator \citep{lacoste2019quantifying} and systematic reviews of emissions factors \citep{luccioni2023counting} have made it clear that model size, hardware, and training recipes all play a role in determining the environmental footprint of machine learning. Transformer-based models, in particular, are among the most energy-intensive, especially when techniques like neural architecture search are used. Benchmarks such as HULK \citep{zhou2021hulk} have compared pretrained models’ energy efficiency, showing that smaller models are far more efficient in both time and cost. Furthermore, the location where models are trained can significantly affect emissions, and sparsely activated models can be much more energy-efficient than their dense counterparts \citep{patterson2021carbon}. The overall trend is clear: smaller models are more sustainable, and their adoption is crucial for reducing AI's environmental impact.
+
+\paragraph{Data privacy and memorization risks are also heightened in large models.} Research has shown that neural networks, especially large ones, can memorize and regurgitate rare or sensitive training data \citep{feldman2020neural, carlini2019secret}. Follow-up studies have demonstrated that memorization increases with model size and data duplication, and have introduced methods to extract such memorized content from models without access to the original training set \citep{carlini2021extracting, carlini2022quantifying}. Comprehensive surveys have categorized the security and privacy risks of large language models, including inference-time leakage, adversarial vulnerabilities, and systemic risks from centralization \citep{yao2024privacysurvey}. Larger models are more likely to leak personally identifiable information, especially when trained on duplicated or low-diversity data \citep{huang2022large, neel2023privacy}. Mitigation strategies such as differential privacy \citep{dwork2006calibrating} and federated learning \citep{mcmahan2017communication} have been proposed, but these often come with trade-offs in model utility. Scaling laws for memorization further confirm that as models grow, so does their propensity to memorize and leak sensitive information \citep{lu2024scaling, biderman2023emergent, kiyomaru2024comprehensive}. In contrast, smaller models, with less capacity to memorize, offer a more privacy-preserving alternative—especially when combined with privacy-focused training techniques.
+
+\paragraph{Tiny models are also uniquely suited for on-device and edge deployment.} Efficient inference with limited memory is essential for running language models on consumer hardware, and recent work has shown that even models with billions of parameters can be optimized for such use cases \citep{alizadeh2024llm}. Sub-billion parameter models are particularly important for energy-efficient, on-device applications, as demonstrated by \citet{liu2024mobilellm}. Earlier advances in mobile-friendly architectures, such as MobileNets \citep{howard2017mobilenets} and EfficientFormer \citep{li2022efficientformer}, laid the groundwork for efficient models in both vision and language domains. The importance of energy-proportional memory for datacenter and mobile applications has also been highlighted \citep{malladi2012towards}. These advances make it possible to run language models in privacy-sensitive, resource-constrained, or offline settings, broadening the reach and utility of AI.
+
+\paragraph{Interpretability and scientific understanding are further reasons to prioritize small models.} The internal mechanisms of transformers and other neural architectures are more tractable in smaller models, making them better testbeds for developing scientific understanding \citep{elhage2021mathematical, elhage2022toy, bircken2023monosemanticity, anthropic2023components}. Tools such as influence functions are easier to apply at small scale, and the “manifold hypothesis” suggests that smaller models are ideal for probing the structure of neural representations \citep{olah2014manifolds}. Progress in understanding larger models often begins with insights gained from studying their smaller counterparts.
+
+\paragraph{Finally, the democratization and accessibility of language technology depend on the availability of small, open models.} The cost of training and deploying large models is rising rapidly, with the financial and hardware requirements putting them out of reach for most organizations and individuals \citep{cottier2024rising, sharir2020cost}. Minimal, well-documented implementations like nanoGPT \citep{karpathy2023nanogpt} and Pico \citep{diehlmartinez2025pico} make language modeling accessible to a broader community, supporting education, experimentation, and innovation. By lowering the barrier to entry, small models enable more researchers, organizations, and communities to participate in the development and application of language technologies.
+
+In summary, tiny language models matter because they are more sustainable, privacy-preserving, interpretable, and accessible. They offer a practical and ethical path forward for language technology, especially as the risks and costs of large-scale models continue to mount.
+
+\section{Research Question 1: How can we design more efficient training methods for small models?}
 
 
-As we can see in \cref{fig:model_size_vs_performance}, much of the gain in performance has been due to scaling up the model size. If we hold the size of a model constant, we see that smaller models perform the same on task while large models keep getting larger and getting better. Can we claim to making progress if the techniques we are developing are only working because we are using larger and larger models?
+
+First research question: How can we design more efficient training methods for small models? Are there more principles ways to design language modeling frameworks that are more efficient for small models? 
+
+\subsection{RQ2: How can we more quantitatively understand the performance of small models?}
 
 
-While large models have seen dramatic improvements, \textbf{smaller language models have advanced more modestly}, with persistent gaps in performance, generalization, and stability. 
+Perhaps even more concerning is that if this is true it undescores a widening trend in language modeling which is that models and modeling techniques are fundamentally non-scientific. It is difficult to make progress on this if we do not have a rigorous scientific framework for understanding how models work. 
 
-This discrepancy raises a key research question:
-
-\begin{quote}
-\textbf{Can small language models be trained more effectively—not simply scaled down, but optimized through strategic methods to unlock their full potential?}
-\end{quote}
+Second research question: How can we more quantitatively understand the performance of small models? Is there a more scientific way to develop language models? 
 
 
-This dissertation is driven by that question. While large models continue to push boundaries, \textbf{small models remain essential} for practical deployment. They offer advantages in compute efficiency, privacy, customization for domain-specific data, and environmental sustainability. They also support better interpretability and accessibility for researchers with limited resources.
+This divergence raises several critical questions about our current approach to language model development:
 
-% The final point on interpretability should maybe be along the lines of us being able to more easily interpret why a model is doing something or aligning it
+\begin{enumerate}
+    \item \textbf{Scaling vs. Efficiency:} Are we truly advancing the field when performance gains primarily come from increasing model size? The figure shows that holding model size constant yields minimal improvements, suggesting our training methods may not be fundamentally more efficient; or if they are more efficient, they are more efficient for \emph{larger} models.
+
+    \item How can we design more efficient training methods for small models? Are there more principles ways to design language modeling frameworks that are more efficient for small models? 
+
+    \item \textbf{The Small Model Plateau:} Why do smaller models consistently underperform relative to their larger counterparts? The persistent gap in \cref{fig:model_size_vs_performance} suggests that current training paradigms may be inherently biased towards scale rather than efficiency.
+
+    \item How can we more quantitatively understand the performance of small models? Is there a more scientific way to develop language models? 
+    
+    \item \textbf{Definition of "Small":} The very notion of a "small" model has shifted dramatically—from 125M parameters in 2020 to 14B parameters in 2024. This redefinition raises questions about whether we're actually making progress in efficient training, or simply moving the goalposts.
+
+\end{enumerate}
+
+
+This question is particularly pressing because, while large models continue to push boundaries, \textbf{small models remain essential} for practical deployment. They offer critical advantages in compute efficiency, privacy, customization for domain-specific data, and environmental sustainability. They also enable better interpretability and accessibility for researchers with limited resources.
 
 \section*{Research Objectives}
 

@@ -3,16 +3,13 @@
 
 In this section, we will explore some of the key concepts and techniques used in language modeling. 
 
-To begin, language modeling refers to the task of assigning probabilities to sequences of words or tokens. The goal is to model the likelihood of a sequence in a language. In the case of a sequence of words, $w = w_1, w_2, \ldots, w_n$, the probability of the sequence is given by the product of the probabilities of the words occurring in the sequence:
+Language modeling refers to the task of assigning probabilities to sequences of words or tokens. The goal is to model the likelihood of a sequence in a language. In the case of a sequence of words, $w = w_1, w_2, \ldots, w_n$, the probability of the sequence is given by the product of the probabilities of the words occurring in the sequence:
 
 \begin{equation}    
     P(w) = P(w_1, w_2, \ldots, w_n) = \prod_{i=1}^n P(w_i | w_1, \ldots, w_{i-1})
 \end{equation}
 
 Training a language model is then equivalent to estimating the parameters of this probability distribution. In practice, this is done by estimating the parameters of a neural network that maps a sequence of words to a probability distribution over the next word. 
-
-
-
 
 
 \section{Word Embeddings}
