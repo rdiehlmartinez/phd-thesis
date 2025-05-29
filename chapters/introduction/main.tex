@@ -55,9 +55,9 @@ While today's large language models are trained on billions of tokens, a typical
 
 This part of the thesis investigates two core levers for improving training efficiency:
 
-Data-level learning processes: Can curriculum learning—structured exposure to data based on difficulty or frequency—help small models generalize more effectively?
+Data-level learning processes: Can curriculum learning—structured exposure to data based on notions of `difficulty' or `frequency'—help small models generalize more effectively?
 
-Objective-level learning processes: How can modifying the learning objective or inductive biases (e.g., through syntactic generalization or smoothing) enhance model robustness and reduce reliance on token frequency?
+Objective-level learning processes: How can modifying the learning objective or inductive biases (e.g., through syntactic generalization or smoothing) enhance model robustness and reduce reliance on token frequency and instead focus on robust syntactic generalization?
 
 These questions guide an exploration of cognitively inspired approaches to learning, with a focus on grounding small model training in data-efficient, human-aligned paradigms.
 
@@ -79,29 +79,30 @@ By developing diagnostic tools and lightweight frameworks tailored to small mode
 
 This thesis is organized into two parts, reflecting the two research threads:
 
-\subsection*{Part I: Cognitive Insights for Efficient Training (Chapters 2–3)}
+\subsection*{Part I: Cognitive Insights for Efficient Training (Chapters 2–4)}
 
 \begin{itemize}
-    \item \textbf{Chapter 2:} \emph{Curriculum Learning for Infant-Inspired Model Building}  
+
+    \item \textbf{Chapter 2:} \emph{Language Modeling Background and Small Language Models} provides a background on language modeling, including the early approaches, word embeddings, and language models, leading up to current state of the art large language models. It also outlines some of the methods that researchers have used to make progress on efficiently training small language models.
+
+    \item \textbf{Chapter 3:} \emph{Curriculum Learning for Infant-Inspired Model Building}  
     explores curriculum strategies inspired by human language acquisition, using the BabyLM Challenge's strict 10-million-word cap as a testbed for evaluating data-efficient learning.
 
-    \item \textbf{Chapter 3:} \emph{Mitigating Frequency Bias and Anisotropy in Language Model Pre-Training with Syntactic Smoothing}  
+    \item \textbf{Chapter 4:} \emph{Mitigating Frequency Bias and Anisotropy in Language Model Pre-Training with Syntactic Smoothing}  
     introduces a novel technique to improve the representation of infrequent tokens by distributing learning signals through syntactic similarity, reducing reliance on frequency and improving robustness.
 \end{itemize}
 
-\subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 4–5)}
+\subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 5–7)}
 
 \begin{itemize}
-    \item \textbf{Chapter 4:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models}  
+    \item \textbf{Chapter 5:} \emph{Model Analysis Background} provides a background on the methods used to analyze language models, including activation patterns, parameter rank, and convergence behavior.
+
+    \item \textbf{Chapter 6:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models}  
     investigates why small models often saturate during training. Using the Pythia model suite, it analyzes activation patterns, parameter rank, and convergence behavior.
 
-    \item \textbf{Chapter 5:} \emph{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}  
+    \item \textbf{Chapter 7:} \emph{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}  
     presents Pico, a modular framework for transparent training and in-depth analysis of learning dynamics, enabling reproducible experiments with small models.
 \end{itemize}
-
-\subsection*{Chapter 6: Concluding Remarks}
-
-Summarizes the core findings of this thesis and outlines promising directions for future research.
 
 \section*{Contributions}
 
