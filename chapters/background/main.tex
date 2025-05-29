@@ -71,6 +71,8 @@ Despite these advances, finding good architectures remains challenging and is di
 
 \section{Large Language Models}
 
+\subsection{Transformer-based Language Models}
+
 The rapid progress in large language models (LLMs) has been marked by the development of a series of influential systems, each pushing the boundaries of scale, capability, and accessibility. GPT-3~\citep{brown2020gpt3} was a landmark model, demonstrating that sufficiently large transformer-based models could perform a wide range of tasks in a few-shot or even zero-shot setting, simply by conditioning on natural language prompts. Its successor, GPT-4~\citep{openai2023gpt4}, further increased model scale and performance, with the technical report highlighting the challenges of tuning and evaluating such massive models, often relying on smaller proxy models to predict performance. Open-source efforts have also made significant strides: DeepSeek LLM~\citep{deepseek2024llm} carefully tunes hyperparameters in line with scaling laws, while Mistral 7B~\citep{jiang2023mistral} introduces architectural innovations such as Grouped Query Attention and Sliding Window Attention for improved efficiency. PaLM~\citep{chowdhery2023palm} leverages the Pathways system to orchestrate large-scale distributed training, enabling the scaling of standard decoder architectures to hundreds of billions of parameters. Meta's OPT~\citep{zhang2022opt} and the BLOOM model~\citep{le2023bloom} from the BigScience project both emphasize transparency and open access, releasing model weights, training logs, and code to the research community.
 
 Also there is something about meta llama \citep{touvron2023llama} and LLaMA 2 \citep{touvron2023llama2} that I want to write.
@@ -81,6 +83,11 @@ Also there is something about meta llama \citep{touvron2023llama} and LLaMA 2 \c
 
 Other notable models include Anthropic's Claude series~\citep{anthropic2024claude3,anthropic2024claude35,anthropic2025claude37}, which emphasize “Constitutional AI” by training models to follow explicit principles for helpfulness, honesty, and harmlessness; Google DeepMind's Gemini models~\citep{deepmind2023gemini}, which are multimodal and support long-context reasoning; Baidu's ERNIE 4.0~\citep{baidu2023ernie4}, a multimodal model focused on Chinese-language tasks; and Alibaba's Qwen models~\citep{alibaba2023qwen}, which provide strong performance in both Chinese and English, with Qwen-VL extending capabilities to vision-language tasks. Collectively, these models exemplify the state of the art in LLM research, showcasing advances in scale, architecture, training methodology, and openness.
 
+
+\subsection{Alternative Architectures for Large Language Models}
+While Transformers dominate large language modeling, recent research has explored alternative sequence modeling approaches to address their limitations, such as quadratic complexity and long-range dependency challenges. One such direction is state space models (SSMs). The HiPPO framework~\citep{gu2020hippo} introduced a method for representing continuous-time sequences using discrete orthogonal polynomial projections, enabling efficient memory representations. Building on this, the Structured State Space Sequence (S4) model~\citep{gu2021efficiently} uses a diagonal plus low-rank structure for the state transition matrix, allowing long-range dependencies to be modeled efficiently via fast convolution in the Fourier domain.
+Mamba~\citep{gu2023mamba} advances SSMs by introducing dynamic, input-dependent state transitions, enabling Transformer-level performance with linear time and memory complexity. Another notable architecture is RWKV~\citep{peng2023rwkv}, a hybrid between Transformers and RNNs. RWKV replaces self-attention with a time-mixed mechanism, achieving linear complexity in sequence length and allowing parallel training, while remaining competitive on language modeling tasks.
+These innovations demonstrate that efficient and expressive alternatives to Transformers are emerging, with the potential to further advance large-scale language modeling.
 
 
 \section{Small Language Models}
