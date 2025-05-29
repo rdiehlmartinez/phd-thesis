@@ -37,54 +37,43 @@ The rapid scaling of language models has brought about remarkable capabilities, 
 
 In summary, tiny language models matter because they are more sustainable, privacy-preserving, interpretable, and accessible. They offer a practical and ethical path forward for language technology, especially as the risks and costs of large-scale models continue to mount.
 
-\section{Research Question 1: How can we design more efficient training methods for small models?}
-
-
-
-First research question: How can we design more efficient training methods for small models? Are there more principles ways to design language modeling frameworks that are more efficient for small models? 
-
-\subsection{RQ2: How can we more quantitatively understand the performance of small models?}
-
-
-Perhaps even more concerning is that if this is true it undescores a widening trend in language modeling which is that models and modeling techniques are fundamentally non-scientific. It is difficult to make progress on this if we do not have a rigorous scientific framework for understanding how models work. 
-
-Second research question: How can we more quantitatively understand the performance of small models? Is there a more scientific way to develop language models? 
-
-
-This divergence raises several critical questions about our current approach to language model development:
-
-\begin{enumerate}
-    \item \textbf{Scaling vs. Efficiency:} Are we truly advancing the field when performance gains primarily come from increasing model size? The figure shows that holding model size constant yields minimal improvements, suggesting our training methods may not be fundamentally more efficient; or if they are more efficient, they are more efficient for \emph{larger} models.
-
-    \item How can we design more efficient training methods for small models? Are there more principles ways to design language modeling frameworks that are more efficient for small models? 
-
-    \item \textbf{The Small Model Plateau:} Why do smaller models consistently underperform relative to their larger counterparts? The persistent gap in \cref{fig:model_size_vs_performance} suggests that current training paradigms may be inherently biased towards scale rather than efficiency.
-
-    \item How can we more quantitatively understand the performance of small models? Is there a more scientific way to develop language models? 
-    
-    \item \textbf{Definition of "Small":} The very notion of a "small" model has shifted dramatically—from 125M parameters in 2020 to 14B parameters in 2024. This redefinition raises questions about whether we're actually making progress in efficient training, or simply moving the goalposts.
-
-\end{enumerate}
-
-
-This question is particularly pressing because, while large models continue to push boundaries, \textbf{small models remain essential} for practical deployment. They offer critical advantages in compute efficiency, privacy, customization for domain-specific data, and environmental sustainability. They also enable better interpretability and accessibility for researchers with limited resources.
-
 \section*{Research Objectives}
 
-The central aim of this thesis is to investigate how small language models can be trained \emph{more efficiently}, improving their performance through principled strategies rather than brute-force scaling. This goal is pursued along two complementary research threads:
+This thesis aims to explore how small language models can be trained more efficiently and effectively, emphasizing principled approaches over brute-force scaling. The work is structured around two central research objectives:
 
+\subsection{How can we design more efficient training methods for small models?}
 
-\subsection*{1. Cognitive Inspiration}
+Despite recent advances in architecture design and compression techniques, small models continue to lag behind their larger counterparts. Yet they are critical for real-world deployment due to their efficiency, interpretability, and accessibility.
 
-The first approach draws insight from the most efficient language learner we know: the human brain. Humans acquire language with \emph{far less data} than large language models. A thirteen-year-old child may have been exposed to approximately \textbf{100 million words}, whereas today's models are trained on over \textbf{10 billion tokens}. This contrast motivates the integration of cognitive principles—such as curriculum learning, syntactic generalization, and frequency-independent representation—into model training.
+A central question this thesis explores is:
 
 \begin{quote}
-\textbf{To what extent can we take inspiration from the human brain when designing learning paradigms for smaller models?} 
+    \textbf{\emph{To what extent can we take inspiration from the human brain when designing learning paradigms for small models?}}
 \end{quote}
 
-\subsection*{2. Analytical Examination}
+While today's large language models are trained on billions of tokens, a typical 13-year-old human has been exposed to only around 100 million words. This dramatic discrepancy highlights a key inefficiency in current training paradigms—and suggests an opportunity: by drawing on cognitive science and principles of human language learning, we may uncover more data-efficient strategies for small models.
 
-The second approach is analytical. It focuses on building tools and frameworks to observe and understand the \emph{learning dynamics} of small language models. This includes examining how models learn, where training breaks down, and why certain configurations fail to converge. Fine-grained diagnostics of weights, gradients, and activation patterns help identify and mitigate inefficiencies in small model training.
+This part of the thesis investigates two core levers for improving training efficiency:
+
+Data-level learning processes: Can curriculum learning—structured exposure to data based on difficulty or frequency—help small models generalize more effectively?
+
+Objective-level learning processes: How can modifying the learning objective or inductive biases (e.g., through syntactic generalization or smoothing) enhance model robustness and reduce reliance on token frequency?
+
+These questions guide an exploration of cognitively inspired approaches to learning, with a focus on grounding small model training in data-efficient, human-aligned paradigms.
+
+\subsection{How can we more quantitatively understand the performance of small models?}
+
+Improving training efficiency is only half the challenge. To ensure scientific progress, we must also develop rigorous and interpretable methods for evaluating small models. Unlike large models—where scale often masks architectural or algorithmic weaknesses—small models expose the fundamental limits of current techniques.
+
+This thesis investigates:
+
+\begin{quote}
+    \textbf{\emph{Can we establish more scientific, transparent methods for evaluating and understanding small language models?}}
+\end{quote}
+
+Existing benchmarks often reward scale rather than understanding. This work aims to shift the focus toward learning dynamics, convergence behavior, and interpretability—metrics that provide deeper insight into why and how models learn.
+
+By developing diagnostic tools and lightweight frameworks tailored to small models, this thesis contributes to a more empirical, reproducible, and theory-grounded methodology for language modeling research.
 
 \section*{Thesis Overview}
 
@@ -119,9 +108,13 @@ Summarizes the core findings of this thesis and outlines promising directions fo
 This work contributes to the field by:
 
 \begin{enumerate}
-    \item Providing a theoretical and empirical basis for cognitive strategies that reduce the data and compute required to train language models.
+    \item Exploring an in-depth analysis of the curriculum learning paradigm from a cognitive perspective.
+
     \item Introducing novel methods—such as syntactic smoothing and structured curricula—for improving small model generalization.
-    \item Developing analysis tools and frameworks to diagnose and optimize training dynamics in small-scale models.
+
+    \item Developing analysis tools to diagnose and analyze inefficiencies in model training.
+
+    \item Construction of an open-source framework for studying language model learning dynamics that can inform better training methods.
 \end{enumerate}
 
 Together, these contributions aim to support a more \textbf{accessible, efficient, and sustainable future} for language modeling—particularly for researchers and developers working under real-world constraints.
