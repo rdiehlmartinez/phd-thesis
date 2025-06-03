@@ -41,23 +41,21 @@ In summary, tiny language models matter because they are more sustainable, priva
 
 This thesis aims to explore how small language models can be trained more efficiently and effectively, emphasizing principled approaches over brute-force scaling. The work is structured around two central research objectives:
 
-\subsection{How can we design more efficient training methods for small models?}
+\subsection{Can cognitively-inspired learning paradigms improve small model training?}
 
 Despite recent advances in architecture design and compression techniques, small models continue to lag behind their larger counterparts. Yet they are critical for real-world deployment due to their efficiency, interpretability, and accessibility.
 
-A central question this thesis explores is:
+A persistent challenge in this area is that many of the methods proposed to improve small models—ranging from ad hoc architectural tweaks to various forms of regularization or data augmentation—often lack a strong scientific foundation. Progress is frequently incremental and offer to interpret; new techniques sometimes offering only marginal gains or failing to generalize beyond specific benchmarks. Without a principled framework or guiding thesis, it becomes challenging to systematically understand what works, why it works, and how to build on prior results in a cumulative way.
 
-\begin{quote}
-    \textbf{\emph{To what extent can we take inspiration from the human brain when designing learning paradigms for small models?}}
-\end{quote}
+One promising guiding thesis is to look to human language acquisition for inspiration. While today's large language models are trained on billions of tokens, a typical 13-year-old human has been exposed to only around 100 million words. This dramatic discrepancy highlights a key inefficiency in current training paradigms—and suggests an opportunity: by drawing on cognitive science and principles of human language learning, we may uncover more data-efficient strategies for small models.
 
-While today's large language models are trained on billions of tokens, a typical 13-year-old human has been exposed to only around 100 million words. This dramatic discrepancy highlights a key inefficiency in current training paradigms—and suggests an opportunity: by drawing on cognitive science and principles of human language learning, we may uncover more data-efficient strategies for small models.
+By studying the principles and processes underlying human learning, we can develop a more coherent framework for evaluating and designing training paradigms for small models. This approach allows us to ask: do the strategies that work well for the human brain also confer benefits to artificial models? Can cognitive science provide a roadmap for more data-efficient, and robust, language modeling?
 
 This part of the thesis investigates two core levers for improving training efficiency:
 
-Data-level learning processes: Can curriculum learning—structured exposure to data based on notions of `difficulty' or `frequency'—help small models generalize more effectively?
+\textbf{Data-level learning processes:} Can curriculum learning—structured exposure to data based on notions of `difficulty' or `frequency'—help small models generalize more effectively?
 
-Objective-level learning processes: How can modifying the learning objective or inductive biases (e.g., through syntactic generalization or smoothing) enhance model robustness and reduce reliance on token frequency and instead focus on robust syntactic generalization?
+\textbf{Objective-level learning processes:} How can modifying the learning objective or inductive biases (e.g., through syntactic generalization or smoothing) enhance model robustness and reduce reliance on token frequency and instead focus on robust syntactic generalization?
 
 These questions guide an exploration of cognitively inspired approaches to learning, with a focus on grounding small model training in data-efficient, human-aligned paradigms.
 
