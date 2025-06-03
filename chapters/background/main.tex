@@ -220,4 +220,14 @@ For fine-tuning large pre-trained models on downstream tasks, adapters and param
 Quantization reduces the memory and compute demands of large language models by representing weights and activations with low-precision values. BitNet~\citep{wang2023bitnet} achieves extreme efficiency by binarizing weights to a single bit and scaling activations with an absmax function, while keeping gradients in full precision. Activation-Aware Weight Quantization~\citep{lin2023awq} preserves accuracy by expanding the range of the most important weights, minimizing distortion from low-bit quantization. QLoRA~\citep{dettmers2023qlora} enables efficient fine-tuning of 4-bit quantized models by adding a small set of trainable low-rank weights, making it possible to adapt large models like LLaMA-65B on a single GPU. Underpinning many quantization methods is the Straight-Through Estimator (STE)~\citep{bengio2013estimating}, which allows gradients to flow through non-differentiable quantization operations. Together, these advances make it feasible to compress and deploy large models in resource-limited settings.
 
 
+\subsection{Data Augmentation}
+
+Data augmentation is a powerful technique for improving model performance and robustness. It involves creating modified versions of the training data to increase the diversity of the training set. This can be done through a variety of methods, including:
+
+\begin{itemize}
+    \item \textbf{Token-level augmentation:} This involves adding or removing tokens from the input sequence.
+    \item \textbf{Sentence-level augmentation:} This involves adding or removing entire sentences from the input.
+    \item \textbf{Paragraph-level augmentation:} This involves adding or removing entire paragraphs from the input.
+
+\end{itemize}
 
