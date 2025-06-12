@@ -633,7 +633,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \usepackage{csquotes} 
 
 % color notes/ boxes for highlighting 
-\usepackage{tcolorbox}
+\usepackage[most]{tcolorbox}
 
 % special Fonts 
 \usepackage{fontspec}
@@ -660,6 +660,13 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \crefname{theorem}{Theorem}{Theorems}
 \crefname{thm}{Theorem}{Theorems}
 \crefname{result}{Result}{Results}
+
+% Thesis Main Colors 
+\definecolor{thesisorange}{HTML}{ff7f11}
+\definecolor{thesisblue}{HTML}{37718e}
+% \definecolor{thesisbeige}{HTML}{faedca}
+% \definecolor{thesispurple}{HTML}{c1cefe}
+% \definecolor{thesisgreen}{HTML}{a0ddff}
 
 %%
 %% MACROS 
