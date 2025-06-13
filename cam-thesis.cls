@@ -616,6 +616,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 
 % better placement of figures - can use H 
 \usepackage{float}
+\usepackage{wrapfig}
 
 % emojies
 \usepackage{twemojis}

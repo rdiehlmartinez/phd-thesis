@@ -21,11 +21,14 @@ This insight extends beyond academic interest. While frontier models dominate pu
 
 \section*{Why Do Small Models Matter?}
 
+% We should also probably define what we mean by small models.
+
 The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Small language models, which are compact, efficient, and accessible, offer a promising counterbalance.
 
 \paragraph{Large models introduce significant societal risks.} As enumerated by the Stanford Center for Research on Foundation Models \citet{bommasani2021foundation}, these include the potential for generating disinformation and misinformation at scale, amplifying biases and discrimination present in training data, and memorizing and regurgitating sensitive or copyrighted content. The sheer scale of these models also raises concerns about labor displacement, environmental impact, and the creation of single points of failure, as a widely deployed model that is compromised could have cascading negative effects across all downstream applications. Notably, the authors highlight that the risks associated with large models are not just technical but also social, as they can entrench power in the hands of a few organizations and make it harder to adapt models to specific, local needs.
 
 \paragraph{Large models pose serious environmental sustainability challenges.} As a result, researchers have increasingly emphasized energy efficiency as a core evaluation metric, on par with traditional measures like accuracy \citep{schwartz2020greenai}. Studies have quantified the financial and carbon costs of training state-of-the-art NLP systems, revealing orders-of-magnitude differences between large and small models \citep{strubell2019energy}. For example, a modest increase in translation accuracy can result in a dramatic rise in compute cost. Tools like the ML Emissions Calculator \citep{lacoste2019quantifying} and systematic reviews of emissions factors \citep{luccioni2023counting} have made it clear that model size, hardware, and training recipes all play a role in determining the environmental footprint of machine learning. Transformer-based models, in particular, are among the most energy-intensive, especially when techniques like neural architecture search are used. Benchmarks such as HULK \citep{zhou2021hulk} have compared pretrained models' energy efficiency, showing that smaller models are far more efficient in both time and cost. Furthermore, the location where models are trained can significantly affect emissions, and sparsely activated models can be much more energy-efficient than their dense counterparts \citep{patterson2021carbon}. The overall trend is clear: smaller models are more sustainable, and their adoption is crucial for reducing AI's environmental impact.
+%TODO: Last two sentences are a bit of a non sequitur.
 
 \paragraph{Data privacy and memorization risks are heightened in large models.} Research has shown that neural networks, especially large ones, can memorize and regurgitate rare or sensitive training data \citep{feldman2020neural, carlini2019secret}. Follow-up studies have demonstrated that memorization increases with model size and data duplication, and have introduced methods to extract such memorized content from models without access to the original training set \citep{carlini2021extracting, carlini2022quantifying}. Comprehensive surveys have categorized the security and privacy risks of large language models, including inference-time leakage, adversarial vulnerabilities, and systemic risks from centralization \citep{yao2024privacysurvey}. Larger models are more likely to leak personally identifiable information, especially when trained on duplicated or low-diversity data \citep{huang2022large, neel2023privacy}. Mitigation strategies such as differential privacy \citep{dwork2006calibrating} and federated learning \citep{mcmahan2017communication} have been proposed, but these often come with trade-offs in model utility. Scaling laws for memorization further confirm that as models grow, so does their propensity to memorize and leak sensitive information \citep{lu2024scaling, biderman2023emergent, kiyomaru2024comprehensive}. In contrast, smaller models, with less capacity to memorize, offer a more privacy-preserving alternative—especially when combined with privacy-focused training techniques.
 
@@ -90,7 +93,7 @@ This thesis is organized into two parts, reflecting the two research threads:
 
 \end{itemize}
 
-\subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 5–7)}
+\subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 5-7)}
 
 \begin{itemize}
     \item \textbf{Chapter 5:} \emph{Model Analysis Background} provides a background on the methods used to analyze language models, including activation patterns, parameter rank, and convergence behavior.
@@ -137,7 +140,7 @@ The content of this thesis is comprised of the following published conference pa
     coltitle=white
 ]
 \subsection*{Thesis Publications}
-The following papers and software packages form the core content of this thesis:
+The following papers and software packages form the core content of this thesis.
 
 \begin{itemize}
     \item Richard Diehl Martinez, Zebulon Goriely, Hope McGovern, Christoper Davis, Andrew Caines, Paula Buttery, Lisa Beinborn (2023). {\color{thesisblue}\href{https://aclanthology.org/2023.conll-1.10/}{CLIMB – Curriculum Learning for Infant-inspired Model Building}}. In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 138-154, Singapore. Association for Computational Linguistics.
@@ -146,7 +149,7 @@ The following papers and software packages form the core content of this thesis:
 
     \item Richard Diehl Martinez, Pietro Lesci, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.findings-emnlp.246/}{Tending Towards Stability: Convergence Challenges in Small Language Models}}. In \emph{Findings of the Association for Computational Linguistics: EMNLP 2024}, pages 4253-4263, Miami, Florida, USA. Association for Computational Linguistics.
 
-    \item Richard Diehl Martinez, David Demitri Africa, Yuval Weiss, Suchir Salhan, Ryan Daniels, Paula Buttety (2025). {\color{thesisblue}\href{https://github.com/pico-lm}{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}}. In Submission to \emph{2025 Conference on Empirical Methods in Natural Language Processing System Demonstration Track}.
+    \item Richard Diehl Martinez, David Demitri Africa, Yuval Weiss, Suchir Salhan, Ryan Daniels, Paula Buttery (2025). {\color{thesisblue}\href{https://github.com/pico-lm}{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}}. In Submission to \emph{2025 Conference on Empirical Methods in Natural Language Processing System Demonstration Track}.
 \end{itemize}
 \end{tcolorbox}
 
@@ -167,20 +170,20 @@ The following papers and software packages form the core content of this thesis:
     coltitle=white
 ]
 \subsection*{Mentored Works}
-The following papers were developed under my mentorship and are tangentially mentioned in this thesis:
+I mentored the following projects during my PhD.
 
 \begin{itemize}
     \item David Demitri Africa, Richard Diehl Martinez, Paula Buttery (2025). {\color{thesisblue}{Examining the Performance Gap: Meta-Learning for Pretraining Small Language Models}}. In Submission to \emph{BlackBox Workshop at the 2025 Conference on Empirical Methods in Natural Language Processing}.
     \item Yuval Weiss, Richard Diehl Martinez, Andrew Caines, Paula Buttery (2025). {\color{thesisblue}{Investigating ReLoRA: Effects on the Learning Dynamics of Small Language Models}}. In Submission to \emph{BlackBox Workshop at the 2025 Conference on Empirical Methods in Natural Language Processing}.
 \end{itemize}
 
-\subsection*{Other Projects}
-During my PhD, I also worked on the following projects, which are not included in this thesis:
+\subsection*{Other Publications}
+I also worked on the following papers during my PhD (not included in this thesis).
 
 \begin{itemize}
     \item Cole Simmons, Richard Diehl Martinez, Dan Jurafsky (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.ml4al-1.20/}{SumTablets: A Transliteration Dataset of Sumerian Tablets}}. In \emph{Proceedings of the 1st Workshop on Machine Learning for Ancient Languages}, pages 192-202, Bangkok, Thailand. Association for Computational Linguistics.
-    \item Zebulon Goriely, Richard Diehl Martinez, Andrew Caines, Paula Buttery, Lisa Beinborn (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.conll-babylm.4/}{From Babble to Words: Pre-Training Language Models on Continuous Streams of Phonemes}}, pages 37-53, Miami, Florida, USA. Association for Computational Linguistics.
-    \item Suchir Salhan, Richard Diehl Martinez, Zebulon Goriely, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.conll-babylm.15/}{Less is More: Pre-Training Cross-Lingual Small-Scale Language Models with Cognitively-Plausible Curriculum Learning Strategies}}, pages 174-188, Miami, Florida, USA. Association for Computational Linguistics.
+    \item Zebulon Goriely, Richard Diehl Martinez, Andrew Caines, Paula Buttery, Lisa Beinborn (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.conll-babylm.4/}{From Babble to Words: Pre-Training Language Models on Continuous Streams of Phonemes}}, In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 37-53, Miami, Florida, USA. Association for Computational Linguistics.
+    \item Suchir Salhan, Richard Diehl Martinez, Zebulon Goriely, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.conll-babylm.15/}{Less is More: Pre-Training Cross-Lingual Small-Scale Language Models with Cognitively-Plausible Curriculum Learning Strategies}}, In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 174-188, Miami, Florida, USA. Association for Computational Linguistics.
     \item  Richard Diehl Martinez$^{\dagger}$, Suchir Salhan$^{\dagger}$, Zebulon Goriely, Paula Buttery (2025). {\color{thesisblue}{How Long Can a \textsc{BabyLM} Go? Investigating the Effect of Sequence Length on Small Language Model Pre-Training}}. In Submission to \emph{2025 BabyLM Workshop at the Conference on Empirical Methods in Natural Language Processing}. $^{\dagger}$Equal contribution.
 \end{itemize}
 \end{tcolorbox}

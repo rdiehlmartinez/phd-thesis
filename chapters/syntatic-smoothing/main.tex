@@ -1,10 +1,10 @@
-\chapter{Mitigating Frequency Bias and Anisotropy in Language Model Pre-Training with Syntactic Smoothing}
+\chapter{Learning Words Like Humans Do: Syntactic Smoothing for Language Model Training}
 
 Humans possess a remarkable ability to quickly understand the meaning of unknown words, given contextual cues. Consider the sentence, ``the Golden Gate Bridge has been \emph{obnebulated} every morning this week, limiting visibility of the Pacific Ocean.'' For many readers, `obnebulated' is probably not a familiar term, but we are likely to infer that 1) it is almost certainly a verb because of the -ed suffix and occurrence after perfective and passive auxiliaries, and 2) its meaning relates to visibility and climatic conditions.\footnote{ `Obnebulate' is an obsolete word meaning, ``To obscure with or as with a mist; to befog'' (\emph{Oxford English Dictionary}).} The ability to integrate unknown words based on syntactic and semantic context is essential for robust language understanding and still poses a significant challenge for language models. Nevertheless, Pre-trained Transformer Language Models (PLMs) have proven tremendously capable of solving a wide array of language processing tasks \citep{touvron2023llama, chowdhery2023palm}. 
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.9\linewidth]{chapters/chapter 2/figures/blimp_bias_example.pdf}
+    \includegraphics[width=0.9\linewidth]{chapters/syntatic-smoothing/figures/blimp_bias_example.pdf}
     \caption{Illustration of the BLiMP \textbf{frequency bias} calculation used to evaluate a model's reliance on frequency statistics when making predictions. The example BLiMP values are from a baseline RoBERTa model.}
     \label{fig:blimp_bias}
     \vspace{-1em}
@@ -95,7 +95,7 @@ We provide the POS distributions and similarity distributions for the example to
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{chapters/chapter 2/figures/distributions.png}
+    \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/distributions.png}
     \caption{Part-of-speech distributions and similarity distributions for the subword tokens ``blind'' and ``the''. Similarities are computed as cosine-similarities against every other token in the vocabulary and sorted.}
     \label{fig:distributions}
     \vspace{-1em}
@@ -176,7 +176,7 @@ Our results are summarized in \cref{tbl:full-results}. We find that our method r
 We conduct analyses to inspect the learning dynamics of our method and its effect on frequency bias and anisotropy in more detail. 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.90\linewidth]{chapters/chapter 2/figures/biases.png}
+    \includegraphics[width=0.90\linewidth]{chapters/syntatic-smoothing/figures/biases.png}
     \caption{Frequency bias plotted for the three open source pre-trained models, our base model, the two label smoothing (LS) baselines and our two \texttt{Syntactic Smoothing} (\texttt{SyS}) models.}
     \label{fig:biases}
     \vspace{-1em}
@@ -189,7 +189,7 @@ By contrast, the two \texttt{Syntactic Smoothing} variants successfully reduce t
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{chapters/chapter 2/figures/anisotropy-learning-dynamics.png}
+    \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-learning-dynamics.png}
     \caption{Anisotropy learning dynamics plotted for the baseline RoBERTa model, the two label smoothing (LS) baselines and our \texttt{Syntactic Smoothing} (\texttt{SyS}) models. Values in parentheses indicate the degree of smoothing.}
     \label{fig:anisotropy-learing-dynamics}
     \vspace{-1em}
@@ -203,7 +203,7 @@ Over the course of training, we observe a consistent double-dip trend: an initia
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{chapters/chapter 2/figures/anisotropy-layers.png}
+    \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-layers.png}
     \caption{Anisotropy learning dynamics plotted for the baseline model and the paced \texttt{Syntactic Smoothing} model with high smoothing, across some of the models' layers. We highlight the difference in anisotropy of the final layer across the two models at the end of training.}
     \label{fig:anisotropy-layers}
     \vspace{-1em}
@@ -217,7 +217,7 @@ It is also evident that the pacing approach re-introduces frequency bias towards
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{chapters/chapter 2/figures/bias-vs-anisotropy.png}
+    \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/bias-vs-anisotropy.png}
     \caption{Pairs of anisotropy, and frequency bias for the baseline RoBERTa model, the two label smoothing baselines and our \texttt{Syntactic Smoothing} models. The arrows indicate increasing training progress (starting after 50\% of training has completed).}
     \label{fig:bias-anisotropy-correlation}
 \end{figure}
@@ -324,7 +324,7 @@ Broadly, we find that content words, primarily nouns, are over-represented in lo
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[height=4cm]{chapters/chapter 2/figures/top_versus_bottom_pos_dist.png}
+    \includegraphics[height=4cm]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.png}
     \caption{Distribution across POS tags of the top versus bottom 100 most frequent tokens.}
     \label{fig:top-100-pos-dist}
 \end{figure}
