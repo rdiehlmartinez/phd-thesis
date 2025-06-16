@@ -283,7 +283,7 @@ Multiple evaluation metrics are employed in BabyLM. In this paper we focus on BL
 
 In the tables we compare to our small BabyBERTa-style vanilla model also trained on the clean data (Section \ref{subsec:baseline}). Figure~\ref{fig:combined-boxplots} visualizes these comparisons for the BLiMP and SuperGLUE tasks.
 
-Furthermore, we experimented with some combinations of different curricula to see how they would interact (Table~\ref{tbl:result-combination-cl}), and compare the official BabyLM shared-task baselines with our shared task entries -- a number of our own BabyBERTa-style vanilla models and curriculum learning models (Table~\ref{tbl:submission-comparison}). For all of our runs, we use the same set of hyper-parameters that we report in Table~\ref{tbl:baseline_hyperparams}. 
+Furthermore, we experimented with some combinations of different curricula to see how they would interact (Table~\ref{tbl:result-combination-cl}). For all of our runs, we use the same set of hyper-parameters that we report in Table~\ref{tbl:baseline_hyperparams}. 
 
 
 We find notable gains for our own vanilla models over the shared-task baselines, and, while we do not identify further large improvements in our curriculum learning models, we do notice some modest gains which suggest possibilities for future research and experimentation over variables. While the differences in performance between most of our experimental conditions are small, the large number of ablations we run enables us to provide a comprehensive set of recommendations for how and when different curriculum learning strategies may offer improved performance on linguistic tasks. Below we summarize our observations over the full results tables.
@@ -348,24 +348,23 @@ When representing difficulty in the vocabulary curriculum experiments, token ID 
 Training data requirements have grown so much in modern NLP that usually training a language model from scratch will involve multiple datasets, or multiple domains. The results of our data curriculum experiments indicate that a good first step is to put these sub-corpora into some order of intuitive difficulty, as we did (Table~\ref{tbl:result-data-cl}). In the case of BLiMP this approach outperforms our perplexity-based data curricula, and with log pacing our vanilla model. The same is true of MSGS  (with log pacing), as well as BLiMP-supplement and SuperGLUE (though the last two do not beat our vanilla model). 
 Amongst the perplexity-driven models, the picture is less positive: out of 24 tests, only one model outperforms our vanilla model (log pacing, random initialisation + model perplexity in Table~\ref{tbl:result-data-cl}).
 
-
 \begin{table*}
     \centering
     \small
-    \begin{tabular}{llll|rrrrr}
+    \begin{tabular}{lll|rrrrr}
     \toprule
-     & \multicolumn{3}{c}{Task duration (\% of training steps)} & & & & \\
-    Task Order & 3 POS                                & 10 POS      & MLM        & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
+     \multicolumn{3}{c}{Task duration (\% of training steps)} & & & & \\
+    3 POS & 10 POS & MLM & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
     \midrule
-    Seq.       & --       & 0 - 12.5    & 12.5 - 100 & 9.58  & 73.87 & 62.98      & 69.85       & 66.70    \\
-    MT.      & --       & 0 - 100     & 12.5 - 100 & 9.78   & 74.60 & 62.17     & 69.12       & 66.64    \\
-    MT.      & --       & 0 - 100     & 0 - 100    & 9.30  & \textbf{75.82} & 65.77     & \textbf{70.74}       & 66.58    \\
-    Seq.       & 0 - 6.25 & 6.25 - 12.5 & 12.5 - 100 & 9.49  & 74.03 & 63.02      & 70.71       & 66.93    \\
-    MT.      & 0 - 6.25 & 6.25 - 100  & 12.5 - 100 & 9.72  & 73.68 & 63.89     & 70.07       & 67.00    \\
-    \textsuperscript{\textdagger}MT.      & 0 - 6.25 & 6.25 - 100  & 0 - 100    &  9.30 & 74.80 & \textbf{67.55}      & 69.89       & 67.65    \\
-    MT.      & 0 - 100  & --          & 0 - 100   & 9.25  & 74.48 & 63.98     & 69.77       & 67.72    \\
+    \rowcolor{orange!10}  --       & 0 - 12.5    & 12.5 - 100 & 9.58  & 73.87 & 62.98      & 69.85       & 66.70    \\
+    \rowcolor{orange!25}  --       & 0 - 100     & 12.5 - 100 & 9.78   & 74.60 & 62.17     & 69.12       & 66.64    \\
+    \rowcolor{orange!25}  --       & 0 - 100     & 0 - 100    & 9.30  & \textbf{75.82} & 65.77     & \textbf{70.74}       & 66.58    \\
+    \rowcolor{orange!10} 0 - 6.25 & 6.25 - 12.5 & 12.5 - 100 & 9.49  & 74.03 & 63.02      & 70.71       & 66.93    \\
+    \rowcolor{orange!25} 0 - 6.25 & 6.25 - 100  & 12.5 - 100 & 9.72  & 73.68 & 63.89     & 70.07       & 67.00    \\
+    \rowcolor{orange!25} \textsuperscript{\textdagger} 0 - 6.25 & 6.25 - 100  & 0 - 100    &  9.30 & 74.80 & \textbf{67.55}      & 69.89       & 67.65    \\
+    \rowcolor{orange!25} 0 - 100  & --          & 0 - 100   & 9.25  & 74.48 & 63.98     & 69.77       & 67.72    \\
     \midrule
-    Vanilla Model & &  & & \textbf{9.21}  & 75.48 & 65.34 & 70.47 & \textbf{68.30} \\
+    Vanilla Model &  & & \textbf{9.21}  & 75.48 & 65.34 & 70.47 & \textbf{68.30} \\
     \bottomrule
     \end{tabular}
     \caption{\label{tbl:result-obj-cl} Results for objective curriculum models (Section \ref{subsec:objective-cl}). All models score above 94 in the MSGS Control tasks. Task duration defines when an objective function was active during training, as a percentage of the total number of training steps. \textsuperscript{\textdagger} indicates the model we submitted to BabyLM, `CLIMB-multitask'. }
@@ -402,17 +401,17 @@ Altogether, these results suggest that sequential objective function curricula d
     \small
     \begin{tabular}{lll|rrrrr}
     \toprule
-    Vocab Curric.\ & Data Curric.\ & Obj. Curric.\ & PPX & BLiMP & BLiMP.S & GLUE & MSGS  \\
+    Vocab \ & Data \ & Obj. \ & PPX & BLiMP & BLiMP.S & GLUE & MSGS  \\
     \midrule
-    -- & Source & Multitask &                           9.29& 74.06 & 64.06 & 70.02 & 66.90 \\
-    -- & Random + model & Multitask &                9.44& 75.89 & 64.63 & 69.72 & 67.78 \\
+    -- & Source & MT &                           9.29& 74.06 & 64.06 & 70.02 & 66.90 \\
+    -- & Random + model & MT &                9.44& 75.89 & 64.63 & 69.72 & 67.78 \\
     Token ID & Source & -- &                     
      9.27& 75.89 & 64.62 & 70.24 & 67.90 \\
     Token ID & Random + model & -- &
         9.30& 75.88 & \textbf{65.79} & 70.42 & 66.63 \\
-    Token ID & Source & Multitask &
+    Token ID & Source & MT &
          9.22 & 74.86 & 62.82 & 70.09 & 66.68 \\
-    Token ID & Random + model & Multitask & 9.46& \textbf{75.92} & 63.68 & 69.98 & \textbf{71.30} \\
+    Token ID & Random + model & MT & 9.46& \textbf{75.92} & 63.68 & 69.98 & \textbf{71.30} \\
     \midrule
     Vanilla Model & & & \textbf{9.21} & 75.48 & 65.34 & \textbf{70.47} & 68.30 \\
     \bottomrule

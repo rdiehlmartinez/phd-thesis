@@ -624,7 +624,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \usepackage{twemojis}
 
 % color customization for background and text 
-\usepackage[HTML]{xcolor}
+\usepackage[HTML,table]{xcolor}
 
 % highlighting of text 
 \usepackage{soul}
