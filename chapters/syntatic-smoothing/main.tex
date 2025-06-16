@@ -1,16 +1,25 @@
 \chapter{Learning Words Like Humans Do: Syntactic Smoothing for Language Model Training}
 
-Humans possess a remarkable ability to quickly understand the meaning of unknown words, given contextual cues. Consider the sentence, ``the Golden Gate Bridge has been \emph{obnebulated} every morning this week, limiting visibility of the Pacific Ocean.'' For many readers, `obnebulated' is probably not a familiar term, but we are likely to infer that 1) it is almost certainly a verb because of the -ed suffix and occurrence after perfective and passive auxiliaries, and 2) its meaning relates to visibility and climatic conditions.\footnote{ `Obnebulate' is an obsolete word meaning, ``To obscure with or as with a mist; to befog'' (\emph{Oxford English Dictionary}).} The ability to integrate unknown words based on syntactic and semantic context is essential for robust language understanding and still poses a significant challenge for language models. Nevertheless, Pre-trained Transformer Language Models (PLMs) have proven tremendously capable of solving a wide array of language processing tasks \citep{touvron2023llama, chowdhery2023palm}. 
+Building on the insights from curriculum learning and the challenges of syntactic generalization discussed in the previous chapters, we now turn to a core limitation of current language models: their difficulty in robustly representing and generalizing to infrequent words. Humans possess a remarkable ability to quickly understand the meaning of unknown words, given contextual cues. Consider the sentence, ``the Golden Gate Bridge has been \emph{obnebulated} every morning this week, limiting visibility of the Pacific Ocean.'' For many readers, `obnebulated' is probably not a familiar term, but we are likely to infer that 1) it is almost certainly a verb because of the -ed suffix and occurrence after perfective and passive auxiliaries, and 2) its meaning relates to visibility and climatic conditions.\footnote{ `Obnebulate' is an obsolete word meaning, ``To obscure with or as with a mist; to befog'' (\emph{Oxford English Dictionary}).} The ability to integrate unknown words based on syntactic and semantic context is essential for robust language understanding and still poses a significant challenge for language models. Nevertheless, Pre-trained Transformer Language Models (PLMs) have proven tremendously capable of solving a wide array of language processing tasks \citep{touvron2023llama, chowdhery2023palm}. 
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.9\linewidth]{chapters/syntatic-smoothing/figures/blimp_bias_example.pdf}
+    \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/blimp_bias_example.pdf}
     \caption{Illustration of the BLiMP \textbf{frequency bias} calculation used to evaluate a model's reliance on frequency statistics when making predictions. The example BLiMP values are from a baseline RoBERTa model.}
     \label{fig:blimp_bias}
     \vspace{-1em}
 \end{figure}
 
 Part of the success of PLMs can be attributed to the pre-training objective. Despite variations in architecture, the vast majority of language models are pre-trained to maximize the log-likelihood of a word, given the surrounding context \citep{devlin2019bert, brown2020gpt3, chowdhery2023palm, touvron2023llama}. As language use is characterized by a Zipfian distribution \citep{zipf1935zipflaw}, language models are exposed to frequent tokens exponentially more often than infrequent ones during pre-training. Consequently, the representations of these frequent tokens are optimized based on exponentially more learning signals than those of low-frequency tokens. It has been shown that maximum likelihood objectives lead to representation degeneration in English language models because infrequent tokens are pushed into a narrow manifold of the representational space \citep{gao2018representation}. This representation degeneration problem is linked to the broader problem of \textbf{anisotropy}: the hidden states of a language model tend to cluster together into a small cone-shaped subspace, rather than over their full representational capacity \citep{arora2016latent, ethayarajh2019contextual, gao2018representation}. As language model evaluation is based on cumulative evaluation scores that conceal how well a model processes infrequent words, the disparities in the representational space are difficult to assess.  
+
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/anisotropy_visualization.pdf}
+    \caption{Artistic visualization of the representational space of a language model, showing the clustering of tokens into a narrow manifold. The model is trained with a maximum likelihood objective, and the representations of the tokens are clustered together into a narrow manifold.}
+    \label{fig:anisotropy_visualization}
+\end{figure}
+
 
 Conventional language modeling approaches require large model sizes to effectively capture long-tail vocabulary distributions, limiting the scalability of these methods \citep{feldman2020does,haviv2023understanding}. In this work, we propose \textbf{\texttt{Syntactic Smoothing}}: a syntactically-guided label smoothing approach to improve the representation of infrequent tokens in language models without resorting to perpetual increases of model and training data size. We smoothly distribute the backpropagation signal over syntactically similar tokens using a similarity metric based on part-of-speech (POS) tag distributions. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions. 
 We evaluate our method using a new metric for quantifying the \textbf{frequency bias} of language models (illustrated in \cref{fig:blimp_bias}) and find that \texttt{Syntactic Smoothing} reduces both the frequency bias and the degree of anisotropy in a small English language model. We further explore the relationship between anisotropy and frequency bias and their effect on downstream performance.
@@ -61,7 +70,7 @@ While frequency bias and anisotropy are prevalent in language modeling, quantify
 \section{Frequency Bias}
 \label{section:freq-bias}
 
-We investigate frequency effects using a zero-shot test of grammatical capability known as BLiMP: The Benchmark of Linguistic Minimal Pairs \cite{warstadt2020blimp}. BLiMP comprises 67 datasets (or ``subtasks''), each consisting of 1,000 pairs of grammatical and ungrammatical sentences that differ only with respect to a specific linguistic characteristic (covering syntax, morphology, and semantics). Language models are tasked with assigning a higher likelihood to the grammatical sentence. The grammatical generalization capabilities of a language model are often summarized by averaging the accuracies achieved across the 67 BLiMP tasks. While random guessing scores 0.5, state-of-the-art models have achieved scores of 0.87 when trained on large datasets, and models trained on the 10M-word BabyLM dataset have achieved scores up to 0.80 \citep{warstadt2023findings}. 
+We investigate frequency effects using a zero-shot test of grammatical capability known as BLiMP: The Benchmark of Linguistic Minimal Pairs \cite{warstadt2020blimp}. BLiMP comprises 67 datasets (or ``subtasks''), each consisting of 1,000 pairs of grammatical and ungrammatical sentences that differ only with respect to a specific linguistic characteristic (covering syntax, morphology, and semantics). Language models are tasked with assigning a higher likelihood to the grammatical sentence. The grammatical generalization capabilities of a language model are often summarized by averaging the accuracies achieved across the 67 BLiMP tasks. While random guessing scores 0.5, state-of-the-art models have achieved scores of 0.87 when trained on large datasets, and models trained on the 10M-word BabyLM dataset have achieved scores up to 0.80 \citep{warstadt2023babylm1}. 
 
 BLiMP is carefully balanced to ensure individual tokens occur equally in both sentence types. However, within a single pair, there may be an imbalance in average token frequency: For instance, the sentence
 \textit{Grace's piano teachers are \textbf{known}} has a log frequency of 8.35 while its associated minimal pair \textit{Grace's piano teachers are \textbf{replied}} has a log frequency of 6.20.  We hypothesize that despite the minimal difference in BLiMP pairs, models trained in a typical manner will be biased by token frequency when determining grammatical acceptability.
@@ -93,7 +102,7 @@ Note that while in this paper we define syntactic similarity via cosine similari
 
 We provide the POS distributions and similarity distributions for the example tokens ``blind'' and ``the'' in \cref{fig:distributions}. Notice that ``the'' occurs almost exclusively as a determiner and is not similar to many other tokens, whereas ``blind'' occurs as a noun, verb, adjective, and adverb and has a high similarity to more than half the other tokens in the vocabulary.
 
-\begin{figure}[t]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/distributions.png}
     \caption{Part-of-speech distributions and similarity distributions for the subword tokens ``blind'' and ``the''. Similarities are computed as cosine-similarities against every other token in the vocabulary and sorted.}
@@ -126,11 +135,11 @@ where $\tau$ defines the temperature which we set to $\tau=0.025$.
 \subsection{Experimental Setup}
 \label{subsection:experimental_setup}
 
-Our experiments focus on smaller language models and datasets due to computational constraints and the particular challenges of generalizing to uncommon instances under resource-constrained training conditions \citep{warstadt2023findings, diehlmartinez2023climb}. 
+Our experiments focus on smaller language models and datasets due to computational constraints and the particular challenges of generalizing to uncommon instances under resource-constrained training conditions \citep{warstadt2023babylm1,diehlmartinez2023climb}. 
 
-\paragraph{Data} \label{paragraph:data} We use the dataset published as training data for the BabyLM challenge at the 2023 CoNLL workshop \citep{warstadt2023findings}. It contains roughly 10 million tokens sampled from pre-existing datasets, covering a wide range of domains including transcribed speech (both adult-directed and child-directed), movie subtitles, Wikipedia articles, and books. The dataset was constructed to be similar to the input received by children --- 56\% comes from transcribed speech and 40\% comes from sources intended for children.
+\paragraph{Data} \label{paragraph:data} We use the dataset published as training data for the BabyLM challenge at the 2023 CoNLL workshop \citep{warstadt2023babylm1}. It contains roughly 10 million tokens sampled from pre-existing datasets, covering a wide range of domains including transcribed speech (both adult-directed and child-directed), movie subtitles, Wikipedia articles, and books. The dataset was constructed to be similar to the input received by children --- 56\% comes from transcribed speech and 40\% comes from sources intended for children.
 
-\paragraph{Model} We use a small 8-layer encoder-style RoBERTa model with pre-layer normalization \cite{huebner2021babyberta}. We report the hyper-parameter settings we use throughout all experiments in \cref{tbl:appendix_hyperparams} (\cref{section:appendix-hyperparameters}) and computational requirements in \cref{section:appendix-computational-requirements}. We use a BPE tokenizer \citep{sennrich2016bpe} with a vocabulary size of 8192 as recommended in previous work \cite{diehlmartinez2023climb}. 
+\paragraph{Model} We use a small 8-layer encoder-style RoBERTa model with pre-layer normalization \cite{huebner2021babyberta}. We report the hyper-parameter settings we use throughout all experiments in \cref{tbl:appendix_hyperparams}. We use a BPE tokenizer \citep{sennrich2016bpe} with a vocabulary size of 8192 as recommended in previous work \cite{diehlmartinez2023climb}. 
 
 \paragraph{Evaluation} We evaluate the BLiMP frequency bias of our models, as defined in \cref{section:freq-bias}, on the evaluation set of BLiMP. To compute anisotropy we use the formulation defined in \cref{eq:empirical-isotropy}; We sample 1,000 pairs of random word tokens with their surrounding context from the training set, and compute the cosine similarity of their hidden representation at each of the 8 layers of the RoBERTa model. To obtain a model's final anisotropy value, we average the anisotropy scores across the 8 layers. Additionally, we finetune and evaluate each model on two downstream sentence-level tasks, COLA \citep{warstadt2019cola} and SST-2 \citep{socher2013sst}, as well as two language inference tasks, MNLI \citep{williams2018mnli} and QNLI \citep{rajpurkar2016squad, wang2018glue}.
 
@@ -174,7 +183,7 @@ Our results are summarized in \cref{tbl:full-results}. We find that our method r
 
 \subsection{Anisotropy and Frequency Bias}
 We conduct analyses to inspect the learning dynamics of our method and its effect on frequency bias and anisotropy in more detail. 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=0.90\linewidth]{chapters/syntatic-smoothing/figures/biases.png}
     \caption{Frequency bias plotted for the three open source pre-trained models, our base model, the two label smoothing (LS) baselines and our two \texttt{Syntactic Smoothing} (\texttt{SyS}) models.}
@@ -187,7 +196,7 @@ We find that all four pre-trained models exhibit strong frequency bias (see \cre
 
 By contrast, the two \texttt{Syntactic Smoothing} variants successfully reduce the frequency bias. The frequency bias is almost completely removed in the case of the \texttt{Mid} variant, which distributes exactly half of the training signal to syntactically similar tokens. We further observe that the Label Smoothing baselines also reduce bias but to a lesser extent than the corresponding \texttt{Syntactic Smoothing} models with the same degree of smoothing. 
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-learning-dynamics.png}
     \caption{Anisotropy learning dynamics plotted for the baseline RoBERTa model, the two label smoothing (LS) baselines and our \texttt{Syntactic Smoothing} (\texttt{SyS}) models. Values in parentheses indicate the degree of smoothing.}
@@ -201,7 +210,7 @@ As shown in \cref{tbl:full-results}, \texttt{Syntactic Smoothing} reduces anisot
 
 Over the course of training, we observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \texttt{Syntactic Smoothing} models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, we also plot the evolution of the anisotropy across several layers of our baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-layers}. Two observations stand out. The anisotropy of all layers in the \texttt{Syntactic Smoothing} model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \texttt{Syntactic Smoothing} model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citeauthor{ethayarajh2019contextual}. Notably, in the final layer—commonly used for sentence representations in downstream tasks—the anisotropy of the \texttt{Syntactic Smoothing} model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. 
 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-layers.png}
     \caption{Anisotropy learning dynamics plotted for the baseline model and the paced \texttt{Syntactic Smoothing} model with high smoothing, across some of the models' layers. We highlight the difference in anisotropy of the final layer across the two models at the end of training.}
@@ -215,7 +224,7 @@ For each model, we compute the model's frequency bias and anisotropy at multiple
 
 It is also evident that the pacing approach re-introduces frequency bias towards the end of training, as the degree of smoothing is linearly reduced to zero. It is noteworthy that the final anisotropy and bias are lower than the baseline model, and completing training without any smoothing may be beneficial for downstream tasks, as explored in the next section.
 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\linewidth]{chapters/syntatic-smoothing/figures/bias-vs-anisotropy.png}
     \caption{Pairs of anisotropy, and frequency bias for the baseline RoBERTa model, the two label smoothing baselines and our \texttt{Syntactic Smoothing} models. The arrows indicate increasing training progress (starting after 50\% of training has completed).}
@@ -233,7 +242,7 @@ In \cref{sec:sim} we define the syntactic similarity score that is used by the \
 $$ \frac{1}{2}\big[ \text{KL}(M_i, M_j ) + \text{KL}(M_j, M_i)\big],$$
 where KL$(M_i, M_j)$ is the Kullback-Leibler divergence between the POS distributions, $M_i$ and $M_j$, for the vocabulary items $V_i$ and $V_j$.
 
-\begin{table}[t]
+\begin{table}[ht!]
 \centering
 \small
 \begin{tabular}{l||cc|ccccc}
@@ -260,7 +269,7 @@ Our work studies the phenomenon of \textbf{frequency bias} in language models th
 
 \section{Experimental Hyperparameters}
 \label{section:appendix-hyperparameters}
-\begin{table}[h!]
+\begin{table}[ht!]
     \centering
     \small
     \begin{tabular}{l|r}
@@ -288,41 +297,12 @@ Our work studies the phenomenon of \textbf{frequency bias} in language models th
 
 These hyperparameters are taken from \citet{diehlmartinez2023climb} who tuned the RoBERTa model for the 10M-word BabyLM dataset. 
 
-\section{Computational Requirements}
-\label{section:appendix-computational-requirements}
-
-We purposefully train a small-scale LM for our experiments. The total amount of the trainable parameters in our model is \textbf{12,750,336}. Each of our experiments trains for approximately 14-20 GPU hours, using a server with one NVIDIA A100 80GB PCIe GPU, 32 CPUs, and 32 GB of RAM for all experiments. Below, we report a subset of the output of the \emph{lscpu} command:
-
-\begin{tcolorbox}[left=5pt,right=5pt,top=5pt,bottom=5pt]
-\small
-\begin{verbatim}
-Architecture:        x86_64
-CPU op-mode(s):      32-bit, 64-bit
-Address sizes:       46 bits physical, 
-                     48 bits virtual
-Byte Order:          Little Endian
-CPU(s):              32
-On-line CPU(s) list: 0-31
-Vendor ID:           GenuineIntel
-Model name:          Intel(R) Xeon(R)
-                     Silver 4210R CPU
-                     @ 2.40GHz
-CPU family:          6
-Model:               85
-Thread(s) per core:  1
-Core(s) per socket:  1
-Socket(s):           8
-Stepping:            7
-BogoMIPS:            4800.11
-\end{verbatim}
-\end{tcolorbox}
-\vfill
 \section{Word Class Versus Word Frequency Analysis}
 \label{section:word-class-versus-word-frequency}
 
 Broadly, we find that content words, primarily nouns, are over-represented in low-frequency tokens. We moreover, find that the syntactic distribution across POS tags changes considerably when comparing the top 100 and bottom 100 most and least frequently occurring tokens. This analysis suggests that poor performance on infrequent tokens has a particularly strong effect on a model's inability to correctly model specialized noun vocabulary items. 
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \centering
     \includegraphics[height=4cm]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.png}
     \caption{Distribution across POS tags of the top versus bottom 100 most frequent tokens.}

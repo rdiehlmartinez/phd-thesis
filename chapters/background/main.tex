@@ -106,7 +106,7 @@ The following section explores some of the critical aspects of large language mo
 
 \subsection{Datasets for Large Language Model Pretraining}
 The performance of large language models (LLMs) is strongly influenced by the scale, diversity, and quality of their pretraining datasets. Over the past several years, a number of large-scale corpora have been developed to support open and reproducible LLM research. Table~\ref{tab:llm-datasets} summarizes some of the most widely used datasets.
-\begin{table}[h]
+\begin{table}[ht!]
 \centering
 \begin{tabular}{p{3.5cm} p{1.5cm} p{8.5cm}}
 \toprule
@@ -243,7 +243,7 @@ The BabyLM Challenge not only consolidates these ideas, but also serves as a tes
 
 \section{Human-Centered Language Modeling}
 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=0.7\textwidth]{chapters/background/figures/data_comparison.pdf}
     \caption{Comparison of data scales for different language modeling approaches.}
@@ -270,7 +270,9 @@ A key question in curriculum learning is: what makes a training example “easy�
 
 \paragraph{Thoughtful data sequencing} The ordering of training examples can significantly impact learning efficiency. Researchers have experimented with various difficulty metrics, from simple linguistic features (e.g. sentence length) to more sophisticated model-based metrics. For example, \citet{platanios2019competence} demonstrated that keeping training material in the “zone of proximal development” mirrors the Goldilocks effect in human learning \citep{kidd2012goldilocks}. Other studies (e.g. \citet{campos2021curriculum, kocmi2017curriculum, liu2018curriculum}) have explored static (linguistic-based) curricula, while \citet{sachan2016easy, lalor2020dynamic} have investigated dynamic curricula (re-evaluating difficulty periodically).
 
-\paragraph{Graduated learning objectives} Standard language modeling objectives (such as masked token prediction) can be quite challenging from the outset. Some approaches have explored beginning with simpler prediction tasks (e.g. part-of-speech classification) before tackling more complex ones, similar to how children grasp broad categories before mastering precise lexical distinctions \citep{markman1990constraints}. For instance, \citet{bai2022better} (mapping rare words to hypernyms) and \citet{wang2023language, cui2022lert} (using auxiliary tasks such as POS tagging) illustrate how objective curricula can smooth the learning signal. These ideas are also inspired by psycholinguistic theories (e.g. \citet{alishahi2010computational, gleitman1990structural}) that children first learn coarse linguistic categories and later generalize to a full lexicon.
+\paragraph{Graduated learning objectives} 
+
+Standard language modeling objectives (such as masked token prediction) can be quite challenging from the outset. Some approaches have explored beginning with simpler prediction tasks (e.g. part-of-speech classification) before tackling more complex ones, similar to how children grasp broad categories before mastering precise lexical distinctions \citep{markman1990constraints}. For instance, \citet{bai2022better} (mapping rare words to hypernyms) and \citet{wang2023language, cui2022lert} (using auxiliary tasks such as POS tagging) illustrate how objective curricula can smooth the learning signal. These ideas are also inspired by psycholinguistic theories (e.g. \citet{alishahi2010computational, gleitman1990structural}) that children first learn coarse linguistic categories and later generalize to a full lexicon.
 
 While these ideas have been explored individually, there remains significant opportunity for developing more integrated approaches. There is currently no unified framework that systematically implements and evaluates these strategies, especially in small-scale language modeling. Such a framework would be particularly valuable for understanding how different curriculum dimensions—vocabulary progression, data ordering, and learning objectives—interact and complement each other when training small language models. By developing methods to compare and combine these approaches, we could gain deeper insights into which aspects of human-like learning are most beneficial for model efficiency and generalization.
 

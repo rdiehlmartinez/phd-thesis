@@ -124,7 +124,7 @@ We investigate three different sizes of a vanilla Pre-Layer Norm RoBERTa model \
          Per Device Batch Size & 32 \\
     \bottomrule
     \end{tabular}
-    \caption{Hyperparameter settings which are constant across our vanilla models described in \ref{subsec:baseline}.}
+    \caption{Hyperparameter settings which are constant across our vanilla models described in \cref{subsec:baseline}.}
     \label{tbl:baseline_hyperparams}
 \end{wrapfigure}
 
@@ -170,19 +170,14 @@ To simulate this developmental trajectory, we implement a curriculum that begins
 We explore three strategies for selecting which tokens to include at each stage of the curriculum:
 
 \begin{enumerate}
-    \item \textbf{Frequency-based selection:} Tokens are chosen based on their frequency in the corpus, approximated using the BPE tokenizer's ID assignments (lower IDs correspond to more frequent tokens).
+    \item \colorbox{green!10}{\textbf{Frequency-based selection} (Freq)} Tokens are chosen based on their frequency in the corpus, approximated using the BPE tokenizer's ID assignments (lower IDs correspond to more frequent tokens).
     
-    \item \textbf{Word class-based selection:} Tokens are selected according to their grammatical category, following a progression from lexical to functional classes as observed in child language acquisition \cite{bergelson2015early}: NOUN, VERB, ADJ, PRON, DET, ADP, NUM, CONJ, PRT, PNCT. All words within a given part-of-speech category are introduced simultaneously.
+    \item \colorbox{green!30}{\textbf{Word class-based selection} (POS)} Tokens are selected according to their grammatical category, following a progression from lexical to functional classes as observed in child language acquisition \cite{bergelson2015early}: NOUN, VERB, ADJ, PRON, DET, ADP, NUM, CONJ, PRT, PNCT. All words within a given part-of-speech category are introduced simultaneously.
     
-    \item \textbf{Hybrid selection:} We combine frequency and word class constraints by sorting words by their frequency within each part-of-speech category. This approach allows for more granular control over vocabulary expansion while maintaining the developmental progression of word classes.
+    \item \colorbox{green!50}{\textbf{Hybrid selection} (Hybrid)} We combine frequency and word class constraints by sorting words by their frequency within each part-of-speech category. This approach allows for more granular control over vocabulary expansion while maintaining the developmental progression of word classes.
 \end{enumerate}
 
 The rate at which the vocabulary expands is controlled by a pacing function. We experiment with both linear and logarithmic pacing functions, with the latter potentially better reflecting the rapid early vocabulary growth observed in children. Figure \ref{fig:pacing_fn} illustrates how the percentage of unmasked vocabulary increases over the course of training under these different pacing regimes.
-
-This approach represents, to our knowledge, the first systematic attempt at implementing a vocabulary curriculum in language model training, offering a more cognitively plausible alternative to the standard practice of training with a fixed, full vocabulary from the outset.
-
-\subsection{Data Curriculum}
-\label{subsec:data-cl}
 
 \begin{wrapfigure}{r}{0.45\textwidth}    
     \centering
@@ -210,21 +205,33 @@ This approach represents, to our knowledge, the first systematic attempt at impl
     \bottomrule
     \end{tabular}
     \caption{\label{tbl:source_order} Difficulty levels assigned to each dataset, ordered from 1 (easiest, e.g., child-directed speech) to 6 (hardest, e.g., complex written texts).}
+    \vspace{-2em} % Try -0.5em, -1em, or -2em as needed
 \end{wrapfigure}
+
+This approach represents, to our knowledge, the first systematic attempt at implementing a vocabulary curriculum in language model training, offering a more cognitively plausible alternative to the standard practice of training with a fixed, full vocabulary from the outset.
+
+\subsection{Data Curriculum}
+\label{subsec:data-cl}
 
 We implement a \textbf{data curriculum} that structures the presentation of training instances to mirror how children learn language. Unlike conventional language model training, which typically presents randomly ordered data after minimal cleaning, our approach carefully sequences training instances based on their difficulty. This is motivated by the observation that the order of training instances can significantly impact model performance \citep{schluter2018data} and by the "Goldilocks effect" in human learning, where optimal learning occurs when stimuli are neither too easy nor too hard \cite{kidd2012goldilocks}. We explore two complementary approaches to determining instance difficulty:
 
-\paragraph{Source-based difficulty} Following \citet{huebner2021babyberta}, we order datasets based on their source, considering spoken samples as 'easier' and written texts as 'harder'. This ordering reflects the natural progression of language acquisition, where children typically learn from spoken language before mastering written forms. We implement a six-level difficulty hierarchy (Table \ref{tbl:source_order}), ranging from child-directed speech (CHILDES) to complex written texts (Wikipedia, Gutenberg).\footnote{There is likely some adult-to-adult dialogue included in CHILDES as well.}
 
-\paragraph{Model-based difficulty} While source-based difficulty provides a useful heuristic, it fails to capture the variation in complexity within each corpus. To address this limitation, we implement a more fine-grained approach using perplexity as a model-intrinsic metric of instance difficulty. Perplexity measures how well a language model predicts a sequence of words, with lower perplexity indicating that the model finds the sequence more predictable and thus potentially easier to learn from.
+\begin{enumerate}
 
-We explore two distinct approaches to perplexity-based difficulty assessment. The first approach uses a static assessment, where we employ a unigram language model to evaluate perplexity once at the start of training. This method provides a simple, computationally efficient baseline that captures basic frequency patterns in the data. The unigram model's perplexity scores remain fixed throughout training, offering a consistent difficulty ranking of instances that reflects the inherent complexity of the text based on word frequencies.
+    \item \colorbox{purple!10}{\textbf{Source-based difficulty} (Source)} Following \citet{huebner2021babyberta}, we order datasets based on their source, considering spoken samples as 'easier' and written texts as 'harder'. This ordering reflects the natural progression of language acquisition, where children typically learn from spoken language before mastering written forms. We implement a six-level difficulty hierarchy (Table \ref{tbl:source_order}), ranging from child-directed speech (CHILDES) to complex written texts (Wikipedia, Gutenberg).
 
-The second approach implements a dynamic assessment strategy, where we periodically re-evaluate perplexity using the current model state. We perform these reassessments every 25,000 training steps, allowing the difficulty assessment to evolve with the model's growing capabilities. This dynamic approach better reflects the "Goldilocks effect" in learning, where optimal progress occurs when instances are neither too easy nor too hard \cite{kidd2012goldilocks}. As the model learns and develops, instances that were initially challenging may become more manageable, while others may reveal hidden complexities that weren't apparent at first.
+    \item \colorbox{purple!30}{\textbf{Static perplexity-based difficulty} (Static PPL)} While source-based difficulty provides a useful heuristic, it fails to capture the variation in complexity within each corpus. To address this limitation, we implement a more fine-grained approach using perplexity as a model-intrinsic metric of instance difficulty. Perplexity measures how well a language model predicts a sequence of words, with lower perplexity indicating that the model finds the sequence more predictable and thus potentially easier to learn from. 
 
-The dynamic approach presents several unique challenges that require careful consideration. The primary challenge arises at the start of training, when the model lacks sufficient exposure to provide meaningful perplexity scores. We address this initialization challenge through two complementary strategies. First, we can use a separately trained unigram model for initial perplexity evaluation, which provides a reasonable starting point for difficulty assessment. Alternatively, we can begin with random sampling for the first 25,000 steps before switching to model-based perplexity evaluation.
+    We use perplexity as a model-intrinsic metric of instance difficulty. Perplexity measures how well a language model predicts a sequence of words, with lower perplexity indicating that the model finds the sequence more predictable and thus potentially easier to learn from. We explore two distinct approaches to perplexity-based difficulty assessment. The first approach uses a static assessment, where we employ a unigram language model to evaluate perplexity once at the start of training. This method provides a simple, computationally efficient baseline that captures basic frequency patterns in the data. The unigram model's perplexity scores remain fixed throughout training, offering a consistent difficulty ranking of instances that reflects the inherent complexity of the text based on word frequencies.
 
-The periodic reassessment of perplexity every 25,000 steps creates an adaptive curriculum that evolves with the model's capabilities. This approach allows us to identify instances that have become too easy (exhibiting low perplexity) and potentially deprioritize them in the training schedule. Simultaneously, we can maintain focus on instances that remain challenging (showing high perplexity) and discover instances that have moved into the "Goldilocks zone" of optimal difficulty for the current model state.
+
+    \item \colorbox{purple!50}{\textbf{Dynamic perplexity-based difficulty} (Dynamic PPL)}    The second approach implements a dynamic assessment strategy, where we periodically re-evaluate perplexity using the current model state. We perform these reassessments every 25,000 training steps, allowing the difficulty assessment to evolve with the model's growing capabilities. This dynamic approach better reflects the "Goldilocks effect" in learning, where optimal progress occurs when instances are neither too easy nor too hard \cite{kidd2012goldilocks}. As the model learns and develops, instances that were initially challenging may become more manageable, while others may reveal hidden complexities that weren't apparent at first.
+
+    The dynamic approach presents several unique challenges that require careful consideration. The primary challenge arises at the start of training, when the model lacks sufficient exposure to provide meaningful perplexity scores. We address this initialization challenge through two complementary strategies. First, we can use a separately trained unigram model for initial perplexity evaluation, which provides a reasonable starting point for difficulty assessment (Dynamic PPL-U). Alternatively, we can begin with random sampling for the first 25,000 steps before switching to model-based perplexity evaluation (Dynamic PPL-R).
+
+    The periodic reassessment of perplexity every 25,000 steps creates an adaptive curriculum that evolves with the model's capabilities. This approach allows us to identify instances that have become too easy (exhibiting low perplexity) and potentially deprioritize them in the training schedule. Simultaneously, we can maintain focus on instances that remain challenging (showing high perplexity) and discover instances that have moved into the "Goldilocks zone" of optimal difficulty for the current model state.
+
+\end{enumerate}
 
 \subsection{Objective Curriculum}
 \label{subsec:objective-cl}
@@ -244,9 +251,9 @@ In our implementation, we use the unsupervised POS tagger to estimate word class
 We explore two strategies for implementing this curriculum:
 
 \begin{enumerate}
-    \item \textbf{Sequential learning:} We first train the model to predict word classes, then transition to the full MLM objective. This approach mirrors the developmental progression observed in children, where they first learn to distinguish between major word classes before mastering specific lexical items.
+    \item \colorbox{orange!10}{\textbf{Sequential learning} (Seq)} We first train the model to predict word classes, then transition to the full MLM objective. This approach mirrors the developmental progression observed in children, where they first learn to distinguish between major word classes before mastering specific lexical items.
     
-    \item \textbf{Multi-task learning:} We train the model to simultaneously predict both word classes and specific tokens, with separate task heads and optimizers for each objective. This approach allows the model to benefit from both coarse-grained and fine-grained learning signals throughout training.
+    \item \colorbox{orange!30}{\textbf{Multi-task learning} (MT)} We train the model to simultaneously predict both word classes and specific tokens, with separate task heads and optimizers for each objective. This approach allows the model to benefit from both coarse-grained and fine-grained learning signals throughout training.
 \end{enumerate}
 
 The psycholinguistic literature remains divided on how exactly word learning progresses from memorizing specific lexical items to developing generalized representations of word classes \cite{clark2015first}. Our framework provides a flexible approach to studying this progression by enabling systematic investigation of how different objective functions affect the acquisition of linguistic knowledge. By varying the timing and combination of learning objectives, we can explore different hypotheses about the relationship between category learning and specific word acquisition in language development.
@@ -291,17 +298,17 @@ We find notable gains for our own vanilla models over the shared-task baselines,
 \begin{table*}
     \centering
     \small
-    \setlength{\tabcolsep}{3pt}  % Reduce column spacing further
-    \begin{tabular}{llrrrrr}
+    % \setlength{\tabcolsep}{3pt}  % Reduce column spacing further
+    \begin{tabular}{ll|rrrrr}
     \toprule
-    Pacing & Diff. & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
+    Pacing & Type & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
     \midrule
-    \textsuperscript{\textdagger}Linear & Token ID & 9.70 & 75.09 & \textbf{66.43} & 68.71 & 68.61 \\
-    Linear & POS & 10.17 & 72.06 & 63.44 & 69.50 & 66.91 \\
-    Linear & POS+ID & 10.21 & 73.37 & 66.11 & 69.22 & 66.61 \\
-    Log & Token ID & 9.26 & 74.97 & 64.63 & 69.94 & 66.82 \\
-    Log & POS & 9.29 & 74.12 & 62.06 & \textbf{70.66} & \textbf{70.52} \\
-    Log & POS+ID & 9.29 & 74.74 & 63.62 & 70.29 & 66.42 \\
+    \rowcolor{green!10}\textsuperscript{\textdagger}Linear & Freq & 9.70 & 75.09 & \textbf{66.43} & 68.71 & 68.61 \\
+    \rowcolor{green!30}Linear & POS & 10.17 & 72.06 & 63.44 & 69.50 & 66.91 \\
+    \rowcolor{green!50}Linear & Hybrid & 10.21 & 73.37 & 66.11 & 69.22 & 66.61 \\
+    \rowcolor{green!10}Log & Freq & 9.26 & 74.97 & 64.63 & 69.94 & 66.82 \\
+    \rowcolor{green!30}Log & POS & 9.29 & 74.12 & 62.06 & \textbf{70.66} & \textbf{70.52} \\
+    \rowcolor{green!50}Log & Hybrid & 9.29 & 74.74 & 63.62 & 70.29 & 66.42 \\
     \midrule
     Vanilla & & \textbf{9.21} & \textbf{75.48} & 65.34 & 70.47 & 68.30 \\
     \bottomrule
@@ -313,19 +320,19 @@ We find notable gains for our own vanilla models over the shared-task baselines,
 \begin{table*}
     \centering
     \small
-    \setlength{\tabcolsep}{3pt}  % Reduce column spacing further
-    \begin{tabular}{llrrrrr}
+%    \setlength{\tabcolsep}{3pt}  % Reduce column spacing further
+    \begin{tabular}{ll|rrrrr}
     \toprule
-    Pacing & Diff. & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
+    Pacing & Type & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
     \midrule
-    Linear & Source & 10.41 & 73.32 & 61.99 & 69.68 & 66.22 \\
-    Linear & Unigram & 12.51 & 72.45 & 61.67 & 69.10 & 66.90 \\
-    Linear & Uni+Model & 11.88 & 72.62 & 62.57 & 69.86 & 66.64 \\
-    Linear & Rand+Model & 10.82 & 71.88 & 63.10 & 70.37 & 67.48 \\
-    \textsuperscript{\textdagger}Log & Source & \textbf{9.21} & \textbf{75.87} & 64.29 & 70.20 & \textbf{70.99} \\
-    Log & Unigram & 9.39 & 75.03 & 63.78 & 69.90 & 66.69 \\
-    Log & Uni+Model & 9.35 & 74.83 & 64.24 & 70.09 & 66.89 \\
-    Log & Rand+Model & \textbf{9.21} & 75.81 & 63.03 & 68.93 & 66.64 \\
+    \rowcolor{purple!10} Linear & Source & 10.41 & 73.32 & 61.99 & 69.68 & 66.22 \\
+    \rowcolor{purple!30} Linear & Static PPL & 12.51 & 72.45 & 61.67 & 69.10 & 66.90 \\
+    \rowcolor{purple!50} Linear & Dynamic PPL-U & 11.88 & 72.62 & 62.57 & 69.86 & 66.64 \\
+    \rowcolor{purple!50} Linear & Dynamics PPL-R & 10.82 & 71.88 & 63.10 & 70.37 & 67.48 \\
+    \rowcolor{purple!10}\textsuperscript{\textdagger}Log & Source & \textbf{9.21} & \textbf{75.87} & 64.29 & 70.20 & \textbf{70.99} \\
+    \rowcolor{purple!30} Log & Static & 9.39 & 75.03 & 63.78 & 69.90 & 66.69 \\
+    \rowcolor{purple!50} Log & Dynamic PPL-U & 9.35 & 74.83 & 64.24 & 70.09 & 66.89 \\
+    \rowcolor{purple!50} Log & Dynamic PPL-R & \textbf{9.21} & 75.81 & 63.03 & 68.93 & 66.64 \\
     \midrule
     Vanilla & & \textbf{9.21} & 75.48 & \textbf{65.34} & \textbf{70.47} & 68.30 \\
     \bottomrule
@@ -351,20 +358,20 @@ Amongst the perplexity-driven models, the picture is less positive: out of 24 te
 \begin{table*}
     \centering
     \small
-    \begin{tabular}{lll|rrrrr}
+    \begin{tabular}{llll|rrrrr}
     \toprule
-     \multicolumn{3}{c}{Task duration (\% of training steps)} & & & & \\
-    3 POS & 10 POS & MLM & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
+    & \multicolumn{3}{c}{Task duration (\% of training steps)} & & & & \\
+    Type & 3 POS & 10 POS & MLM & PPX & BLiMP & BLiMP.S & GLUE & MSGS \\
     \midrule
-    \rowcolor{orange!10}  --       & 0 - 12.5    & 12.5 - 100 & 9.58  & 73.87 & 62.98      & 69.85       & 66.70    \\
-    \rowcolor{orange!25}  --       & 0 - 100     & 12.5 - 100 & 9.78   & 74.60 & 62.17     & 69.12       & 66.64    \\
-    \rowcolor{orange!25}  --       & 0 - 100     & 0 - 100    & 9.30  & \textbf{75.82} & 65.77     & \textbf{70.74}       & 66.58    \\
-    \rowcolor{orange!10} 0 - 6.25 & 6.25 - 12.5 & 12.5 - 100 & 9.49  & 74.03 & 63.02      & 70.71       & 66.93    \\
-    \rowcolor{orange!25} 0 - 6.25 & 6.25 - 100  & 12.5 - 100 & 9.72  & 73.68 & 63.89     & 70.07       & 67.00    \\
-    \rowcolor{orange!25} \textsuperscript{\textdagger} 0 - 6.25 & 6.25 - 100  & 0 - 100    &  9.30 & 74.80 & \textbf{67.55}      & 69.89       & 67.65    \\
-    \rowcolor{orange!25} 0 - 100  & --          & 0 - 100   & 9.25  & 74.48 & 63.98     & 69.77       & 67.72    \\
+    \rowcolor{orange!10}  Seq & 0 - 12.5  & 12.5 - 100 & 9.58  & 73.87 & 62.98      & 69.85       & 66.70    \\
+    \rowcolor{orange!25}  MT & 0 - 100     & 12.5 - 100 & 9.78   & 74.60 & 62.17     & 69.12       & 66.64    \\
+    \rowcolor{orange!25}  MT & 0 - 100     & 0 - 100    & 9.30  & \textbf{75.82} & 65.77     & \textbf{70.74}       & 66.58    \\
+    \rowcolor{orange!10}  Seq & 0 - 6.25 & 6.25 - 12.5 & 12.5 - 100 & 9.49  & 74.03 & 63.02      & 70.71       & 66.93    \\
+    \rowcolor{orange!25}  MT & 0 - 6.25 & 6.25 - 100  & 12.5 - 100 & 9.72  & 73.68 & 63.89     & 70.07       & 67.00    \\
+    \rowcolor{orange!25} \textsuperscript{\textdagger}  MT & 0 - 6.25 & 6.25 - 100  & 0 - 100    &  9.30 & 74.80 & \textbf{67.55}      & 69.89       & 67.65    \\
+    \rowcolor{orange!25}  MT & 0 - 100  & 0 - 100   & 9.25  & 74.48 & 63.98     & 69.77       & 67.72    \\
     \midrule
-    Vanilla Model &  & & \textbf{9.21}  & 75.48 & 65.34 & 70.47 & \textbf{68.30} \\
+    Vanilla Model & &  & & \textbf{9.21}  & 75.48 & 65.34 & 70.47 & \textbf{68.30} \\
     \bottomrule
     \end{tabular}
     \caption{\label{tbl:result-obj-cl} Results for objective curriculum models (Section \ref{subsec:objective-cl}). All models score above 94 in the MSGS Control tasks. Task duration defines when an objective function was active during training, as a percentage of the total number of training steps. \textsuperscript{\textdagger} indicates the model we submitted to BabyLM, `CLIMB-multitask'. }
