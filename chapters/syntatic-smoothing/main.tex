@@ -13,12 +13,16 @@ One of the most striking capabilities of human learners is their ability to infe
 
 This ability is notably lacking in current language models. Despite their success on many NLP benchmarks \citep{touvron2023llama, chowdhery2023palm}, pre-trained transformer language models (PLMs) still struggle with rare or unseen words. A key reason is thattvast majority of language models are pre-trained to maximize the log-likelihood of a word, given the surrounding context \citep{devlin2019bert, brown2020gpt3, chowdhery2023palm, touvron2023llama}. As language use is characterized by a Zipfian distribution \citep{zipf1935zipflaw}, language models are exposed to frequent tokens exponentially more often than infrequent ones during pre-training. Consequently, the representations of these frequent tokens are optimized based on exponentially more learning signals than those of low-frequency tokens. It has been shown that maximum likelihood objectives lead to representation degeneration in English language models because infrequent tokens are pushed into a narrow manifold of the representational space \citep{gao2018representation}. This representation degeneration problem is linked to the broader problem of \textbf{anisotropy}: the hidden states of a language model tend to cluster together into a small cone-shaped subspace, rather than over their full representational capacity \citep{arora2016latent, ethayarajh2019contextual, gao2018representation}. \cref{fig:anisotropy_visualization} illustrates this phenomenon. As language model evaluation is based on cumulative evaluation scores that conceal how well a model processes infrequent words, the disparities in the representational space are difficult to assess. 
 
-This chapter introduces \textbf{\texttt{Syntactic Smoothing}}, a simple but cognitively motivated method for improving the representation of infrequent tokens during language model training. Inspired by the human tendency to group unknown words with structurally similar known words, we propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent tokens benefit from updates to their syntactic neighbors—allowing them to ``learn by association,'' as children often do.
+Our work makes two key contributions:
 
-We quantify the impact of this approach using a new diagnostic measure of \textbf{frequency bias}—a model's tendency to prefer grammatical sentences that contain high-frequency tokens over those with low-frequency ones. We show that \texttt{Syntactic Smoothing} reduces both frequency bias and anisotropy, and does so without hurting performance on downstream tasks. These findings suggest that small structural changes to the learning process—rooted in cognitive observations—can meaningfully improve the robustness and interpretability of language models.
+First, this chapter introduces \textbf{\texttt{Syntactic Smoothing}}, a simple but cognitively motivated method for improving the representation of infrequent tokens during language model training. Inspired by the human tendency to group unknown words with structurally similar known words, we propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent tokens benefit from updates to their syntactic neighbors—allowing them to ``learn by association,'' as children often do.
 
+Next, we quantify the impact of this approach using a new diagnostic measure of \textbf{frequency bias}—a model's tendency to prefer grammatical sentences that contain high-frequency tokens over those with low-frequency ones. We show that \texttt{Syntactic Smoothing} reduces both frequency bias and anisotropy, and does so without hurting performance on downstream tasks. These findings suggest that small structural changes to the learning process—rooted in cognitive observations—can meaningfully improve the robustness and interpretability of language models.
+
+The remainder of this chapter is organized as follows: Section~\ref{sec:related-literature} reviews the related literature on frequency bias and anisotropy in language models. Section~\ref{sec:smoothing-method} introduces the \texttt{Syntactic Smoothing} method and details its implementation. Section~\ref{subsection:experimental_setup} describes the experimental setup and implementation of \texttt{Syntactic Smoothing}. Section~\ref{sec:results} both presents our results and analysis across synthetic and real-world evaluations and discusses the implications of our findings. Finally, Section~\ref{sec:conclusion} summarizes our work and motivates further exploration of how language models internalize linguistic structure over time.
 
 \section{Related Literature}
+\label{sec:related-literature}
 
 Through maximum likelihood training, language models implicitly learn to encode token frequency statistics. This training process gives rise to a frequency bias in models that constrains their ability to generalize to infrequent tokens. In this section, we begin by reviewing literature that discusses the challenges of generalizing linguistic knowledge to infrequent tokens. We then examine recent work that links the impact of token frequency to anisotropy in the models' representational space.
 
@@ -86,6 +90,7 @@ Then, we compute the BLiMP score using pseudo log-likelihood \citep{salazar2020m
 In practice, we find that standard transformer language models, such as OPT-125M \citep{zhang2022opt}, RoBERTa-base \citep{liu2019roberta}, and T5-base \citep{raffel2020t5}, exhibit a frequency bias as high as 13.7\%. Our goal is to develop a model that can attain a frequency bias close to zero while attaining a high BLiMP score: that is, a model that makes determinations on the grammatical acceptability of sentences based solely on relevant linguistic aspects, rather than relying on possibly misleading statistical artifacts of the training data. 
 
 \section{Syntactic Smoothing}
+\label{sec:smoothing-method}
 
 We hypothesize that transformer language models exhibit a strong frequency bias due to their maximum likelihood training objective, which limits infrequent tokens from receiving useful learning signals and thus hinders their ability to effectively encode linguistic information. To address this, we propose at each learning step to backpropagate the learning signal of a target token to all other tokens serving similar syntactic roles; this benefits infrequent tokens that appear less often in the training data.
 
@@ -145,6 +150,7 @@ Our experiments focus on smaller language models and datasets due to computation
 
 \paragraph{Evaluation} We evaluate the BLiMP frequency bias of our models, as defined in \cref{section:freq-bias}, on the evaluation set of BLiMP. To compute anisotropy we use the formulation defined in \cref{eq:empirical-isotropy}; We sample 1,000 pairs of random word tokens with their surrounding context from the training set, and compute the cosine similarity of their hidden representation at each of the 8 layers of the RoBERTa model. To obtain a model's final anisotropy value, we average the anisotropy scores across the 8 layers. Additionally, we finetune and evaluate each model on two downstream sentence-level tasks, COLA \citep{warstadt2019cola} and SST-2 \citep{socher2013sst}, as well as two language inference tasks, MNLI \citep{williams2018mnli} and QNLI \citep{rajpurkar2016squad, wang2018glue}.
 
+
 \paragraph{Baselines}
 
 We introduce three types of baselines: 
@@ -154,37 +160,41 @@ We introduce three types of baselines:
     \item \textbf{Label Smoothing}: The base model trained with label smoothing \citep{szegedy2016rethinking}.  We train a baseline with a low-level of smoothing ($\alpha=0.2$) and a mid-level of smoothing ($\alpha=0.5$). Note that \texttt{Syntactic Smoothing} can be seen as a linguistically-guided version of the standard label smoothing approach, in which the learning signal is distributed to all tokens uniformly.
 \end{enumerate}
 
-\paragraph{Our Models} We train our models with \texttt{Syntactic Smoothing} using the same two $\alpha$ values as the label smoothing baselines to facilitate comparison. We also run variants using the linear pacing function presented in \cref{section:smoothing} which linearly decreases the smoothing from an initial value of $\alpha$ to zero across training. For these variants, we use the same two values of smoothing, as well as an additional high value of $\alpha=0.8$ giving a total of five \texttt{Syntactic Smoothing} variants.\footnote{We do not include unpaced \texttt{Syntactic Smoothing} with a high value of $\alpha$ as initial experiments found that distributing such a high proportion of the learning signal away from the correct token leads to high perplexity and poor downstream performance.}
+
+\paragraph{Our Models} We train our models with \texttt{Syntactic Smoothing} using the same two $\alpha$ values as the label smoothing baselines to facilitate comparison. We also run variants using the linear pacing function presented in \cref{section:smoothing} which linearly decreases the smoothing from an initial value of $\alpha$ to zero across training. For these variants, we use the same two values of smoothing, as well as an additional high value of $\alpha=0.8$ giving a total of five \texttt{Syntactic Smoothing} variants. We do not include unpaced \texttt{Syntactic Smoothing} with a high value of $\alpha$ as initial experiments found that distributing such a high proportion of the learning signal away from the correct token leads to high perplexity and poor downstream performance.
 
 \section{Results}
 \label{sec:results}
 
 \begin{table*}[ht!]
-\centering
-\small
-\begin{tabular}{ll||cc|ccccc}
-\toprule
-\textbf{Model}  & $\alpha$ & \textbf{Bias}  & \textbf{Anisotropy} & \textbf{BLiMP} & \textbf{COLA} & \textbf{SST-2} & \textbf{MNLI} & \textbf{QNLI}  \\
-\midrule
-Base Model & -&9.8 & 51.3 & 71.4 & 71.4 & 82.9 & 69.6 & 79.7 \\
-\midrule
-\multirow{2}{*}{\makecell[l]{\texttt{Label}\\\texttt{Smoothing}}} &Low & 5.5 & 40.2 & 73.2 & 70.7 & 84.0 & \textbf{70.1} & 80.0 \\
-&Mid & 2.7  & 40.3 & 73.0 & 71.5 & 82.2 & 69.0 & 79.4 \\
-\midrule
-\multirow{5}{*}{\makecell{\texttt{Syntactic}\\\texttt{Smoothing}}}&Low  & 2.9 & 39.7 & \textbf{73.2} & 70.7 & 84.9 & 69.7 & 79.2 \\
-&Mid  & \textbf{-0.2} & 33.8 & 72.1 & \textbf{71.9} & 83.5 & 67.2 & 79.4 \\
-&P. Low & 7.4 & 39.9 & 71.9 & 70.5 & \textbf{85.2} & 70.0 & \textbf{80.4}\\ 
-&P. Mid& 5.7 & 34.5 & 72.3 & 71.8 & 84.0 & 68.2 & 78.9\\ 
-&P. High & 5.2 & \textbf{31.0} & 72.2 & 70.5 & 83.7 & 67.7 & 79.1 \\ 
-\bottomrule
-\end{tabular}
-\caption{\label{tbl:full-results} We report bias~($\downarrow$), anisotropy~($\downarrow$), BLiMP~($\uparrow$) score, and accuracy or correlation scores ($\uparrow$) on two downstream sentence-level tasks -- COLA and SST-2 -- and two downstream language inference tasks -- MNLI and QNLI -- for our MLM baseline, two label smoothing (LS) baselines, and five \texttt{Syntactic Smoothing} variants. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
+    \centering
+    \small
+    \begin{tabular}{ll||cc|ccccc}
+    \toprule
+    \textbf{Model}  & $\alpha$ & \textbf{Bias}  & \textbf{Anisotropy} & \textbf{BLiMP} & \textbf{COLA} & \textbf{SST-2} & \textbf{MNLI} & \textbf{QNLI}  \\
+    \midrule
+    OPT   & - & 10.6 & - & 63.2 & 64.6 & 81.9 & 57.6 & 61.5\\
+    RoBERTa & - & 13.7 & - & 69.8 & 70.8 & 87.0 & 73.2 & 77\\
+    T5      & - & 6.2 & - & 58.3 & 61.2 & 78.1 & 48.0 &  62.0\\
+    \midrule
+    \midrule
+    Base Model & -&9.8 & 51.3 & 71.4 & 71.4 & 82.9 & 69.6 & 79.7 \\
+    \midrule
+    \multirow{2}{*}{\makecell[l]{\texttt{Label}\\\texttt{Smoothing}}} &Low & 5.5 & 40.2 & 73.2 & 70.7 & 84.0 & \textbf{70.1} & 80.0 \\
+    &Mid & 2.7  & 40.3 & 73.0 & 71.5 & 82.2 & 69.0 & 79.4 \\
+    \midrule
+    \multirow{5}{*}{\makecell{\texttt{Syntactic}\\\texttt{Smoothing}}}&Low  & 2.9 & 39.7 & \textbf{73.2} & 70.7 & 84.9 & 69.7 & 79.2 \\
+    &Mid  & \textbf{-0.2} & 33.8 & 72.1 & \textbf{71.9} & 83.5 & 67.2 & 79.4 \\
+    &P. Low & 7.4 & 39.9 & 71.9 & 70.5 & \textbf{85.2} & 70.0 & \textbf{80.4}\\ 
+    &P. Mid& 5.7 & 34.5 & 72.3 & 71.8 & 84.0 & 68.2 & 78.9\\ 
+    &P. High & 5.2 & \textbf{31.0} & 72.2 & 70.5 & 83.7 & 67.7 & 79.1 \\ 
+    \bottomrule
+    \end{tabular}
+    \caption{\label{tbl:full-results} We report bias~($\downarrow$), anisotropy~($\downarrow$), BLiMP~($\uparrow$) score, and accuracy or correlation scores ($\uparrow$) on two downstream sentence-level tasks -- COLA and SST-2 -- and two downstream language inference tasks -- MNLI and QNLI -- for our MLM baseline, two label smoothing (LS) baselines, and five \texttt{Syntactic Smoothing} variants. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
 \end{table*}
 
 Our results are summarized in \cref{tbl:full-results}. We find that our method reduces frequency bias while retaining strong language modeling capabilities. At the same time, we observe that the models with the lowest frequency bias also demonstrate the lowest anisotropy. We then extend our analysis beyond the specific phenomenon of frequency bias and anisotropy by examining the impact of \texttt{Syntactic Smoothing} on the linguistic generalization capabilities of the model and its downstream performance after finetuning. Finally, we find that an alternative syntactic scoring metric leads to similar results as the cosine-based definition.
 
-\subsection{Anisotropy and Frequency Bias}
-We conduct analyses to inspect the learning dynamics of our method and its effect on frequency bias and anisotropy in more detail. 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.7\linewidth]{chapters/syntatic-smoothing/figures/biases.png}
@@ -193,6 +203,9 @@ We conduct analyses to inspect the learning dynamics of our method and its effec
     \vspace{-1em}
 \end{figure}
 
+\subsection{Anisotropy and Frequency Bias}
+We conduct analyses to inspect the learning dynamics of our method and its effect on frequency bias and anisotropy in more detail. 
+
 \paragraph{\texttt{Syntactic Smoothing} reduces frequency bias.}
 We find that all four pre-trained models exhibit strong frequency bias (see \cref{fig:biases}); they are more likely to incorrectly prefer ungrammatical sentences if they contain tokens that occur more frequently during training. This confirms our hypothesis that the evaluation of generalization capabilities is obfuscated by frequency effects. 
 
@@ -200,7 +213,7 @@ By contrast, the two \texttt{Syntactic Smoothing} variants successfully reduce t
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-learning-dynamics.png}
+    \includegraphics[width=0.7\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-learning-dynamics.png}
     \caption{Anisotropy learning dynamics plotted for the baseline RoBERTa model, the two label smoothing (LS) baselines and our \texttt{Syntactic Smoothing} (\texttt{SyS}) models. Values in parentheses indicate the degree of smoothing.}
     \label{fig:anisotropy-learing-dynamics}
     \vspace{-1em}
@@ -214,7 +227,7 @@ Over the course of training, we observe a consistent double-dip trend: an initia
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.80\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-layers.png}
+    \includegraphics[width=0.75\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-layers.png}
     \caption{Anisotropy learning dynamics plotted for the baseline model and the paced \texttt{Syntactic Smoothing} model with high smoothing, across some of the models' layers. We highlight the difference in anisotropy of the final layer across the two models at the end of training.}
     \label{fig:anisotropy-layers}
     \vspace{-1em}
@@ -226,12 +239,12 @@ For each model, we compute the model's frequency bias and anisotropy at multiple
 
 It is also evident that the pacing approach re-introduces frequency bias towards the end of training, as the degree of smoothing is linearly reduced to zero. It is noteworthy that the final anisotropy and bias are lower than the baseline model, and completing training without any smoothing may be beneficial for downstream tasks, as explored in the next section.
 
-\subsection{Word Class and Frequency Distribution}
+\paragraph{Frequency Bias Disproportionately Affects Content Words}
 \label{section:word-class-versus-word-frequency}
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[height=4cm]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.png}
+    \includegraphics[width=0.65\linewidth]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.png}
     \caption{Distribution across POS tags of the top versus bottom 100 most frequent tokens.}
     \label{fig:top-100-pos-dist}
 \end{figure}
@@ -243,7 +256,7 @@ We find that content words—especially nouns—are over-represented in the low-
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.85\linewidth]{chapters/syntatic-smoothing/figures/bias-vs-anisotropy.png}
+    \includegraphics[width=0.75\linewidth]{chapters/syntatic-smoothing/figures/bias-vs-anisotropy.png}
     \caption{Pairs of anisotropy, and frequency bias for the baseline RoBERTa model, the two label smoothing baselines and our \texttt{Syntactic Smoothing} models. The arrows indicate increasing training progress (starting after 50\% of training has completed).}
     \label{fig:bias-anisotropy-correlation}
 \end{figure}
@@ -251,25 +264,7 @@ We find that content words—especially nouns—are over-represented in the low-
 \subsection{Effects of Smoothing on Downstream Tasks}
 While our method primarily aims to enhance the representation of infrequent tokens, we sought to investigate the potential for improvement in standard evaluation measures, given the limited number of affected test instances. Nonetheless, we observe that all the \texttt{Syntactic Smoothing} models, as well as the label smoothing models, achieve better BLIMP scores than our baseline model (see \cref{tbl:full-results}). These results suggest that methods that smooth label distributions, whether through a syntactic prior or a simpler uniform smoothing approach, enhance the representation of all tokens, including the more frequent ones.
 
-We had concerns that softening the frequency bias with our method might lead to degraded performance in downstream tasks for which frequency can be a strong proxy. As a control condition, we finetune our model on two sentence-level tasks (COLA, SST-2) and two language inference tasks (MNLI and QNLI), both of which are part of the GLUE \citep{wang2018glue} benchmark. We find that none of the \texttt{Syntactic Smoothing} objectives result in substantial performance degradation on these NLU tasks (see the last four columns of Table~\cref{tbl:full-results}), and in fact note that for some tasks, such as SST-2, the \texttt{Syntactic Smoothing} models yield uniform increases in performance.
-
-While not comparable apples-to-apples, we report NLU performance for the open-source baselines in \cref{tbl:opensource-baselines-nlu-results} as a point of reference. 
-
-\begin{table}[ht!]
-    \centering
-    \small
-    \setlength{\tabcolsep}{5pt} % Adjust column separation
-    \begin{tabular}{l|c|cccc}
-    \toprule
-    \textbf{Model} & \textbf{BLiMP} & \textbf{COLA} & \textbf{SST-2} & \textbf{MNLI} & \textbf{QNLI} \\
-    \midrule
-    OPT & 63.2 & 64.6 & 81.9 & 57.6 & 61.5 \\
-    RoBERTa & 69.8 & 70.8 & 87.0 & 73.2 & 77.0 \\
-    T5 & 58.3 & 61.2 & 78.1 & 48.0 & 62.0 \\
-    \bottomrule
-    \end{tabular}
-    \caption{\label{tbl:opensource-baselines-nlu-results} BLiMP~($\uparrow$) score and accuracy ($\uparrow$) on sentence-level tasks (COLA, SST-2) and language inference tasks (MNLI, QNLI) for the three open-source transformer baselines.}
-\end{table}
+We had concerns that softening the frequency bias with our method might lead to degraded performance in downstream tasks for which frequency can be a strong proxy. As a control condition, we finetune our model on two sentence-level tasks (COLA, SST-2) and two language inference tasks (MNLI and QNLI), both of which are part of the GLUE \citep{wang2018glue} benchmark. We find that none of the \texttt{Syntactic Smoothing} objectives result in substantial performance degradation on these NLU tasks (see the last four columns of Table~\cref{tbl:full-results}), and in fact note that for some tasks, such as SST-2, the \texttt{Syntactic Smoothing} models yield uniform increases in performance. While not comparable apples-to-apples, we report NLU performance for the open-source baselines in \cref{tbl:full-results} as a point of reference. 
 
 \subsection{Alternative Measures of Syntactic Similarity}
 
@@ -298,6 +293,16 @@ Results for bias~($\downarrow$), anisotropy~($\downarrow$), and BLiMP~($\uparrow
 \end{table}
 
 Summarized in \cref{tbl:jsd-similarity-metric-results}, we note that the effect of using a Jensen Shannon-based definition of the similarity metric yields a similar (albeit slightly smaller) decrease in frequency bias and anisotropy, as compared to the standard cosine-based definition of the similarity metric.   
-\section{Conclusion}
 
-Our work studies the phenomenon of \textbf{frequency bias} in language models that degrades the performance of these models on tokens infrequently observed during training. We develop a novel method for quantifying the degree to which a language model prefers grammatically incorrect sentences that contain frequent tokens over grammatically correct sentences containing infrequent tokens.  We introduce a new training approach, \texttt{Syntactic Smoothing}, that distributes the backpropagation signal to syntactically similar tokens. Using a coarse approximation of syntactic similarity based on part-of-speech tags, we show that this approach can remove the frequency bias without degrading broader language understanding. We also find that reductions in frequency bias are strongly correlated with reductions in a model's anisotropy. Our findings provide a novel angle through which to observe the role of anisotropy in language modeling. 
+\section{Conclusion}
+\label{sec:conclusion}
+
+This chapter has addressed a core limitation of current language models: their difficulty in generalizing to rare or novel words due to an overreliance on frequency statistics. While human learners can infer grammatical roles and meanings from structural context, a process often referred to as syntactic bootstrapping, most language models lack this inductive bias. As a result, they tend to prioritize high-frequency tokens, leading to frequency bias and degraded representations of infrequent words.
+
+We proposed \texttt{Syntactic Smoothing}, a cognitively motivated training method that distributes the learning signal for each token across other syntactically similar tokens. Using part-of-speech distributions as a simple approximation for syntactic similarity, this approach allows low-frequency tokens to benefit from the learning dynamics of more frequently observed counterparts. In doing so, it operationalizes the human strategy of learning by structural association.
+
+To evaluate this method, we introduced a new diagnostic for frequency bias, measuring the degree to which a model incorrectly prefers ungrammatical but frequent alternatives. We found that \texttt{Syntactic Smoothing} significantly reduces this bias and also decreases anisotropy in the representational space. These gains were achieved without sacrificing downstream task performance, suggesting that structural cues can support lexical generalization even in small-scale or low-resource training settings.
+
+By connecting insights from cognitive science with concrete modifications to training, this chapter moves beyond architectural changes and explores how the learning process itself can be made more human-like. If curriculum learning structures what is learned and when, \texttt{Syntactic Smoothing} focuses on how internal representations evolve to support abstraction and generalization.
+
+In the next few chapters, we take a closer look at this process. How do language models internalize linguistic structure over time? What patterns of learning emerge during training, and how do they compare to those observed in human learners? Building on the methods introduced here, we now turn to analyzing the dynamics of learning within neural language models.
