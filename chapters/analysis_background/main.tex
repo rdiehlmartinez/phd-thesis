@@ -83,6 +83,38 @@ The mechanistic interpretability research has profound implications for understa
 
 This body of work demonstrates that language models can be decomposed into interpretable components, though the challenge of superposition and the distributed nature of knowledge representation requires sophisticated analysis techniques. The research provides a foundation for developing more interpretable and controllable language models, with applications ranging from model debugging to knowledge editing and safety analysis.
 
+\section{Developmental Interpretability}
+
+While most interpretability research focuses on analyzing fully trained models, developmental interpretability represents an emerging approach that studies models as they train, rather than post-hoc. This paradigm shift enables researchers to understand how linguistic capabilities emerge and develop over the course of training, providing insights into the learning process itself rather than just the final learned representations.
+
+\subsection{Foundational Concepts in Developmental Interpretability}
+
+\citet{hoogland2023towards} proposed studying models as they train, investigating "phase transitions" in learning and representational development. This work introduced the concept of developmental interpretability as a distinct research agenda that focuses on the temporal evolution of model capabilities rather than static analysis of trained models. The approach emphasizes understanding how and when different linguistic phenomena emerge during training, providing insights into the developmental trajectory of language model learning.
+
+A key concept in developmental interpretability is the Local Learning Coefficient, a complexity measure for deep neural networks that quantifies the difficulty of learning specific patterns or representations. This measure provides a theoretical framework for understanding why certain linguistic phenomena emerge at different stages of training and how the learning process progresses through distinct phases.
+
+\subsection{Stagewise Development and Loss Landscape Geometry}
+
+\citet{hoogland2025losslandscape} studied the dynamics of training stages using loss landscape geometry, connecting representational development with degeneracy and flatness in optimization. This work revealed how the geometry of the loss landscape influences the emergence of different linguistic capabilities, providing insights into why learning proceeds through distinct stages rather than continuously.
+
+The research demonstrated that loss landscape degeneracy drives stagewise development in transformers, with different phases of learning characterized by specific geometric properties of the optimization landscape. This finding connects the theoretical framework of developmental interpretability with concrete optimization dynamics, providing a mechanistic understanding of how and why learning progresses through distinct phases.
+
+\subsection{Tools and Frameworks for Developmental Analysis}
+
+\citet{devinterpcode} developed DevInterp, a developmental interpretability toolkit for analyzing model checkpoints throughout training. This library provides tools for checkpoint-based model analysis, enabling researchers to track the evolution of internal representations and capabilities over the course of training. DevInterp complements post-hoc interpretability methods by focusing on the temporal evolution of internal structure rather than static analysis of trained models.
+
+The toolkit emphasizes analysis over intervention during training, providing a framework for understanding how models develop their capabilities without interfering with the learning process. This approach enables researchers to identify critical learning phases, understand when specific linguistic phenomena emerge, and track the development of internal representations throughout training.
+
+\subsection{Implications for Language Model Analysis}
+
+Developmental interpretability provides crucial insights into the learning process itself, complementing other analysis approaches by focusing on the temporal dimension of model development. This approach reveals how linguistic capabilities emerge gradually over the course of training, rather than appearing fully formed in the final model.
+
+The insights from developmental interpretability have important implications for model training and curriculum design. Understanding when specific capabilities emerge can inform decisions about training duration, learning rate schedules, and data presentation order. The identification of critical learning phases can help optimize training efficiency and ensure that models develop the desired capabilities.
+
+Developmental interpretability also provides a bridge between theoretical learning dynamics and practical model development. By connecting loss landscape geometry with representational development, this approach provides mechanistic insights into why certain training strategies are effective and how to design better training protocols.
+
+The combination of developmental interpretability with other analysis approaches provides a comprehensive framework for understanding language models. While mechanistic interpretability focuses on the internal structure of trained models, and learning dynamics research examines various metrics during training, developmental interpretability specifically addresses the temporal emergence of capabilities and the developmental trajectory of learning.
+
 \section{Learning Dynamics Research}
 
 Understanding how language models learn and develop their linguistic capabilities over the course of training has become an important area of research. This work focuses on tracking the emergence of linguistic phenomena during training and understanding the developmental trajectory of language model representations. Learning dynamics research can be broadly categorized into two main approaches: temporal analysis of memorization and influence, and convergence analysis through network similarity measures.
@@ -135,8 +167,113 @@ Building on this foundation, \citet{grosse2023influence} applied influence funct
 
 \citet{brown2023understanding} applied metrics like CKA to understand generalization in the Pythia suite, focusing on model comparison post-training rather than training-time convergence. This work emphasized intra-model dynamics during training and provided insights into how different models develop similar or divergent representations.
 
-\subsection{Implications for Language Model Analysis}
 
-The learning dynamics research provides crucial insights into how language models develop their capabilities over time. The temporal analysis approaches reveal the relationship between training data and model behavior, showing how models memorize, forget, and generalize from their training examples. The convergence analysis approaches demonstrate how representations evolve and become similar across different model architectures and training conditions.
+\subsection{Sparsity and Norms Analysis}
 
-These methods enable researchers to track the emergence of linguistic phenomena during training, understand the developmental trajectory of language model representations, and identify the factors that influence model learning and generalization. The combination of temporal and convergence analysis provides a comprehensive framework for understanding language model learning dynamics, with applications ranging from model debugging to curriculum design and interpretability research.
+Beyond temporal and convergence analysis, understanding the sparsity of activations and weights, as well as the evolution of various norms during training, provides crucial insights into how language models develop efficient representations and maintain stable training dynamics.
+
+\subsubsection{Sparsity Metrics and Analysis}
+
+\citet{hoyer2004sparsity} introduced Hoyer's sparsity metric, which combines ℓ₁ and ℓ₂ norms to measure sparsity on a continuous scale from 0 (dense) to 1 (maximally sparse). This metric is particularly well-suited for measuring sparsity in activations and feature maps, offering insight into representation compression during training. The metric has been widely adopted in language model analysis to assess when and where sparsity emerges during training.
+
+\citet{hurley2009gini} provided a theoretical framework for evaluating sparsity metrics, proposing six desirable properties that a good sparsity measure should satisfy, including scale invariance, permutation invariance, and continuity. Their analysis showed that the Gini coefficient and Hoyer's sparsity meet all six properties, making them robust and interpretable for analyzing tensor sparsity in neural networks.
+
+\subsubsection{Functional Sparsity in Language Models}
+
+\citet{frankle2019lottery} demonstrated that sparse subnetworks can be trained to full performance, motivating analysis of which parameters remain active during training and which drop out. This work established sparsity as a proxy for overcapacity versus signal alignment, which is particularly relevant for understanding the differences between small and large language models.
+
+Building on this foundation, \citet{michel2019sixteen} showed that many attention heads in transformer models are redundant. Their work demonstrated that language models can tolerate significant sparsity through head pruning during training, providing an interpretability-aligned justification for sparsity metrics in transformer architectures.
+
+\citet{evci2020rigging} examined the training dynamics of sparsified networks, highlighting the instability of sparse networks during early training phases. This work revealed important insights into how sparsity affects the learning process and when it becomes beneficial for model performance.
+
+\citet{voita2019analyzing} introduced head importance scoring and showed that sparsity naturally emerges in attention heads during training. This work provided an excellent case study of functional sparsity in language models, demonstrating how certain attention heads become specialized while others become less important.
+
+\citet{jiang2023pruning} measured activation sparsity and proposed sparsity-aware pruning methods for pretrained transformers. Their work is particularly useful for understanding which neurons become saturated, unused, or dead during training, providing insights into the internal organization of language model representations.
+
+\subsubsection{Norm Evolution and Training Stability}
+
+\citet{mishkin2016goodinit} studied how weight and activation norms evolve during training, with particular focus on layer normalization and gradient scaling in transformers. This work revealed important patterns in how different types of norms change throughout the training process and their relationship to model performance.
+
+\citet{liu2020understanding} investigated activation and gradient norm explosion and vanishing in transformers, highlighting early instability in small models. This research is particularly relevant for understanding convergence challenges in transformer training and identifying when models become unstable during the learning process.
+
+\citet{arora2018theoretical} connected parameter norm growth to generalization bounds, providing theoretical motivation for tracking norm-based proxies during training. While primarily theoretical, this work established important connections between the magnitude of model parameters and their generalization properties.
+
+\citet{zhang2021calibration} investigated the link between logit norms, confidence, and miscalibration in modern neural networks. This work motivates looking at output norm dynamics as a proxy for confidence evolution, providing insights into how language models develop calibrated predictions over the course of training.
+
+\subsubsection{Implications for Language Model Analysis}
+
+The analysis of sparsity and norms provides crucial insights into the internal dynamics of language model training. Sparsity analysis reveals how models develop efficient representations by focusing on the most important components, while norm analysis helps understand training stability and the evolution of model confidence. Together, these approaches complement temporal and convergence analysis by providing fine-grained insights into the internal organization and dynamics of language model representations.
+
+These methods enable researchers to identify when and where sparsity emerges during training, understand the relationship between parameter magnitudes and generalization, and track the evolution of model confidence and stability. The combination of sparsity and norm analysis with other learning dynamics approaches provides a comprehensive framework for understanding how language models develop their capabilities and maintain stable training dynamics.
+
+\subsection{Rank and Geometry Analysis}
+
+The analysis of rank and geometry provides crucial insights into how language models develop their representational capacity and learning dynamics. This approach focuses on understanding the effective dimensionality of model representations and how they evolve during training, revealing important patterns in learning progression and capacity utilization.
+
+\subsubsection{Effective Rank and Learning Progression}
+
+\citet{boix-adsera2023rank} established that during transformer training, the difference between current weights and initialization increases in rank gradually. Their work proved that under small weight initialization, training proceeds in discrete stages, each adding at most one to rank—mirroring incremental learning phases. The empirical evidence showed this effect persists in real transformers, linking rank growth to meaningful learning dynamics. This work established effective rank as a meaningful indicator of learning progress and phase boundaries.
+
+\citet{godey2024small} showed that small language models hit a representational bottleneck due to the softmax layer's rank limits. As training progresses, output capacity saturates even though loss continues to drop, limiting expressivity. This work suggested that small models underperform not due to optimization issues, but due to structural constraints on expressiveness, highlighting output-layer saturation as a measurable failure mode in small models.
+
+\citet{belrose2024neural} demonstrated that networks learn progressively more complex statistical patterns, from unigram statistics to grammar. Training proceeds in stages, with clear shifts in what the model encodes and where (layers, steps). This work provided experimental support for layered learning dynamics and curriculum-like behavior, justifying the use of tools like effective rank or CKA to detect training phase transitions.
+
+\subsubsection{Staircase Phenomena and Phase Transitions}
+
+\citet{yang2024rankstaircase} introduced effective rank to characterize how many principal directions a network uses in its last hidden layer. Their work discovered a staircase pattern where effective rank rises in discrete jumps, closely tracking drops in the loss—indicating phase transitions in learning. This finding provided important insights into how learning progresses through distinct phases rather than continuously.
+
+\citet{garg2025utilizedrank} introduced utilized rank as the number of dimensions in a layer's weight matrix that actually contribute to processing real data. This approach moved beyond full parameter count to measure data-dependent functional capacity. The work identified input/output subspaces via SVD on data passed through the layer and projected weights onto these subspaces. The findings showed that utilized rank is much lower than full rank, with ViT-B/16 using only ~35% of full capacity and ViT-L/16 using only ~20%. Self-supervised pretraining increased utilization, and low-rank approximations preserved accuracy while reducing computational requirements.
+
+\subsubsection{Low-Rank Learning Dynamics}
+
+\citet{pellegrino2023lowrank} showed in recurrent networks that weight matrices evolve along low-rank subspaces throughout training. Both biological and artificial networks displayed low-dimensional connectivity changes during learning, highlighting that rank constraints are a general feature of learning trajectories across architectures.
+
+\citet{feng2022rank} proved that deep neural networks tend toward rank deficiency in hidden representations across layers during training. This work established that the tendency toward low-rank representations is a fundamental property of deep learning systems.
+
+\citet{minyoung2022lowrank} showed that neural networks are biased toward low effective-rank Gram matrices, a signature of structural simplicity in learned representations. This work provided theoretical insights into why neural networks naturally develop low-rank representations during training.
+
+\subsubsection{Implications for Language Model Analysis}
+
+The rank and geometry analysis provides crucial insights into the fundamental learning dynamics of language models. The discovery of staircase phenomena and phase transitions reveals that learning proceeds through distinct stages rather than continuously, with each stage characterized by specific rank increases and loss reductions. The finding that models utilize only a fraction of their theoretical capacity suggests that much of the parameter space in large models may be redundant or unused.
+
+These insights have important implications for model design and training. Understanding rank evolution can help identify when models reach capacity limits and when additional training may not be beneficial. The discovery of low-rank learning dynamics suggests that models naturally develop efficient, compressed representations, which could inform approaches to model compression and efficiency optimization.
+
+The combination of rank analysis with other learning dynamics approaches provides a comprehensive framework for understanding how language models develop their capabilities. Rank analysis complements temporal, convergence, sparsity, and norm analysis by focusing on the fundamental dimensionality and geometry of learned representations, revealing the underlying structure of how language models organize and utilize their representational capacity.
+
+\section{Frameworks and Tools for Learning Dynamics Research}
+
+The study of learning dynamics across different model scales has become increasingly important as researchers seek to understand how scaling affects the emergence and development of linguistic capabilities. Several frameworks and model suites have been developed to support this research, providing standardized datasets, checkpoints, and evaluation tools for studying learning dynamics across scales.
+
+\subsection{Size Comparison and Scaling Studies}
+
+\citet{bansal2021scaling} tracked how model size affects training dynamics, providing crucial insights into how scaling influences learning behavior. This work was particularly helpful for motivating convergence breakdown in small language models and understanding the relationship between model capacity and learning dynamics.
+
+\citet{xia2023training_trajectories} conducted a rare study of full training trajectories using probes and dynamics-focused tools across different model scales. This work provided important baselines for both prediction error reduction (PER) and activation norm analysis, demonstrating how learning dynamics vary systematically with model size.
+
+\subsection{Comprehensive Model Suites}
+
+\citet{biderman2023pythia} developed Pythia, a comprehensive suite for analyzing large language models across training and scale. The suite includes models ranging from 70M to 12B parameters, with 154 checkpoints for each of the 16 models. This extensive dataset enables researchers to study learning dynamics across a wide range of model sizes and training stages, providing standardized benchmarks for comparing different analysis approaches.
+
+\citet{groeneveld2024olmo} introduced OLMo, designed to accelerate the science of language models through comprehensive transparency. The framework releases training checkpoints across multiple hardware types, logs, and datasets, with all model variants trained on at least 2T tokens. OLMo includes 4 variants at 7B scale and 1 variant at 1B scale, along with Catwalk and Paloma for evaluation. The training setup uses ZeRO optimizer strategy with FSDP framework, global batch size of 2048, and sequence length of 2048 with mixed-precision training.
+
+\subsection{Multilingual and Open-Source Frameworks}
+
+The BLOOM (BigScience Large Open-science Open-access Multilingual Language Model) project represents one of the few multilingual models where intermediate checkpoints are available and the training process was fully documented. Models are available from 560M to 176B parameters, with public slices of checkpoints at stages like 0B → 100B → 300B → 500B → 700B → full 1.5T tokens. BLOOM focuses on global participation, multilinguality, and open research scaffolding, making it particularly valuable for studying learning dynamics in multilingual contexts.
+
+\citet{liu2023llm360} developed LLM360, emphasizing radical transparency in open-source language models. The framework includes models at 7B scale with variants like Amber and CrystalCoder. Amber provides 360 checkpoints released approximately every 1B tokens, while CrystalCoder includes 143 checkpoints. The framework includes training logs, loss curves, optimizer states, and model weights, supporting open-source benchmarking, robustness analysis, and interpretability research.
+
+\subsection{Specialized Frameworks for Interpretability}
+
+\citet{thawakar2024mobillama} developed MobiLlama, a lightweight and efficient GPT-style model trained with full transparency. The framework emphasizes training reproducibility and interpretability, with checkpoints and logs released throughout training. This approach supports research on low-resource learning dynamics and mobile deployment tradeoffs, including accuracy vs. sparsity vs. latency considerations.
+
+TinyLlama represents an open-source small language model with 1.1B parameters trained on 3T tokens with full Hugging Face integration. The project publicly releases intermediate checkpoints at 105B, 503B, 1T, 1.5T, 2T, 2.5T, and 3T tokens, providing a standardized dataset for studying learning dynamics in small-scale models.
+
+SmolLM2 provides a suite of small models that outperform other recent small language models, with a 1.7B-parameter LLaMA-style model trained with checkpoints saved every 125K steps. The framework was released specifically for mechanistic interpretability research, providing detailed training trajectories for studying the emergence of linguistic capabilities in smaller models.
+
+\subsection{Implications for Learning Dynamics Research}
+
+These frameworks provide crucial infrastructure for studying learning dynamics across scales, enabling researchers to compare how different model sizes affect the emergence and development of linguistic capabilities. The availability of standardized checkpoints, training logs, and evaluation tools facilitates reproducible research and systematic comparison of different analysis approaches.
+
+The frameworks also support research on scaling laws and the relationship between model capacity and learning dynamics. By providing models across a wide range of scales, from small models optimized for interpretability to large models designed for performance, these frameworks enable researchers to understand how scaling affects the fundamental learning processes in language models.
+
+The combination of these frameworks with the analytical approaches discussed throughout this chapter provides a comprehensive toolkit for understanding language model learning dynamics. Researchers can now systematically study how different model sizes, architectures, and training conditions affect the emergence of linguistic capabilities, providing insights into the fundamental principles underlying language model learning.
