@@ -33,6 +33,14 @@ While attention analysis provided initial insights into transformer behavior, th
 
 The theoretical foundation for mechanistic interpretability was established by \citet{olah2014manifolds}, who introduced the concept that neural networks transform data through layers that continuously deform input spaces while preserving their topology. This work supported the manifold hypothesis, which posits that real-world data lies on lower-dimensional manifolds in high-dimensional input space. This framework provides the mathematical basis for understanding how neural networks, including transformers, organize and transform information through their layers.
 
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{chapters/analysis_background/figures/residual_stream_visualization.pdf}
+    \caption{Visualization of the residual stream in a transformer model, showing how information flows through the network via skip connections and is progressively refined through attention and feed-forward layers.}
+    \label{fig:residual-stream}
+\end{figure}
+
 \subsection{Circuit-Based Analysis of Transformers}
 
 \citet{elhage2021mathematical} introduced a mathematical framework for understanding transformer architectures through the lens of "circuits" and proposed that transformers can be decomposed into interpretable computational subgraphs. This work developed mathematical tools to analyze attention patterns and their role in computation, showing how attention heads can implement specific algorithms such as copying and induction. The framework introduced the concept of "virtual weights" to explain how attention heads work together, providing a systematic approach to understanding transformer internals.
