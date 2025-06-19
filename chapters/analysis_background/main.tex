@@ -1,38 +1,38 @@
-\chapter{Analysis Background}
+\chapter{Analyzing Language Models: Foundations, Methods, and Tools}
 \label{sec:analysis-background}
 
-This chapter provides a comprehensive background on the analysis of language models, tracing the evolution of methods used to understand transformer architectures and their internal representations. We will cover three main areas: historical approaches to analyzing transformers through attention mechanisms, mechanistic interpretability research, and learning dynamics research. This background will set the foundation for the subsequent chapters that explore specific aspects of language model analysis.
+Understanding how language models learn, represent, and generalize linguistic knowledge requires a diverse set of analytical approaches. This chapter surveys foundational work in three interrelated areas: (1) attention-based and representational interpretability, (2) mechanistic interpretability that aims to reverse-engineer internal computations, and (3) learning dynamics research that tracks how capabilities emerge over time during training. 
 
-\section{Historical Analysis of Transformers through Attention}
+Our emphasis is especially on methodologies that provide insight into the internal mechanisms of transformer-based models, with a focus on tools that are most relevant to understanding small models and their developmental trajectories. Throughout the chapter, we highlight key techniques for probing attention heads, decomposing learned circuits, tracking convergence and capacity usage, and analyzing models across training checkpoints and scales.
 
-The analysis of transformer architectures has historically centered around understanding the attention mechanism, which serves as the primary mechanism for information flow and representation learning in these models. Early work focused on interpreting attention patterns to understand what linguistic phenomena different components of the model were capturing.
+We also introduce the growing ecosystem of open-source model suites and analysis frameworks that enable this work—resources that make it possible to observe, quantify, and intervene in learning dynamics directly. These tools will form the empirical and methodological foundation for the contributions in the next chapters, where we analyze how small models diverge from larger ones and propose interventions to improve their learning behavior.
+\section{Analysis of Attention}
+
+The transformer architecture brought the attention mechanism to the forefront of representation learning. Early efforts to interpret these models focused on analyzing attention patterns to uncover what linguistic information models capture and how it is distributed across their components.
 
 \subsection{Multi-Head Attention Analysis}
 
-One of the foundational studies in transformer analysis was conducted by \citet{voita2019analyzing}, who systematically analyzed the role of individual attention heads in transformer models. Their work revealed that attention heads exhibit specialization, with certain heads becoming interpretable for specific linguistic tasks. For instance, they identified heads that specialized in syntactic dependencies, coreference resolution, and discourse relations. This specialization suggested that transformer models develop a form of modular organization where different components handle distinct aspects of language processing.
+Early efforts to understand transformer models focused heavily on analyzing attention patterns—both to probe internal representations and to assess model efficiency.
 
-The findings of \citet{voita2019analyzing} had practical implications for model optimization. They demonstrated that many attention heads could be pruned without significant performance degradation, as only a subset of heads were actively contributing to the model's linguistic capabilities. This insight supported the development of more efficient transformer architectures through selective head pruning.
+A foundational study by \citet{voita2019analyzing} showed that attention heads in transformer models often specialize in distinct linguistic roles, such as syntactic dependencies, coreference, and discourse relations. This head-level specialization pointed to an emergent modularity, where different heads implicitly divide up the task of language processing.
 
-Building on this work, \citet{michel2019sixteen} conducted an empirical study that further quantified the redundancy among transformer attention heads. Their analysis revealed that while transformer models are typically trained with multiple attention heads, there is significant overlap in the information captured by different heads. This redundancy suggests that the multi-head mechanism, while theoretically capable of capturing diverse attention patterns, often results in redundant representations in practice.
+Crucially, they also demonstrated that many heads could be pruned with minimal impact on downstream performance, suggesting that only a subset are essential. This insight laid the groundwork for head pruning as a principled form of model compression.
 
-The work of \citet{michel2019sixteen} provided empirical support for the sparsity hypothesis in transformer architectures, suggesting that many attention heads could be removed or simplified without substantial performance loss. This finding has influenced subsequent research on model compression and efficient transformer architectures.
+\citet{michel2019sixteen} expanded on these findings by empirically measuring redundancy among attention heads. They showed that despite being designed for parallel attention, many heads capture overlapping information, reinforcing the sparsity hypothesis and motivating leaner transformer designs.
 
-\subsection{Attention Pattern Analysis in BERT}
+Building on these analytical approaches, \citet{clark2019does} developed visualization methods for interpreting attention in BERT. Their study found that BERT’s attention heads capture both syntactic and semantic relationships—for instance, tracking subject-verb agreement or coreference chains. This work helped establish attention weights as interpretable proxies for internal reasoning, turning attention visualization into a widely used diagnostic tool in transformer research.
 
-\citet{clark2019does} pioneered early methods for analyzing attention patterns in BERT, one of the most influential transformer-based language models. Their work investigated what linguistic phenomena different attention heads were attending to, revealing that BERT's attention mechanism captures both syntactic and semantic relationships.
+\subsection{Sparse Probing}
 
-The analysis revealed that certain attention heads in BERT specialized in syntactic phenomena such as subject-verb agreement, while others focused on semantic relationships like coreference resolution. This specialization suggested that BERT's internal representations encode linguistic structure in a distributed manner across different attention heads.
+While attention-based methods offer a window into model behavior, other approaches have investigated how linguistic structure is embedded in hidden representations. \citet{hewitt2019structural} introduced a structural probe to test whether contextual embeddings encode syntactic information such as dependency trees. Their results showed that BERT's middle layers encode rich syntactic structure in a geometrically meaningful way, revealing that grammar is implicitly embedded in the model's representational space.
 
-The methods developed by \citet{clark2019does} for visualizing and interpreting attention patterns have become standard tools in the field of transformer analysis. Their work demonstrated that attention weights could serve as a window into the model's internal decision-making processes, providing insights into how transformer models process and represent linguistic information.
+More recently, \citet{gurnee2023finding} proposed sparse probing—a technique that constrains linear probes to use only a small number of neurons, enforced via $L_0$ regularization. Their results suggest that linguistic features, while broadly distributed, can be reliably recovered from sparse subsets of neurons. This highlights the potential for localized interpretability, particularly relevant for small models where transparency is more attainable.
 
-\section{Mechanistic Interpretability Research}
+\section{Mechanistic Interpretability}
 
-While attention analysis provided initial insights into transformer behavior, the field of mechanistic interpretability has developed more sophisticated methods for understanding the internal representations and computations of language models. This research area focuses on identifying specific neurons, circuits, and mechanisms that implement particular linguistic capabilities, with the ultimate goal of achieving full model interpretability.
+While sparse probing offers a high-level view of which neurons encode linguistic features, mechanistic interpretability aims to reverse-engineer how those features are computed—tracing internal mechanisms such as circuits, neurons, and layer interactions that give rise to model behavior.
 
-\subsection{Foundational Concepts in Mechanistic Interpretability}
-
-The theoretical foundation for mechanistic interpretability was established by \citet{olah2014manifolds}, who introduced the concept that neural networks transform data through layers that continuously deform input spaces while preserving their topology. This work supported the manifold hypothesis, which posits that real-world data lies on lower-dimensional manifolds in high-dimensional input space. This framework provides the mathematical basis for understanding how neural networks, including transformers, organize and transform information through their layers.
-
+\subsection{Foundational Ideas and Circuits}
 
 \begin{figure}[ht!]
     \centering
@@ -41,239 +41,187 @@ The theoretical foundation for mechanistic interpretability was established by \
     \label{fig:residual-stream}
 \end{figure}
 
-\subsection{Circuit-Based Analysis of Transformers}
 
-\citet{elhage2021mathematical} introduced a mathematical framework for understanding transformer architectures through the lens of "circuits" and proposed that transformers can be decomposed into interpretable computational subgraphs. This work developed mathematical tools to analyze attention patterns and their role in computation, showing how attention heads can implement specific algorithms such as copying and induction. The framework introduced the concept of "virtual weights" to explain how attention heads work together, providing a systematic approach to understanding transformer internals.
+The theoretical foundations of this field were laid by \citet{olah2014manifolds}, who framed neural networks as systems that deform data manifolds while preserving topological structure. This perspective provides a conceptual basis for interpreting how deep models process and transform information layer by layer.
 
-Building on this circuit-based approach, \citet{olsson2022inductionheads} investigated how transformers perform in-context learning through "induction heads." Their work demonstrated that induction heads are a key mechanism for in-context learning, implementing a specific algorithm for pattern matching. The research provided evidence that induction heads are universal across different transformer architectures and showed how their emergence during training enables various in-context learning behaviors.
+Building on this, \citet{elhage2021mathematical} introduced a formal framework for decomposing transformers into interpretable circuits. Using tools like “virtual weights,” they showed how specific attention heads can implement distinct algorithms—such as copying or positional induction—forming structured computational graphs within the model. These operations are executed within the shared residual stream, a central component of transformer architecture that carries forward and combines layer outputs across the model.
 
-\subsection{Superposition and Feature Representation}
+The residual stream is a mathematical formalization through which to study how transformer models process inputs \citep{elhage2021mathematical}. Under this framework, each of the $L$ layers of a transformer model processes a series of input tokens $\sequence = \langle \token_1, \smalldots, \token_\seqlen\rangle$ consecutively and communicates the result of its computation for each token to subsequent layers via a residual stream of dimension $\residualdim$. 
 
-\citet{elhage2022toy} introduced a framework for understanding how neural networks represent multiple features in a single neuron through "superposition." This work showed how networks can use superposition to represent more features than dimensions, leading to "interference" between features. The research provided mathematical tools to analyze and understand superposition, demonstrating that it can be both beneficial for efficiency and problematic due to interference. The concept of "sparse coding" was introduced as a way to understand and potentially mitigate superposition effects.
+The reading, processing, and writing of the residual stream occur independently in each $\attention$ head via combinations of the query, key, value, and output matrices, $W_Q$, $W_K$, $W_V$, $W_O$. The \textbf{query-key circuit}, $W_Q^{\top}W_K$, of the $\attention$ mechanism controls how the residual stream should be recomposed, and the \textbf{output circuit}, $W_OW_V$, writes to the residual stream an update that is mediated by the query-key circuit. The write operation of each $\attention$ head is of low rank relative to $\residualdim$. After each $\attention$ head has written to the residual stream, a bottleneck $\mlp$ projection performs a full-rank transformation on the residual stream. Due to their pivotal role in updating the state of the residual stream, our work analyzes the learning dynamics of the two operations that write to the residual stream: the output circuit of each head of the $\attention$ layer---that we refer to as $\attention$---and the $\mlp$ projection layer---that we denote $\mlp$ for conciseness.
 
-\subsection{Memory Mechanisms in Transformers}
+As illustrated in \cref{fig:residual-stream}, the residual stream serves as the backbone of computation, enabling attention and feed-forward layers to progressively refine and update internal representations at each layer.
 
-\citet{geva2021memory} proposed that feed-forward layers in transformers act as key-value memory networks. Their work showed that each neuron in the feed-forward layer can be understood as a key-value pair, with these layers storing and retrieving information in a way similar to memory networks. This research provided evidence that feed-forward layers are more important than previously thought and showed how this memory mechanism complements the attention mechanism. The work introduced methods to analyze and interpret the information stored in feed-forward layers.
+A key example of this modular behavior is the “induction head” described by \citet{olsson2022inductionheads}, which performs in-context learning by detecting repeating token patterns. Their work demonstrated that induction heads are universal across transformer models and emerge consistently during training, highlighting how meaningful algorithmic structure can arise within the residual stream.
 
-\subsection{Knowledge Representation and Neurons}
+\subsection{Representation, Superposition, and Memory}
 
-\citet{dai2022knowledge} identified specific neurons in pretrained transformers that encode factual knowledge. Their work showed that these "knowledge neurons" are highly specific to particular facts and that knowledge is distributed across multiple neurons. The research introduced methods to identify and analyze knowledge neurons, demonstrating that they can be used to explain model predictions. The findings provided evidence that knowledge is stored in a way that's both distributed and local, offering insights into how transformers encode factual information.
+Neural networks often represent multiple features in overlapping activation dimensions—a phenomenon known as superposition. \citet{elhage2022toy} formalized this idea and showed how it creates both efficient storage and representational interference. They proposed sparse coding as a way to reduce overlap and improve interpretability.
 
-\subsection{Intermediate Layer Analysis}
+Complementary work by \citet{geva2021memory} reframed feed-forward layers as key-value memory stores, where neurons act as retrievable content-addressable memories. This perspective highlights how information retrieval occurs outside the attention mechanism, reshaping our understanding of transformer architecture.
 
-\citet{belrose2023eliciting} improved our understanding of how intermediate layers in transformers encode predictive information during generation. Their work generalized the "logit lens" technique by creating a learned diagnostic probe that aligns better with the model's own representations. While the standard logit lens applies the output embedding and softmax to intermediate layer outputs, the tuned lens trains a small set of linear probes to map activations to logits, approximating the final layer's predictions using intermediate activations.
+\citet{dai2022knowledge} further explored how factual information is stored in “knowledge neurons”—units that encode specific facts in a distributed but partially localizable way. These findings reinforce the idea that interpretability is possible even in large, dense models, particularly through targeted neuron analysis.
 
-\subsection{Towards Monosemantic Decomposition}
+\subsection{Toward Full Decomposition}
 
-\citet{bircken2023monosemanticity} developed methods for decomposing language models into monosemantic components—neurons or features that correspond to a single, interpretable concept. Their work used dictionary learning (sparse autoencoders) to discover a basis of features from model activations, where each feature corresponds to a sparse, interpretable direction in activation space. The research introduced the concept of monosemanticity, where a component consistently represents one human-understandable feature, and addressed the challenge of superposition where current model activations often mix multiple concepts into a single neuron.
+Recent efforts have focused on decomposing model activations into monosemantic features—components that represent a single, interpretable concept. \citet{bircken2023monosemanticity} applied sparse autoencoders to learn such features from model activations, revealing interpretable directions in activation space. This method shows promise for mitigating superposition and improving transparency.
 
-\citet{anthropic2023components} provided a general overview of Anthropic's broader research agenda on mechanistic interpretability, particularly around breaking models into interpretable parts. This work described ongoing efforts toward identifying circuits, features, and neurons that implement human-interpretable behaviors, with the eventual aim of achieving "full model interpretability" where every parameter's role is understood. The research highlighted dictionary learning approaches as promising steps toward faithful model decomposition.
+\citet{anthropic2023components} outlined a broader research vision for full model interpretability, where each parameter's role is understood. Their approach leverages dictionary learning and modular decomposition to identify circuits, features, and neurons aligned with human-understandable behaviors.
 
-\subsection{Frameworks and Tools for Mechanistic Interpretability}
+\subsection{Tools for Intermediate Layers and Model Analysis}
 
-Several frameworks and tools have been developed to support mechanistic interpretability research. \citet{nanda2022transformerlens} developed TransformerLens, a core library for mechanistic interpretability of transformers that enables detailed inspection of attention heads, MLPs, and circuits. While designed for static model analysis, it provides essential tools for circuit discovery and analysis.
+To support these interpretability efforts, a range of tools and frameworks have emerged.
 
-\citet{meng2022locating} introduced ROME, a method for directly editing factual knowledge in transformers. This work built on identifying causal neurons and aligned with post-hoc interpretability approaches, requiring static, trained models for intervention. \citet{conmy2023towards} developed ACDC, which automates the discovery of circuits in transformers using sparse matrix factorization, supporting inference-time interpretability for fixed model weights.
+\citet{belrose2023eliciting} developed the Tuned Lens, an extension of the logit lens, which improves interpretability of intermediate layers by learning linear probes that better approximate the model's output predictions at earlier stages. This allows for clearer analysis of how information evolves through the network.
 
-For broader model analysis, \citet{kokhlikyan2020captum} provides a PyTorch library for feature attribution and saliency methods, including Integrated Gradients and DeepLIFT. While less specialized than TransformerLens, it supports a broad class of models and attribution techniques, making it useful for comparative analysis across different architectures.
+\citet{nanda2022transformerlens} introduced TransformerLens, a library for inspecting transformer internals—including attention heads, MLP layers, and residual streams. It is widely used for circuit-level analysis, enabling researchers to trace forward and backward signals through static, trained models.
 
-\subsection{Implications for Language Model Analysis}
+Several tools also support causal and structural interventions. \citet{meng2022locating} proposed ROME, a technique for directly editing factual knowledge in a trained transformer by locating and modifying causal neurons. Similarly, \citet{conmy2023towards} developed ACDC, which uses sparse matrix factorization to automatically extract circuits from models, enabling inference-time interpretability without retraining.
 
-The mechanistic interpretability research has profound implications for understanding language models. It reveals that transformers implement sophisticated algorithms through specific circuits and mechanisms, with knowledge distributed across multiple components in ways that balance efficiency with interpretability. The development of tools and frameworks for circuit discovery and analysis has made it possible to systematically investigate the internal workings of these models, moving beyond surface-level attention analysis to deeper understanding of computational mechanisms.
+For broader attribution analysis, \citet{kokhlikyan2020captum} developed Captum, a general-purpose library for feature attribution in PyTorch. While not transformer-specific, it includes a suite of interpretability tools—such as Integrated Gradients and DeepLIFT—that are useful for probing feature importance across different model architectures.
 
-This body of work demonstrates that language models can be decomposed into interpretable components, though the challenge of superposition and the distributed nature of knowledge representation requires sophisticated analysis techniques. The research provides a foundation for developing more interpretable and controllable language models, with applications ranging from model debugging to knowledge editing and safety analysis.
+
 
 \section{Developmental Interpretability}
+While mechanistic interpretability reveals the internal structure of trained models, developmental interpretability shifts focus to how those structures emerge during training. By analyzing checkpoints over time, this approach captures the trajectory of learning—offering insight into when and how linguistic capabilities arise.
 
-While most interpretability research focuses on analyzing fully trained models, developmental interpretability represents an emerging approach that studies models as they train, rather than post-hoc. This paradigm shift enables researchers to understand how linguistic capabilities emerge and develop over the course of training, providing insights into the learning process itself rather than just the final learned representations.
+\citet{hoogland2023towards} introduced this paradigm by identifying phase transitions in learning, supported by the Local Learning Coefficient as a measure of representational complexity. Building on this, \citet{hoogland2025losslandscape} connected stagewise learning to loss landscape geometry, revealing that shifts in capability often align with flat or degenerate regions in the optimization surface.
 
-\subsection{Foundational Concepts in Developmental Interpretability}
+To support empirical analysis, \citet{devinterpcode} developed DevInterp, a toolkit for tracking model development over time. Together, these contributions establish developmental interpretability as a powerful complement to static and circuit-based approaches—highlighting not just what models learn, but when and how they acquire it.
 
-\citet{hoogland2023towards} proposed studying models as they train, investigating "phase transitions" in learning and representational development. This work introduced the concept of developmental interpretability as a distinct research agenda that focuses on the temporal evolution of model capabilities rather than static analysis of trained models. The approach emphasizes understanding how and when different linguistic phenomena emerge during training, providing insights into the developmental trajectory of language model learning.
+This developmental perspective naturally leads into a broader field of inquiry: learning dynamics—the study of how language models acquire, retain, and organize knowledge over time.
 
-A key concept in developmental interpretability is the Local Learning Coefficient, a complexity measure for deep neural networks that quantifies the difficulty of learning specific patterns or representations. This measure provides a theoretical framework for understanding why certain linguistic phenomena emerge at different stages of training and how the learning process progresses through distinct phases.
+\section{Developmental Interpretability}
+While mechanistic interpretability reveals the internal structure of trained models, developmental interpretability shifts focus to how those structures emerge during training. By analyzing checkpoints over time, this approach captures the trajectory of learning—offering insight into when and how linguistic capabilities arise.
 
-\subsection{Stagewise Development and Loss Landscape Geometry}
+\citet{hoogland2023towards} introduced this paradigm by identifying phase transitions in learning, supported by the Local Learning Coefficient as a measure of representational complexity. Building on this, \citet{hoogland2025losslandscape} connected stagewise learning to loss landscape geometry, revealing that shifts in capability often align with flat or degenerate regions in the optimization surface.
 
-\citet{hoogland2025losslandscape} studied the dynamics of training stages using loss landscape geometry, connecting representational development with degeneracy and flatness in optimization. This work revealed how the geometry of the loss landscape influences the emergence of different linguistic capabilities, providing insights into why learning proceeds through distinct stages rather than continuously.
+To support empirical analysis, \citet{devinterpcode} developed DevInterp, a toolkit for tracking model development over time. Together, these contributions establish developmental interpretability as a powerful complement to static and circuit-based approaches—highlighting not just what models learn, but when and how they acquire it.
 
-The research demonstrated that loss landscape degeneracy drives stagewise development in transformers, with different phases of learning characterized by specific geometric properties of the optimization landscape. This finding connects the theoretical framework of developmental interpretability with concrete optimization dynamics, providing a mechanistic understanding of how and why learning progresses through distinct phases.
-
-\subsection{Tools and Frameworks for Developmental Analysis}
-
-\citet{devinterpcode} developed DevInterp, a developmental interpretability toolkit for analyzing model checkpoints throughout training. This library provides tools for checkpoint-based model analysis, enabling researchers to track the evolution of internal representations and capabilities over the course of training. DevInterp complements post-hoc interpretability methods by focusing on the temporal evolution of internal structure rather than static analysis of trained models.
-
-The toolkit emphasizes analysis over intervention during training, providing a framework for understanding how models develop their capabilities without interfering with the learning process. This approach enables researchers to identify critical learning phases, understand when specific linguistic phenomena emerge, and track the development of internal representations throughout training.
-
-\subsection{Implications for Language Model Analysis}
-
-Developmental interpretability provides crucial insights into the learning process itself, complementing other analysis approaches by focusing on the temporal dimension of model development. This approach reveals how linguistic capabilities emerge gradually over the course of training, rather than appearing fully formed in the final model.
-
-The insights from developmental interpretability have important implications for model training and curriculum design. Understanding when specific capabilities emerge can inform decisions about training duration, learning rate schedules, and data presentation order. The identification of critical learning phases can help optimize training efficiency and ensure that models develop the desired capabilities.
-
-Developmental interpretability also provides a bridge between theoretical learning dynamics and practical model development. By connecting loss landscape geometry with representational development, this approach provides mechanistic insights into why certain training strategies are effective and how to design better training protocols.
-
-The combination of developmental interpretability with other analysis approaches provides a comprehensive framework for understanding language models. While mechanistic interpretability focuses on the internal structure of trained models, and learning dynamics research examines various metrics during training, developmental interpretability specifically addresses the temporal emergence of capabilities and the developmental trajectory of learning.
+This developmental perspective naturally leads into a broader field of inquiry: learning dynamics—the study of how language models acquire, retain, and organize knowledge over time. But developmental interpretability is just one part of a broader movement toward training-time analysis. To fully understand how language models acquire and organize their capabilities, we need a more expansive view—one that considers not just phase transitions, but also how examples are memorized or forgotten, how representations converge, how capacity is allocated, and how internal structures evolve in rank and geometry.
 
 \section{Learning Dynamics Research}
 
-Understanding how language models learn and develop their linguistic capabilities over the course of training has become an important area of research. This work focuses on tracking the emergence of linguistic phenomena during training and understanding the developmental trajectory of language model representations. Learning dynamics research can be broadly categorized into two main approaches: temporal analysis of memorization and influence, and convergence analysis through network similarity measures.
+Understanding how language models learn—beyond just what they ultimately represent—is central to both interpretability and model development. Learning dynamics research investigates the evolving internal behavior of models throughout training, revealing how linguistic capabilities emerge, stabilize, or fail to develop.
 
-\subsection{Temporal Analysis: Memorization and Influence}
+This work spans a diverse set of analytical perspectives, each offering insights into different facets of training-time behavior.
 
-\subsubsection{Influence Functions}
+\subsection{Memorization and Data Influence Analysis}
 
-\citet{koh2017understanding} introduced influence functions as a technique from robust statistics to trace model predictions through the learning algorithm and back to training data. This approach identifies training points that are more responsible for a given prediction by perturbing the data input rather than the model itself. The method requires oracle access to gradients and Hessian-vector products, using the result that the influence of upweighting a datapoint on the parameters is given by the inverse Hessian multiplied by the gradient of the empirical risk function with respect to the data point at the current parameters.
+A central goal in learning dynamics is to understand how specific examples affect learning over time—whether they are memorized, generalized, or forgotten.
 
-Building on this foundation, \citet{grosse2023influence} applied influence functions to large language models to answer counterfactual questions about how model parameters and outputs would change if a given sequence were added to the training set. This work demonstrated the applicability of influence analysis to the scale and complexity of modern language models, providing insights into the relationship between training data and model behavior.
+Influence functions, introduced by \citet{koh2017understanding}, trace the effect of individual training examples on model predictions by approximating parameter updates through gradients and inverse Hessians. \citet{grosse2023influence} extended this method to large language models, enabling counterfactual analysis: how would the model behave if a given sequence were added to the training set?
 
-\subsubsection{Forgetting and Memorization Dynamics}
+Complementary to this, prediction trajectory methods analyze how model outputs evolve across training steps. \citet{toneva2019empirical} introduced the concept of forgetting events—when a model switches from correct to incorrect on a training example—offering a lens on stability and difficulty. \citet{swayamdipta2020dataset} expanded this idea with dataset cartography, classifying examples by prediction confidence and variability to map learning trajectories across NLP datasets.
+\citet{feldman2020does} examined the tradeoff between memorization and generalization, especially in smaller models where memorization may be necessary for strong performance. \citet{biderman2023emergent} investigated verbatim memorization in the Pythia model suite, finding that early checkpoints can effectively forecast what large models will eventually memorize—though smaller models cannot.
 
-\citet{toneva2019empirical} introduced the concept of forgetting events, tracking when a model flips from correct to incorrect on a given training example during training. This approach provides measures of learning stability and example difficulty, offering insights into the temporal dynamics of learning. While not language-model specific, the methodology has been adapted for NLP applications.
+Together, these approaches reveal that memorization is shaped by training dynamics, model scale, and the specific properties of the data.
 
-\citet{swayamdipta2020dataset} developed dataset cartography, which measures consistency and variability of model predictions across training epochs. This work applied prediction dynamics to NLP datasets, including BERT fine-tuning, and provided practical applications for understanding dataset characteristics and model learning patterns.
+\subsection{Convergence and Representation Similarity}
 
-\citet{feldman2020does} explored the memorization-generalization tradeoff using prediction trajectories, discussing example-level dynamics and when memorization is necessary, especially in smaller models. This work provided theoretical insights into the relationship between memorization and generalization in neural networks.
+While memorization-focused analyses emphasize how individual examples influence a model's behavior, convergence analysis shifts attention to the evolution and stabilization of internal representations during training. This research area seeks to understand when and how model layers begin to encode stable linguistic abstractions, how representational structures develop over time, and the extent to which different models (trained on the same or different data) develop similar internal solutions.
 
-\citet{biderman2023emergent} studied memorization in the Pythia language model family, defining memorization as outputting verbatim training sequences. Their work formulated a forecasting problem: predicting which sequences a large model will memorize using either smaller model runs or early training checkpoints. Key findings included that smaller fully trained models do not reliably predict memorization in larger models, but early checkpoints of the same model do reliably forecast final memorized content, achieving high recall.
+\subsubsection{Measures of Representational Similarity}
 
-\subsection{Convergence Analysis: Network Similarity}
+A foundational family of methods in this space builds on \textit{Canonical Correlation Analysis (CCA)}, which compares the similarity between two multivariate representations. In neural networks, this allows researchers to quantify the alignment between layer activations at different checkpoints, across different models, or within different layers of the same model. \citet{raghu2017svcca} introduced \textit{Singular Vector CCA (SVCCA)}, which first reduces the dimensionality of representations via singular value decomposition before applying CCA to the resulting principal components. This makes the method more robust to noise and scale differences in deep representations. However, SVCCA has limitations in terms of sensitivity and interpretability.
 
-\subsubsection{Canonical Correlation Analysis and Variants}
+To address these limitations, \citet{morcos2018pwcca} proposed \textit{Projection-Weighted CCA (PWCCA)}, which weights the contribution of each component according to how much it aligns with the original data. This technique down-weights noisy or low-signal components, yielding a more faithful measure of similarity. Despite these refinements, CCA-based methods still struggle in settings where the representation dimensionality exceeds the number of datapoints---a common scenario in large-scale models with deep layers and high-dimensional embeddings.
 
-\citet{raghu2017svcca} introduced Singular Vector Canonical Correlation Analysis (SVCCA), which allows analysis of weight outputs as subspaces without requiring axis alignment. This method enables comparison of representations across different layers and models by analyzing the canonical correlation between their singular vectors.
+To overcome this, \citet{kornblith2019cka} introduced \textit{Centered Kernel Alignment (CKA)}, a method based on kernel similarity that offers greater robustness across dimensional regimes. In its linear form, CKA computes the similarity between two activation matrices \( X, Y \in \mathbb{R}^{n \times d} \) as:
 
-\citet{morcos2018pwcca} developed PWCCA (Projection-Weighted CCA) to address the noise problem in the original SVCCA approach. They argued that averaging correlations included noise, so instead used a weighted average that rewards signal more heavily when computing the final correlation between singular vectors and original inputs.
+\[
+\mathrm{CKA}(X, Y) = \frac{\| Y^\top X \|_F^2}{\| X^\top X \|_F \cdot \| Y^\top Y \|_F}
+\]
 
-\citet{kornblith2019cka} identified limitations of CCA for measuring similarities between representations with higher dimension than the number of data points. They proposed Centered Kernel Alignment (CKA) as an alternative, which learns kernel functions between different inputs to layers of interest and considers how much variance is explained by each input.
+where \( \|\cdot\|_F \) denotes the Frobenius norm. This measure is invariant to orthogonal transformations and isotropic scaling of the representations, making it well-suited for comparing different models or different training stages. CKA has since become a standard tool for tracking representational convergence in both vision and language models.
 
-\subsubsection{Model Stitching Techniques}
-
-\citet{lenc2015understanding} introduced the concept of stitching layers together in CNNs to reveal structure in the similarity between different layers. This approach provided a new perspective on understanding representation similarity across model architectures.
-
-\citet{bansal2021stitch} formalized model stitching as connecting the bottom layers of one model to the top layers of another with a trainable layer in between. This technique reveals similarity in representations that cannot be captured by CKA and demonstrates that representations trained with more data, larger width, and more training time can improve performance in weaker models.
+While CKA and CCA focus on representational similarity in a static sense, another approach---\textit{model stitching}---investigates whether different models are \textit{functionally} equivalent at certain layers. Originally proposed by \citet{lenc2015understanding} for convolutional networks, this method was later formalized by \citet{bansal2021stitch} as a technique for connecting the lower layers of one model to the upper layers of another, using a small trainable adapter in between. If the stitched model performs well, it suggests that the internal representations of the two models are sufficiently aligned to be interoperable. Stitching provides a more dynamic view of convergence, capturing not just alignment in activation space but also compatibility in downstream processing.
 
 \subsubsection{Applications to Language Models}
 
-\citet{saphra2019understanding} used SVCCA to show that language model training with ELMo learns similar representations to those of a POS tagger during training, with POS information being learned earlier in the training process.
+These methods have been extensively applied to \textit{language models} to understand the progression and stability of learned representations. For instance, \citet{saphra2019understanding} used SVCCA to track the alignment of ELMo's hidden states with syntactic annotations, finding that parts-of-speech (POS) information is learned early in training and primarily encoded in lower layers. Similarly, \citet{singh2019bert} applied CCA to multilingual BERT and discovered that representations in the deeper layers diverge across languages, forming hierarchical clusters that reflect known linguistic relationships---suggesting that BERT learns distinct structural priors for different languages.
 
-\citet{nguyen2020wide} used CKA to investigate how neural network representations vary with width and depth. They found that wider and deeper networks develop characteristic block structures in hidden representations, particularly when model capacity is large relative to training set size. These block structures arise when underlying layers preserve and propagate the dominant principal component of their representations.
+More recent work by \citet{nguyen2020wide} and \citet{phang2021finetuned} used CKA to identify \textit{block structure} within deep transformers, where layers cluster into groups that share similar representations. These structures are especially pronounced in larger models and later in training, where adjacent layers often encode similar abstractions. \citet{wu2020similarity} found that models from the same architecture family tend to exhibit stronger representational similarity, even if individual neurons vary---suggesting shared inductive biases across architectures. Finally, \citet{brown2023understanding} analyzed intra- and inter-model similarity within the Pythia model suite, using CKA to identify both convergence points and divergence in representation trajectories over time. Their findings support the idea that convergence is not uniform across training but rather unfolds in stages that reflect changes in capacity utilization, generalization, and abstraction.
 
-\citet{singh2019bert} used CCA to demonstrate that multilingual BERT models don't have a universal representation of language. They found that deeper layers diverge in their representations of different languages, with hierarchical clustering revealing tree structures that correspond to phylogenetic relationships.
-
-\citet{phang2021finetuned} used CKA to compare similarity across task-tuned models between layers, finding block structures in the models. They observed that similarity was especially pronounced between later layers, which only marginally contribute to task performance.
-
-\citet{wu2020similarity} analyzed contextual word representation models and found that models in the same family are more similar to one another, while different architectures have similar representations but different individual neurons. This work identified different types of representation similarity across model architectures.
-
-\citet{brown2023understanding} applied metrics like CKA to understand generalization in the Pythia suite, focusing on model comparison post-training rather than training-time convergence. This work emphasized intra-model dynamics during training and provided insights into how different models develop similar or divergent representations.
-
+In summary, convergence analysis provides a global view of how language models evolve during training---not at the level of individual examples, but at the level of their internal geometry. Techniques such as CKA, PWCCA, and model stitching offer complementary insights into how and when models develop aligned representations, how stable those representations are, and to what extent learned abstractions are transferable. These tools are especially valuable in the study of small models, where transparency and structure are more accessible and where representational convergence can serve as a guide for diagnosing inefficiencies, bottlenecks, or missed opportunities in training.
 
 \subsection{Sparsity and Norms Analysis}
 
-Beyond temporal and convergence analysis, understanding the sparsity of activations and weights, as well as the evolution of various norms during training, provides crucial insights into how language models develop efficient representations and maintain stable training dynamics.
+While convergence analysis provides a high-level view of how internal representations stabilize over time, another important dimension of learning dynamics concerns how models manage and allocate their \textit{capacity}—both in terms of which parameters are used and how their magnitudes evolve. Analyses of \textit{sparsity} and \textit{norms} offer fine-grained insight into how models compress information, avoid redundancy, and maintain stable training.
+
+This line of work investigates not only how sparsity emerges during training, but also how different types of norms—such as activation norms, weight norms, and gradient scales—fluctuate and influence model behavior. Together, these metrics help reveal how language models balance expressivity with efficiency and stability.
 
 \subsubsection{Sparsity Metrics and Analysis}
 
-\citet{hoyer2004sparsity} introduced Hoyer's sparsity metric, which combines ℓ₁ and ℓ₂ norms to measure sparsity on a continuous scale from 0 (dense) to 1 (maximally sparse). This metric is particularly well-suited for measuring sparsity in activations and feature maps, offering insight into representation compression during training. The metric has been widely adopted in language model analysis to assess when and where sparsity emerges during training.
+A foundational contribution to the measurement of sparsity came from \citet{hoyer2004sparsity}, who proposed a continuous sparsity score that combines the \( \ell_1 \) and \( \ell_2 \) norms of a vector. This \textit{Hoyer's sparsity} metric ranges from 0 (fully dense) to 1 (maximally sparse), making it particularly effective for tracking the emergence of sparse representations in activation maps or weight matrices during training. Its simplicity and interpretability have made it widely adopted in analyzing deep networks, including transformers.
 
-\citet{hurley2009gini} provided a theoretical framework for evaluating sparsity metrics, proposing six desirable properties that a good sparsity measure should satisfy, including scale invariance, permutation invariance, and continuity. Their analysis showed that the Gini coefficient and Hoyer's sparsity meet all six properties, making them robust and interpretable for analyzing tensor sparsity in neural networks.
+\citet{hurley2009gini} evaluated various sparsity measures from a theoretical perspective, outlining six desirable properties such as scale and permutation invariance. They showed that both the Gini coefficient and Hoyer’s metric satisfy these criteria, validating their robustness for analyzing sparsity in neural models.
 
 \subsubsection{Functional Sparsity in Language Models}
 
-\citet{frankle2019lottery} demonstrated that sparse subnetworks can be trained to full performance, motivating analysis of which parameters remain active during training and which drop out. This work established sparsity as a proxy for overcapacity versus signal alignment, which is particularly relevant for understanding the differences between small and large language models.
+Beyond abstract metrics, several studies have explored \textit{functional sparsity}: how neural models naturally deactivate or underutilize certain components during training. \citet{frankle2019lottery} introduced the \textit{lottery ticket hypothesis}, showing that sparse subnetworks within overparameterized models can achieve full performance if trained in isolation. This finding sparked a wave of interest in understanding which parameters are actively contributing to learning and which are not.
 
-Building on this foundation, \citet{michel2019sixteen} showed that many attention heads in transformer models are redundant. Their work demonstrated that language models can tolerate significant sparsity through head pruning during training, providing an interpretability-aligned justification for sparsity metrics in transformer architectures.
+Building on this, \citet{michel2019sixteen} found that many attention heads in transformers can be pruned without degrading performance—suggesting redundancy in head usage and an opportunity for model compression. \citet{voita2019analyzing} confirmed this by introducing \textit{head importance scoring}, showing that some attention heads specialize in interpretable functions while others effectively deactivate, illustrating emergent sparsity during training.
 
-\citet{evci2020rigging} examined the training dynamics of sparsified networks, highlighting the instability of sparse networks during early training phases. This work revealed important insights into how sparsity affects the learning process and when it becomes beneficial for model performance.
+\citet{evci2020rigging} analyzed the training trajectories of sparse networks and found that early training phases are especially unstable when sparsity is enforced too aggressively. This underscores the importance of understanding when sparsity is beneficial and how it interacts with training dynamics.
 
-\citet{voita2019analyzing} introduced head importance scoring and showed that sparsity naturally emerges in attention heads during training. This work provided an excellent case study of functional sparsity in language models, demonstrating how certain attention heads become specialized while others become less important.
-
-\citet{jiang2023pruning} measured activation sparsity and proposed sparsity-aware pruning methods for pretrained transformers. Their work is particularly useful for understanding which neurons become saturated, unused, or dead during training, providing insights into the internal organization of language model representations.
+More recently, \citet{jiang2023pruning} proposed sparsity-aware pruning strategies tailored to pretrained transformers, focusing on neurons that become saturated, unused, or ``dead'' over the course of training. Their work provides practical tools for diagnosing inefficiencies in model capacity usage.
 
 \subsubsection{Norm Evolution and Training Stability}
 
-\citet{mishkin2016goodinit} studied how weight and activation norms evolve during training, with particular focus on layer normalization and gradient scaling in transformers. This work revealed important patterns in how different types of norms change throughout the training process and their relationship to model performance.
+Complementing sparsity analysis, research into \textit{norm dynamics} offers insight into the scaling and stability of model parameters and activations. \citet{mishkin2016goodinit} studied how weight and activation norms evolve during training and highlighted the role of proper initialization and normalization (e.g., LayerNorm) in maintaining stable learning. Their findings are particularly relevant in transformer architectures where residual pathways can lead to norm drift.
 
-\citet{liu2020understanding} investigated activation and gradient norm explosion and vanishing in transformers, highlighting early instability in small models. This research is particularly relevant for understanding convergence challenges in transformer training and identifying when models become unstable during the learning process.
+\citet{liu2020understanding} examined \textit{gradient and activation norm instability} in transformers, identifying early-phase training as especially vulnerable to vanishing or exploding norms—an issue especially pronounced in smaller models. These instabilities can explain training failures and motivate adjustments to learning rates, normalization, or initialization strategies.
 
-\citet{arora2018theoretical} connected parameter norm growth to generalization bounds, providing theoretical motivation for tracking norm-based proxies during training. While primarily theoretical, this work established important connections between the magnitude of model parameters and their generalization properties.
+From a theoretical angle, \citet{arora2018theoretical} connected parameter norm growth to generalization bounds, suggesting that norm-based proxies can signal overfitting or underfitting. Meanwhile, \citet{zhang2021calibration} studied \textit{logit norms} as a proxy for model confidence, showing that poorly calibrated models tend to have misaligned norm dynamics at the output layer. Their findings highlight how monitoring output norm evolution can inform assessments of prediction reliability during training.
 
-\citet{zhang2021calibration} investigated the link between logit norms, confidence, and miscalibration in modern neural networks. This work motivates looking at output norm dynamics as a proxy for confidence evolution, providing insights into how language models develop calibrated predictions over the course of training.
-
-\subsubsection{Implications for Language Model Analysis}
-
-The analysis of sparsity and norms provides crucial insights into the internal dynamics of language model training. Sparsity analysis reveals how models develop efficient representations by focusing on the most important components, while norm analysis helps understand training stability and the evolution of model confidence. Together, these approaches complement temporal and convergence analysis by providing fine-grained insights into the internal organization and dynamics of language model representations.
-
-These methods enable researchers to identify when and where sparsity emerges during training, understand the relationship between parameter magnitudes and generalization, and track the evolution of model confidence and stability. The combination of sparsity and norm analysis with other learning dynamics approaches provides a comprehensive framework for understanding how language models develop their capabilities and maintain stable training dynamics.
 
 \subsection{Rank and Geometry Analysis}
 
-The analysis of rank and geometry provides crucial insights into how language models develop their representational capacity and learning dynamics. This approach focuses on understanding the effective dimensionality of model representations and how they evolve during training, revealing important patterns in learning progression and capacity utilization.
+Beyond parameter count or loss metrics, understanding how many dimensions a model \textit{actually uses} to represent information reveals important dynamics of learning and capacity utilization. Rank and geometry analysis captures how representational complexity evolves during training, identifies learning phase transitions, and highlights inefficiencies in model design—particularly in small or overparameterized models.
 
-\subsubsection{Effective Rank and Learning Progression}
+Training often unfolds in distinct stages, each marked by shifts in representational rank. \citet{boix-adsera2023rank} showed that transformer weights increase in rank incrementally from initialization, mirroring stepwise acquisition of complexity. \citet{belrose2024neural} further observed that models progressively encode more sophisticated statistical patterns—starting from unigrams and advancing toward syntax—suggesting stagewise curriculum-like learning.
 
-\citet{boix-adsera2023rank} established that during transformer training, the difference between current weights and initialization increases in rank gradually. Their work proved that under small weight initialization, training proceeds in discrete stages, each adding at most one to rank—mirroring incremental learning phases. The empirical evidence showed this effect persists in real transformers, linking rank growth to meaningful learning dynamics. This work established effective rank as a meaningful indicator of learning progress and phase boundaries.
+Structural limits also constrain learning. \citet{godey2024small} found that small language models hit a representational bottleneck at the output layer: the softmax saturates in rank even while loss continues to fall. This suggests underperformance may stem from expressivity ceilings, not optimization failure.
 
-\citet{godey2024small} showed that small language models hit a representational bottleneck due to the softmax layer's rank limits. As training progresses, output capacity saturates even though loss continues to drop, limiting expressivity. This work suggested that small models underperform not due to optimization issues, but due to structural constraints on expressiveness, highlighting output-layer saturation as a measurable failure mode in small models.
+To characterize these dynamics, researchers have proposed several ways to estimate how many dimensions a model \textit{functionally} uses. \citet{garg2025utilizedrank} introduced \textit{utilized rank}, which estimates the number of active dimensions in a layer's weight matrix by projecting it onto input/output subspaces derived from real data. Their analysis showed that many large models use only a small fraction of their nominal capacity—e.g., ViT-L/16 utilizes just $\sim$20\% of its available rank.
 
-\citet{belrose2024neural} demonstrated that networks learn progressively more complex statistical patterns, from unigram statistics to grammar. Training proceeds in stages, with clear shifts in what the model encodes and where (layers, steps). This work provided experimental support for layered learning dynamics and curriculum-like behavior, justifying the use of tools like effective rank or CKA to detect training phase transitions.
+Another approach is \textit{effective rank}, a continuous measure of dimensionality based on the entropy of a matrix's singular values \citep{roy2007effectiverank}. Given singular values $\sigma_1, \dots, \sigma_r$, normalized as $p_i = \frac{\sigma_i}{\sum_j \sigma_j}$, effective rank is defined as:
 
-\subsubsection{Staircase Phenomena and Phase Transitions}
+\[
+\mathrm{erank}(A) = \exp\left(-\sum_{i=1}^r p_i \log p_i\right)
+\]
 
-\citet{yang2024rankstaircase} introduced effective rank to characterize how many principal directions a network uses in its last hidden layer. Their work discovered a staircase pattern where effective rank rises in discrete jumps, closely tracking drops in the loss—indicating phase transitions in learning. This finding provided important insights into how learning progresses through distinct phases rather than continuously.
+This metric ranges from 1 (collapsed representation) to $r$ (full rank), offering a smooth, interpretable way to track representational complexity. We adopt this measure in later chapters to analyze the learning dynamics of small language models.
 
-\citet{garg2025utilizedrank} introduced utilized rank as the number of dimensions in a layer's weight matrix that actually contribute to processing real data. This approach moved beyond full parameter count to measure data-dependent functional capacity. The work identified input/output subspaces via SVD on data passed through the layer and projected weights onto these subspaces. The findings showed that utilized rank is much lower than full rank, with ViT-B/16 using only ~35% of full capacity and ViT-L/16 using only ~20%. Self-supervised pretraining increased utilization, and low-rank approximations preserved accuracy while reducing computational requirements.
+Multiple studies have observed discrete jumps in effective rank, closely aligned with drops in training loss—a phenomenon termed the \textit{rank staircase} by \citet{yang2024rankstaircase}. These transitions mark key inflection points in the learning process, supporting the idea that training progresses in qualitatively distinct stages.
 
-\subsubsection{Low-Rank Learning Dynamics}
+More broadly, rank-based analyses suggest that low-rank structure is an emergent property of training itself. \citet{pellegrino2023lowrank} found that both biological and artificial networks tend to evolve along low-dimensional subspaces. \citet{feng2022rank} and \citet{minyoung2022lowrank} provide theoretical support, showing that neural networks exhibit a bias toward rank-deficient representations and structurally simple solutions.
 
-\citet{pellegrino2023lowrank} showed in recurrent networks that weight matrices evolve along low-rank subspaces throughout training. Both biological and artificial networks displayed low-dimensional connectivity changes during learning, highlighting that rank constraints are a general feature of learning trajectories across architectures.
-
-\citet{feng2022rank} proved that deep neural networks tend toward rank deficiency in hidden representations across layers during training. This work established that the tendency toward low-rank representations is a fundamental property of deep learning systems.
-
-\citet{minyoung2022lowrank} showed that neural networks are biased toward low effective-rank Gram matrices, a signature of structural simplicity in learned representations. This work provided theoretical insights into why neural networks naturally develop low-rank representations during training.
-
-\subsubsection{Implications for Language Model Analysis}
-
-The rank and geometry analysis provides crucial insights into the fundamental learning dynamics of language models. The discovery of staircase phenomena and phase transitions reveals that learning proceeds through distinct stages rather than continuously, with each stage characterized by specific rank increases and loss reductions. The finding that models utilize only a fraction of their theoretical capacity suggests that much of the parameter space in large models may be redundant or unused.
-
-These insights have important implications for model design and training. Understanding rank evolution can help identify when models reach capacity limits and when additional training may not be beneficial. The discovery of low-rank learning dynamics suggests that models naturally develop efficient, compressed representations, which could inform approaches to model compression and efficiency optimization.
-
-The combination of rank analysis with other learning dynamics approaches provides a comprehensive framework for understanding how language models develop their capabilities. Rank analysis complements temporal, convergence, sparsity, and norm analysis by focusing on the fundamental dimensionality and geometry of learned representations, revealing the underlying structure of how language models organize and utilize their representational capacity.
+In sum, rank and geometry analysis deepens our understanding of how language models acquire, compress, and allocate representational capacity. These tools shed light on inefficiencies in training and architecture and serve as valuable diagnostics for learning progression. Later chapters build on this foundation, using effective rank to study capacity bottlenecks and phase transitions in small model training.
 
 \section{Frameworks and Tools for Learning Dynamics Research}
 
-The study of learning dynamics across different model scales has become increasingly important as researchers seek to understand how scaling affects the emergence and development of linguistic capabilities. Several frameworks and model suites have been developed to support this research, providing standardized datasets, checkpoints, and evaluation tools for studying learning dynamics across scales.
+Understanding how language models learn requires visibility into the training process itself. This is especially critical when comparing how models of different sizes acquire capabilities, converge to solutions, or fail to do so. Smaller models often underperform not because of optimization failure, but due to structural limitations and divergence in learning trajectories. To study these differences, researchers increasingly rely on model suites that expose internal states over time and across scales.
 
-\subsection{Size Comparison and Scaling Studies}
+This section surveys a set of frameworks that make such investigations possible. These resources are essential for answering \textbf{Research Question 2:} \textit{How can we more quantitatively understand how small models learn and what makes them different from large models?} By enabling cross-scale comparisons, these tools help reveal when and why smaller models diverge, and support targeted hypotheses for making their learning dynamics smoother and more effective.
 
-\citet{bansal2021scaling} tracked how model size affects training dynamics, providing crucial insights into how scaling influences learning behavior. This work was particularly helpful for motivating convergence breakdown in small language models and understanding the relationship between model capacity and learning dynamics.
+\subsection{Comprehensive Model Suites with Scale Transparency}
 
-\citet{xia2023training_trajectories} conducted a rare study of full training trajectories using probes and dynamics-focused tools across different model scales. This work provided important baselines for both prediction error reduction (PER) and activation norm analysis, demonstrating how learning dynamics vary systematically with model size.
+One of the most widely used resources for studying learning dynamics is \textit{Pythia} \citep{biderman2023pythia}, a suite of 16 decoder-only language models ranging from 70M to 12B parameters. Each model includes 154 training checkpoints, enabling fine-grained analysis across both time and scale. Pythia has become a standard resource for studying memorization, convergence patterns, and representational development in autoregressive transformers.
 
-\subsection{Comprehensive Model Suites}
+OLMo \citep{groeneveld2024olmo} builds on this trajectory with a focus on full-stack transparency and controlled experimentation. It includes several 7B-parameter models and a 1B model, all trained on 2T tokens with full access to training logs, intermediate checkpoints, and evaluation tools such as Catwalk and Paloma. By standardizing optimization settings and infrastructure, OLMo supports research into scaling laws, optimization dynamics, and reproducible model development.
 
-\citet{biderman2023pythia} developed Pythia, a comprehensive suite for analyzing large language models across training and scale. The suite includes models ranging from 70M to 12B parameters, with 154 checkpoints for each of the 16 models. This extensive dataset enables researchers to study learning dynamics across a wide range of model sizes and training stages, providing standardized benchmarks for comparing different analysis approaches.
+Complementing this, BLOOM \citep{le2023bloom} offers a multilingual and globally inclusive model suite. It spans models from 560M to 176B parameters, with public checkpoints released at multiple stages (e.g., 100B, 500B, 1.5T tokens). BLOOM is particularly well-suited for studying cross-lingual representation learning and transfer, making it a valuable resource for multilingual language modeling research.
 
-\citet{groeneveld2024olmo} introduced OLMo, designed to accelerate the science of language models through comprehensive transparency. The framework releases training checkpoints across multiple hardware types, logs, and datasets, with all model variants trained on at least 2T tokens. OLMo includes 4 variants at 7B scale and 1 variant at 1B scale, along with Catwalk and Paloma for evaluation. The training setup uses ZeRO optimizer strategy with FSDP framework, global batch size of 2048, and sequence length of 2048 with mixed-precision training.
+In parallel, LLM360 \citep{liu2023llm360} takes a radical transparency approach by releasing dense sequences of checkpoints—360 for Amber and 143 for CrystalCoder—alongside optimizer states, loss curves, and detailed logs. This level of granularity supports fine-grained studies of model robustness, generalization, and representational change across training.
 
-\subsection{Multilingual and Open-Source Frameworks}
+\subsection{Frameworks for Small Model Interpretability}
 
-The BLOOM (BigScience Large Open-science Open-access Multilingual Language Model) project represents one of the few multilingual models where intermediate checkpoints are available and the training process was fully documented. Models are available from 560M to 176B parameters, with public slices of checkpoints at stages like 0B → 100B → 300B → 500B → 700B → full 1.5T tokens. BLOOM focuses on global participation, multilinguality, and open research scaffolding, making it particularly valuable for studying learning dynamics in multilingual contexts.
-
-\citet{liu2023llm360} developed LLM360, emphasizing radical transparency in open-source language models. The framework includes models at 7B scale with variants like Amber and CrystalCoder. Amber provides 360 checkpoints released approximately every 1B tokens, while CrystalCoder includes 143 checkpoints. The framework includes training logs, loss curves, optimizer states, and model weights, supporting open-source benchmarking, robustness analysis, and interpretability research.
-
-\subsection{Specialized Frameworks for Interpretability}
-
-\citet{thawakar2024mobillama} developed MobiLlama, a lightweight and efficient GPT-style model trained with full transparency. The framework emphasizes training reproducibility and interpretability, with checkpoints and logs released throughout training. This approach supports research on low-resource learning dynamics and mobile deployment tradeoffs, including accuracy vs. sparsity vs. latency considerations.
-
-TinyLlama represents an open-source small language model with 1.1B parameters trained on 3T tokens with full Hugging Face integration. The project publicly releases intermediate checkpoints at 105B, 503B, 1T, 1.5T, 2T, 2.5T, and 3T tokens, providing a standardized dataset for studying learning dynamics in small-scale models.
-
-SmolLM2 provides a suite of small models that outperform other recent small language models, with a 1.7B-parameter LLaMA-style model trained with checkpoints saved every 125K steps. The framework was released specifically for mechanistic interpretability research, providing detailed training trajectories for studying the emergence of linguistic capabilities in smaller models.
+Several recent frameworks have focused on smaller, more interpretable models. \textit{MobiLlama} \citep{thawakar2024mobillama} provides a lightweight GPT-style model trained with full transparency and reproducibility, emphasizing efficiency and training traceability for mobile use cases. \textit{TinyLlama} \citep{liu2023llm360} offers a 1.1B-parameter model trained on 3T tokens, with checkpoints released at regular intervals (105B to 3T tokens). Finally, \textit{SmolLM2} was specifically designed for mechanistic interpretability with native Hugging Face integration, releasing checkpoints every 125K steps from a 1.7B-parameter model. 
 
 \subsection{Implications for Learning Dynamics Research}
 
-These frameworks provide crucial infrastructure for studying learning dynamics across scales, enabling researchers to compare how different model sizes affect the emergence and development of linguistic capabilities. The availability of standardized checkpoints, training logs, and evaluation tools facilitates reproducible research and systematic comparison of different analysis approaches.
+Collectively, these frameworks provide the empirical foundation for learning dynamics research by exposing how models evolve over time and across scales. With access to intermediate checkpoints, logs, and multiple model sizes, they enable systematic comparisons of when and how capabilities emerge—and why smaller models often diverge from their larger counterparts.
 
-The frameworks also support research on scaling laws and the relationship between model capacity and learning dynamics. By providing models across a wide range of scales, from small models optimized for interpretability to large models designed for performance, these frameworks enable researchers to understand how scaling affects the fundamental learning processes in language models.
-
-The combination of these frameworks with the analytical approaches discussed throughout this chapter provides a comprehensive toolkit for understanding language model learning dynamics. Researchers can now systematically study how different model sizes, architectures, and training conditions affect the emergence of linguistic capabilities, providing insights into the fundamental principles underlying language model learning.
+In the next chapter, we use the Pythia suite to analyze differences in convergence between small and large models, motivating hypotheses about how to encourage smoother learning. Building on these insights, the final chapter introduces \textit{Pico}, a new framework designed to support efficient, interpretable retraining of small models and accelerate experimental iteration on learning dynamics interventions.
