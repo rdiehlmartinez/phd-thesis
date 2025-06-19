@@ -96,7 +96,9 @@ This thesis is organized into two parts, reflecting the two research threads:
 \subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 5-7)}
 
 \begin{itemize}
-    \item \textbf{Chapter 5:} \emph{Model Analysis Background} provides a background on the methods used to analyze language models, including activation patterns, parameter rank, and convergence behavior.
+    \item \textbf{Chapter 5:} \emph{Analyzing Language Models: Foundations, Methods, and Tools} introduces the analytical foundations for studying how language models learn over time, with a particular focus on learning dynamics—the evolving behavior of models as they train. It presents a range of complementary approaches for analyzing these dynamics, including memorization and data influence methods, representational convergence and similarity metrics (such as CKA and model stitching), and capacity usage via sparsity, norm evolution, and rank-based analysis. These tools reveal how internal structure develops, when learning proceeds in distinct phases, and why smaller models often diverge from their larger counterparts.
+
+    The chapter also situates this analysis within the broader interpretability literature, covering foundational ideas like attention pattern analysis, probing methods, and mechanistic circuit tracing. It concludes with a survey of open-source frameworks and model suites—such as Pythia, OLMo, BLOOM, and LLM360—that enable checkpoint-level access to models of different sizes, facilitating systematic comparisons of training trajectories. This background lays the groundwork for the next two chapters, which apply these tools to understand and intervene in the learning dynamics of small language models.
 
     \item \textbf{Chapter 6:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models}  
     investigates why small models often saturate during training. Using the Pythia model suite, it analyzes activation patterns, parameter rank, and convergence behavior.
@@ -121,6 +123,7 @@ This work contributes to the field by:
 
 Together, these contributions aim to support a more \textbf{accessible, efficient, and sustainable future} for language modeling—particularly for researchers and developers working under real-world constraints.
 
+\newpage
 \section*{Publications}
 
 The content of this thesis is comprised of the following published conference papers and software packages.
