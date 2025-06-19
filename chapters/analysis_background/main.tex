@@ -20,7 +20,7 @@ Crucially, they also demonstrated that many heads could be pruned with minimal i
 
 \citet{michel2019sixteen} expanded on these findings by empirically measuring redundancy among attention heads. They showed that despite being designed for parallel attention, many heads capture overlapping information, reinforcing the sparsity hypothesis and motivating leaner transformer designs.
 
-Building on these analytical approaches, \citet{clark2019does} developed visualization methods for interpreting attention in BERT. Their study found that BERT’s attention heads capture both syntactic and semantic relationships—for instance, tracking subject-verb agreement or coreference chains. This work helped establish attention weights as interpretable proxies for internal reasoning, turning attention visualization into a widely used diagnostic tool in transformer research.
+Building on these analytical approaches, \citet{clark2019does} developed visualization methods for interpreting attention in BERT. Their study found that BERT's attention heads capture both syntactic and semantic relationships—for instance, tracking subject-verb agreement or coreference chains. This work helped establish attention weights as interpretable proxies for internal reasoning, turning attention visualization into a widely used diagnostic tool in transformer research.
 
 \subsection{Sparse Probing}
 
@@ -186,10 +186,10 @@ Structural limits also constrain learning. \citet{godey2024small} found that sma
 
 To characterize these dynamics, researchers have proposed several ways to estimate how many dimensions a model \textit{functionally} uses. \citet{garg2025utilizedrank} introduced \textit{utilized rank}, which estimates the number of active dimensions in a layer's weight matrix by projecting it onto input/output subspaces derived from real data. Their analysis showed that many large models use only a small fraction of their nominal capacity—e.g., ViT-L/16 utilizes just $\sim$20\% of its available rank.
 
-Another approach is \textit{effective rank}, a continuous measure of dimensionality based on the entropy of a matrix's singular values \citep{roy2007effectiverank}. Given singular values $\sigma_1, \dots, \sigma_r$, normalized as $p_i = \frac{\sigma_i}{\sum_j \sigma_j}$, effective rank is defined as:
+Another approach is \textit{effective rank} (ER), a continuous measure of dimensionality based on the entropy of a matrix's singular values \citep{roy2007effectiverank}. Given singular values $\sigma_1, \dots, \sigma_r$, normalized as $p_i = \frac{\sigma_i}{\sum_j \sigma_j}$, of a matrix $\mathbb{A}$, the effective rank is defined as:
 
 \[
-\mathrm{erank}(A) = \exp\left(-\sum_{i=1}^r p_i \log p_i\right)
+\mathrm{ER}(A) = \exp\left(-\sum_{i=1}^r p_i \log p_i\right)
 \]
 
 This metric ranges from 1 (collapsed representation) to $r$ (full rank), offering a smooth, interpretable way to track representational complexity. We adopt this measure in later chapters to analyze the learning dynamics of small language models.
