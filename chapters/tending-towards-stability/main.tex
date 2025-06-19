@@ -3,7 +3,7 @@
 
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=\columnwidth]{chapters/chapter 3/figures/cka_main_plot.pdf}
+    \includegraphics[width=\columnwidth]{chapters/tending-towards-stability/figures/cka_main_plot.pdf}
     \caption{$\cka$ similarity (current vs.\ last checkpoint) of $\attention$ and $\mlp$ activations for Pythia \sixmil and \twobil. Distribution across layers: \integer{10}, \integer{25}, \integer{50}, \integer{75}, and \integer{90}-th percentiles per checkpoint.}
     \label{fig:cka_main_plot}
 \end{figure}
@@ -33,7 +33,7 @@ across model sizes. Our analyses highlight training inefficiencies in small-scal
 Prior work has studied various learning dynamics of the Pythia suite, including memorization \citep{biderman2023pythia, lesci2024causal}, training data influence \citep{chai2024training}, and statistics of learned embeddings \citep{belrose2024neural}.
 Related to our work, \citet{godey2024small} examine the differences in the rank of the unembedding matrix (mapping from hidden representations to tokens) across model sizes, known as the softmax bottleneck \citep{yang2018breaking}. Unlike their findings, we focus on the convergence dynamics of all layers.
 
-Similarity metrics like $\cka$ and Singular Vector Canonical Correlation Analysis (SVCCA) are widely used to analyze language model properties. \citet{nguyen2020wide} find that architectural decisions, such as model width and depth, affect hidden representation similarity. \citet{wu2020similarity} show that models within the same architectural family share similar hidden structures, a similarity that persists even in fine-tuned models \citep{phang2021fine}. Additionally, SVCCA has been used to study token representation distribution in multilingual models \citep{singh2019bert} and syntactic element learning in monolingual models \citep{saphra2019understanding}.
+Similarity metrics like $\cka$ and Singular Vector Canonical Correlation Analysis (SVCCA) are widely used to analyze language model properties. \citet{nguyen2020wide} find that architectural decisions, such as model width and depth, affect hidden representation similarity. \citet{wu2020similarity} show that models within the same architectural family share similar hidden structures, a similarity that persists even in fine-tuned models \citep{phang2021finetuned}. Additionally, SVCCA has been used to study token representation distribution in multilingual models \citep{singh2019bert} and syntactic element learning in monolingual models \citep{saphra2019understanding}.
 Most similar to our work, \citet{brown2023understanding} use representation similarity metrics, including $\cka$, to study Pythia generalization capabilities. However, our study is the first to use the $\cka$ metric to examine the convergence dynamics of layers' activations across model sizes.
 
 
@@ -85,7 +85,7 @@ The $\per$ allows us to compare the effective rank of layers with different size
 
 \begin{figure*}[h!]
     \centering
-    \includegraphics[width=\linewidth]{chapters/chapter 3/figures/results.pdf}
+    \includegraphics[width=\linewidth]{chapters/tending-towards-stability/figures/results.pdf}
     \vspace{-15pt}
     \caption{$\cka$ similarity (current vs.\ last checkpoint) of layers' activations (first column), $\per$ of layers' parameters (second column) and gradients (third column) for $\attention$ (top row) and $\mlp$ (bottom row) in Pythia \sevenmil, \sixmil, \fourmil, \onebil, and \twobil averaged (mean) across layers per each checkpoint.}
     \label{fig:main-results}
@@ -106,7 +106,8 @@ More details in \cref{app:implementation_details}.
 % =======
 % RESULTS
 % =======
-\section{Results}\label{sec:results}
+\section{Results}
+\label{sec:tending-towards-stability-results}
 
 Our analyses reveal quantitative differences in the learning dynamics of layers across model sizes.
 
@@ -137,7 +138,7 @@ The $\per$ of gradients reflects the proportion of the learning signal transmitt
 \end{result}
 
 \begin{result}[The dynamics of the parameters' effective rank and the activations' convergence patterns are correlated]
-We investigate the correlation between a layer’s activations convergence rate and the rank of its parameters and gradients. Broadly, we find that layers with higher effective rank in both weights and gradients converge faster.
+We investigate the correlation between a layer's activations convergence rate and the rank of its parameters and gradients. Broadly, we find that layers with higher effective rank in both weights and gradients converge faster.
 To measure this correlation, we first create two binary variables for each layer indicating whether (i) it converges early in training and (ii) maintains a stable $\per$ throughout training. Then, we calculate the Matthew's Correlation Coefficient between these two statistics across layers and report them in \cref{tab:model_correlation}.
 Specifically, for each layer of a given model, we determine whether that layer exhibits early activations' convergence and large and stable parameters' and gradients' $\per$s (relative to other model layers) using the following heuristics: 
 \begin{itemize}
@@ -154,7 +155,7 @@ While these results are correlational, they provide a foundation for future work
 
 \begin{table}[!t]
     \centering
-    \input{chapters/chapter 3/tables/correlation_table}
+    \input{chapters/tending-towards-stability/tables/correlation_table}
     \caption{Matthew's Correlation Coefficient %($\phi$)
     between binary variables indicating whether a given layer converges early in training and whether it maintains a stable PER of the parameters ($\vtheta$) and gradients ($\nabla\vtheta$) throughout training for both $\attention$ and $\mlp$.}
     \label{tab:model_correlation}
@@ -183,7 +184,7 @@ Additionally, log-spaced checkpoints are available early in training (steps $\{2
 
 \begin{table}[!t]
     \centering
-    \input{chapters/chapter 3/tables/pythia-details_table}
+    \input{chapters/tending-towards-stability/tables/pythia-details_table}
     \caption{Details on the architecture and training hyper-parameters for models in the Pythia suite used in this paper.}
     \label{tab:model_hparams}
 \end{table}
@@ -201,7 +202,7 @@ In \cref{fig:cka-layer-wise-lines}, we visualize the activations' $\cka$ converg
 
 \begin{figure*}[h!]
     \centering
-    \includegraphics[width=0.90\linewidth]{chapters/chapter 3/figures/cka_full_lines.pdf}
+    \includegraphics[width=0.90\linewidth]{chapters/tending-towards-stability/figures/cka_full_lines.pdf}
     \vspace{-5pt}
     \caption{$\cka$ similarity (current vs last checkpoint) of the activations of $\attention$ and $\mlp$ in each layer of Pythia \q{70}{\million}, \q{160}{\million}, \q{410}{\million}, \q{1.4}{\billion} and \q{2.8}{\billion} throughout training.}%
     \label{fig:cka-layer-wise-lines}
@@ -215,7 +216,7 @@ In \cref{fig:per_weight-layer-wise-lines}, we visualize the learning dynamics of
 
 \begin{figure*}[h!]
     \centering
-    \includegraphics[width=0.90\linewidth]{chapters/chapter 3/figures/per_weight_lines.pdf}
+    \includegraphics[width=0.90\linewidth]{chapters/tending-towards-stability/figures/per_weight_lines.pdf}
     \vspace{-5pt}
     \caption{$\per$ of the weight matrices of $\attention$ and $\mlp$ in each layer of Pythia \q{70}{\million}, \q{160}{\million}, \q{410}{\million}, \q{1.4}{\billion} and \q{2.8}{\billion} throughout training.}%
     \label{fig:per_weight-layer-wise-lines}
@@ -230,7 +231,7 @@ In \cref{fig:per_grad-layer-wise-lines}, we visualize the learning dynamics of t
 
 \begin{figure*}[h!]
     \centering
-    \includegraphics[width=0.90\linewidth]{chapters/chapter 3/figures/per_grad_lines.pdf}
+    \includegraphics[width=0.90\linewidth]{chapters/tending-towards-stability/figures/per_grad_lines.pdf}
     \vspace{-5pt}
     \caption{$\per$ of the gradients of the weight matrices of $\attention$ and $\mlp$ in each layer of Pythia \q{70}{\million}, \q{160}{\million}, \q{410}{\million}, \q{1.4}{\billion} and \q{2.8}{\billion} throughout training.}%
     \label{fig:per_grad-layer-wise-lines}
