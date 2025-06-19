@@ -604,6 +604,13 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \usepackage{amssymb}
 \usepackage{mathtools} 
 
+
+% checkmarks and crossmarks
+\usepackage{pifont}
+\newcommand{\cmark}{\textcolor{green!60!black}{\ding{51}}} % green checkmark
+\newcommand{\xmark}{\textcolor{red}{\ding{55}}}     
+\usepackage{enumitem}
+
 % Table packages: 
 % - allow table cells to span multiple rows
 % - enables top lines 
@@ -667,9 +674,9 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 % Thesis Main Colors 
 \definecolor{thesisorange}{HTML}{ff7f11}
 \definecolor{thesisblue}{HTML}{37718e}
-% \definecolor{thesisbeige}{HTML}{faedca}
-% \definecolor{thesispurple}{HTML}{c1cefe}
-% \definecolor{thesisgreen}{HTML}{a0ddff}
+\definecolor{thesisbeige}{HTML}{faedca}
+\definecolor{thesispurple}{HTML}{c1cefe}
+\definecolor{thesisgreen}{HTML}{a0ddff}
 
 %%
 %% MACROS 

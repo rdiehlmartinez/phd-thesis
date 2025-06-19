@@ -299,30 +299,33 @@ Importantly, these insights offer actionable hypotheses: for instance, that indu
 
 Ideally, we would now like to modify the Pythia models—for example, to encourage higher effective rank early in training—and retrain them to see whether convergence patterns improve. Yet retraining Pythia is non-trivial. The framework poses several practical limitations:
 
-The dataset (The Pile) is not easily streamable in its deduplicated format, and lacks a flexible preprocessing pipeline.
-
-Training requires Megatron-DeepSpeed, which introduces heavy engineering overhead, tightly coupled dependencies, and strict hardware requirements.
-
-The models are distributed via Docker environments with limited transparency, making it hard to debug, reproduce, or extend experiments.
-
-Checkpointing and evaluation tools are fragmented or poorly documented, complicating integration with analysis workflows.
+\begin{itemize}[label=\xmark]
+    \item \textbf{The dataset (The Pile)} is not easily streamable in its deduplicated format, and lacks a flexible preprocessing pipeline.
+    \item \textbf{Training requires Megatron-DeepSpeed}, which introduces heavy engineering overhead, tightly coupled dependencies, and strict hardware requirements.
+    \item \textbf{The models are distributed via Docker environments} with limited transparency, making it hard to debug, reproduce, or extend experiments.
+    \item \textbf{Checkpointing and evaluation tools are fragmented or poorly documented}, complicating integration with analysis workflows.
+\end{itemize}
 
 To rigorously study learning dynamics—and in particular, to test targeted training interventions—we need a framework that makes model retraining as accessible as analysis. Such a framework should:
 
 \begin{tcolorbox}[
-    colback=gray!5!white,
-    colframe=black,
+    colback=white,
+    colframe=thesisblue,
     title=\textbf{Design Requirements for Intervention-Friendly Language Model Platforms},
     fonttitle=\bfseries,
-    coltitle=black,
-    boxrule=0.4pt,
-    arc=4pt,
+    coltitle=white,
+    arc=0mm,
+    boxrule=1pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt,
     enhanced,
     breakable
 ]
 To effectively support intervention-based research on language model training dynamics, an ideal platform should meet the following criteria:
 
-\begin{itemize}
+\begin{itemize}[label=\cmark]
     \item \textbf{Transparency and Modularity}: Fully open-source with minimal external dependencies. Code should be clean, auditable, and modular to support rapid iteration and debugging.
     
     \item \textbf{Reproducible Training and Evaluation}: Provide ready-to-use scripts and configuration files for full training and evaluation pipelines. Baselines should be reproducible with minimal tuning.
@@ -339,5 +342,5 @@ To effectively support intervention-based research on language model training dy
 \end{itemize}
 \end{tcolorbox}
 
-These requirements motivate the development of the Pico model suite: a lightweight, transparent training and evaluation framework purpose-built for studying learning dynamics in small language models. In the next chapter, we introduce Pico and describe how it enables reproducible experiments on training dynamics, as well as targeted interventions to test and refine the hypotheses surfaced in this chapter.
+These requirements motivate the development of the \pico model suite: a lightweight, transparent training and evaluation framework purpose-built for studying learning dynamics in small language models. In the next chapter, we introduce \pico and describe how it enables reproducible experiments on training dynamics, as well as targeted interventions to test and refine the hypotheses surfaced in this chapter.
 
