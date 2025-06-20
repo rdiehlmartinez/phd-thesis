@@ -100,26 +100,60 @@ This thesis is organized into two parts, reflecting the two research threads:
 
     The chapter also situates this analysis within the broader interpretability literature, covering foundational ideas like attention pattern analysis, probing methods, and mechanistic circuit tracing. It concludes with a survey of open-source frameworks and model suites—such as Pythia, OLMo, BLOOM, and LLM360—that enable checkpoint-level access to models of different sizes, facilitating systematic comparisons of training trajectories. This background lays the groundwork for the next two chapters, which apply these tools to understand and intervene in the learning dynamics of small language models.
 
-    \item \textbf{Chapter 6:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models}  
-    investigates why small models often saturate during training. Using the Pythia model suite, it analyzes activation patterns, parameter rank, and convergence behavior.
+    \item \textbf{Chapter 6:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models} examines why small language models often exhibit unstable or delayed convergence during training. Using the Pythia model suite, we compare learning dynamics across model sizes, focusing on how internal layer activations evolve and how efficiently models use their representational capacity.
 
-    \item \textbf{Chapter 7:} \emph{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}  
-    presents Pico, a modular framework for transparent training and in-depth analysis of learning dynamics, enabling reproducible experiments with small models.
+    We apply Centered Kernel Alignment (CKA) to track the convergence of activations over time and introduce Proportional Effective Rank (PER) as a new metric to assess how richly layers utilize their parameters and gradients. Our findings show that larger models converge more quickly and consistently, while smaller models underutilize capacity—particularly in deeper layers—leading to erratic learning and premature saturation.
+    
+    These results suggest that small models suffer from inefficient learning trajectories, not just limited capacity. The chapter closes by identifying the need for an intervention-friendly training framework to test hypotheses about improving small model training—motivating the design of the \pico framework presented in Chapter 7.
+
+    \item \textbf{Chapter 7:} \emph{\pico: A Lightweight Framework for Studying Language Model Learning Dynamics} introduces \pico, a modular framework designed to support in-depth, training-time analysis of language models. While prior tools often focus either on high-throughput training or post-hoc interpretability, Pico bridges this gap by enabling researchers to track and intervene in the learning process as it unfolds—particularly for small and mid-sized models.
+
+    Pico consists of two core components:
+    
+    \begin{enumerate}
+        \item \texttt{pico-train}, a minimalist training library that logs model weights, activations, and gradients at regular intervals, and
+        
+        \item \texttt{pico-analyze}, a companion toolkit that computes metrics such as Proportional Effective Rank, CKA, sparsity, and norm dynamics across layers and checkpoints.
+    \end{enumerate}
+    
+    Unlike larger-scale platforms (e.g., DeepSpeed, Megatron), Pico emphasizes simplicity, transparency, and reproducibility. It is built in modular PyTorch, supports Hugging Face interoperability, and includes a fully pre-tokenized, streamable dataset based on Dolma to ensure consistent training conditions.
+    
+    The chapter also introduces the Pico Model Suite—a collection of open-source language models ranging from 11M to 570M parameters, trained using \texttt{pico-train} and designed for research on training dynamics, scaling laws, and interpretability.
+    
+    Together, Pico and its model suite provide a foundation for studying how language models learn—making it easier to test hypotheses, prototype interventions, and build a more principled science of training dynamics.
 \end{itemize}
 
 \section*{Contributions}
 
-This work contributes to the field by:
+This thesis makes the following contributions to the study of small language models, with an emphasis on efficient training and principled model understanding:
 
-\begin{enumerate}
-    \item Exploring an in-depth analysis of the curriculum learning paradigm from a cognitive perspective.
+\vspace{1em}
 
-    \item Introducing novel methods—such as syntactic smoothing and structured curricula—for improving small model generalization.
+\textbf{1. Cognitively inspired training strategies for small language models}
 
-    \item Developing analysis tools to diagnose and analyze inefficiencies in model training.
+\begin{itemize}
 
-    \item Construction of an open-source framework for studying language model learning dynamics that can inform better training methods.
-\end{enumerate}
+    \item Introduces CLIMB, a curriculum learning framework based on principles from human language acquisition. CLIMB integrates vocabulary development, input complexity, and task progression to improve training efficiency in small models (Chapter 3).
+
+    \item Proposes Syntactic Smoothing, a cognitively motivated method that mimics how humans use grammatical structure to infer the meaning of rare words. By diffusing learning signals across syntactically similar tokens, the approach reduces frequency bias and improves representation of low-frequency items (Chapter 4).
+
+    \item Demonstrates that both approaches—grounded in cognitive science—offer practical gains in efficiency, generalization, and interpretability over standard training methods.
+\end{itemize}
+
+\textbf{2. A quantitative framework for analyzing learning dynamics in small models}
+
+\begin{itemize}
+    \item Introduces a set of metrics for quantifying how quickly and effectively each model layer uses its representational capacity over time and how well it converges to a stable representation (Chapter 6).
+
+    \item Applies these metrics to show that small models converge more slowly and inconsistently than larger models—not due to scale alone, but because of inefficient internal capacity usage.
+\end{itemize}
+
+\textbf{3. An open-source platform for training-time analysis and reproducible experimentation}
+\begin{itemize}
+    \item Presents \pico, a lightweight, modular framework for studying model learning dynamics during training, with tools for logging, metric computation, and intervention (Chapter 7).
+
+    \item Releases the \pico Model Suite, a family of small- to mid-sized models (11M–-570M parameters) trained with standardized recipes and full checkpoint access—supporting scaling studies, interpretability work, and community-led research.
+\end{itemize}
 
 Together, these contributions aim to support a more \textbf{accessible, efficient, and sustainable future} for language modeling—particularly for researchers and developers working under real-world constraints.
 
