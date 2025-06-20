@@ -1,30 +1,27 @@
-\chapter{\picosupabig: A Lightweight Framework for Studying Language Model Learning Dynamics}
-\label{chapter:Pic}
+\chapter{The \picosupabig Framework: Lightweight Infrastructure for Studying Learning Dynamics}
+\label{sec:pico-intro}
 
-Recent advances in large language models (LLMs) have produced systems capable of remarkable performance across a broad range of natural language tasks \citep{hendrycks2021mmlu, cobbe2021gsm8k, srivastava2023bigbench}. Yet the growing complexity of these models makes it challenging to investigate their internal mechanisms. While existing frameworks enable large-scale training \citep{rasley2020deepspeed, narayanan2021megatron}, most prioritize production over interpretability, limiting detailed tracking of parameters and internal representations throughout training.
+The rapid progress of large language models (LLMs) has produced systems that excel at a wide range of natural language tasks, from reasoning and summarization to coding and multilingual translation \citep{hendrycks2021mmlu, cobbe2021gsm8k, srivastava2023bigbench}. Yet this progress has also introduced new challenges: as models grow larger and more complex, they become harder to analyze, diagnose, and refine. Understanding how these models acquire knowledge—particularly how their internal representations evolve during training—remains a critical yet under-explored research frontier.
 
+Existing model development frameworks such as DeepSpeed \citep{rasley2020deepspeed}, Megatron-LM \citep{narayanan2021megatron}, and MosaicML’s MPT \citep{mosaic2023mpt} have pushed the boundaries of efficient, large-scale training. However, their emphasis on production performance and throughput often comes at the cost of transparency. Intermediate representations, gradients, and activations are rarely captured in a structured way, and instrumentation for fine-grained interpretability is typically an afterthought. As a result, researchers seeking to study learning dynamics or test training interventions face steep technical overhead.
 
-In this paper, we present \pico, a modular framework that streamlines research into language model learning dynamics at small to medium scales (1M--1B parameters). \textbf{Pico} is composed of two libraries: \texttt{pico-train} for training models from scratch and \texttt{pico-analyze} for analyzing them. 
+Conversely, frameworks built for interpretability—such as TransformerLens \citep{nanda2022transformerlens}, ROME \citep{meng2022locating}, and ACDC \citep{conmy2023towards}—enable detailed circuit-level analysis but are mostly limited to post-hoc exploration of fully trained models. They rarely support modifications to the training process itself, and when they do, such interventions tend to be tightly coupled to specific checkpoints, architectures, or datasets. Even frameworks explicitly designed for developmental analysis, like DevInterp \citep{devinterpcode}, rely on external checkpointing pipelines and are often decoupled from model training.
 
-Together, \texttt{pico-train} and \texttt{pico-analyze} facilitate fine-grained inspection of weights, gradients, and activations at regular checkpoints throughout model training. \texttt{pico-train} makes it easy to train models while flexibly adjusting architectural details and hyperparameters, supporting rapid experimentation with different configurations. Meanwhile, \texttt{pico-analyze} enables researchers to explore deeper interpretability questions, such as how hidden representations evolve with model depth or whether identical training trajectories yield distinct generalization patterns as model size increases.
+To support the growing demand for training-time interpretability—that is, the ability to track and intervene in the learning process as it unfolds—we need a framework that makes the training loop itself an object of study. We need infrastructure that not only logs activations and gradients but also invites experimentation with training interventions, architectural variants, and representational diagnostics. Crucially, this framework should be lightweight and accessible, making it possible to iterate quickly without requiring industrial-scale compute or engineering resources.
 
+\textbf{This chapter introduces \pico}, a modular, extensible framework designed to fill this gap. Built for training and analyzing small-to-medium scale models (1M--1B parameters), Pico is engineered to support research into the internal mechanisms and developmental trajectories of language models. It consists of two components:
 
-\section{Related Literature}
-\label{sec:related}
+\begin{enumerate}
+    \item \texttt{pico-train}, a customizable training library that makes it easy to train models from scratch while recording rich internal signals (weights, gradients, activations) at regular checkpoints.
+    \item \texttt{pico-analyze}, a companion toolkit for querying, visualizing, and analyzing these signals—designed to integrate smoothly with standard scientific workflows and support user-defined metrics.
+\end{enumerate}
 
-We survey where \textbf{Pico} sits within a growing ecosystem of frameworks that support the training and analysis of language models, ranging from highly optimized production libraries to interpretability toolkits and lightweight experimental suites. 
+Together, these tools make it possible to perform fine-grained, in-situ analysis of how models learn over time, test hypotheses about representation development, and prototype interventions that might improve training outcomes—particularly for small models, where interpretability and efficiency are especially critical.
 
-\subsection{Training Frameworks}
+Pico was built to address a concrete gap identified in the previous chapter: existing suites like Pythia offer rich insights into learning dynamics after training, but lack the flexibility and transparency needed to test interventions during training. We need tools that bring the same level of rigor to the training process as to post-hoc analysis.
 
-\paragraph{Open-source initiatives.} Initiatives by EleutherAI—including GPT-Neo, GPT-J, and the interpretability-focused Pythia suite \cite{biderman2023pythia}—as well as projects like the Allen Institute's OLMo \citep{groeneveld2024olmo}, Meta's LLAMA \cite{touvron2023llama}, BigScience's BLOOM \cite{le2023bloom}, and Databricks’ Dolly \cite{databricksdolly2023}, have democratized access to pretrained weights and checkpoints. While these frameworks support post-hoc investigations into phenomena such as linguistic emergence and scaling effects \cite{belrose2023eliciting, gurnee2023finding, michaelov2023emergent, diehlmartinez2024tending}, they typically do not capture detailed, in-training signals by default.
+The rest of this chapter is structured as follows. We begin by situating Pico within the broader ecosystem of language model training and interpretability frameworks, reviewing both large-scale production platforms and experimental research toolkits. We then describe the key architectural and design decisions behind \texttt{pico-train} and \texttt{pico-analyze}, highlighting how they support training-time experimentation. Finally, we compare Pico to existing frameworks in terms of flexibility, granularity, and ease of use, showing how it enables new kinds of research in learning dynamics and model interpretability.
 
-\paragraph{Rapid experimentation suites.} Smaller frameworks like SmolLM \citep{allal2025smollm2}, TinyLlama \citep{zhang2024tinyllama}, NanoGPT \cite{karpathy2023nanogpt},  and TinyStories \cite{eldan2023tinystories} offer minimalistic, modular training loops that facilitate quick experimentation. However, they usually leave the implementation of fine-grained monitoring (e.g., activations or gradient flows) to the user.
-
-\paragraph{Large-scale and efficient frameworks.} Platforms such as NVIDIA's Megatron-LM \cite{narayanan2021megatron} and Microsoft's DeepSpeed \cite{rasley2020deepspeed} excel at distributed training for models with billions of parameters, though they lack native mechanisms for inspecting intermediate states. Similarly, MosaicML’s MPT \cite{mosaic2023mpt} emphasizes hardware efficiency and hyperparameter tuning for production environments, often requiring users to retrofit logging to study learning dynamics.
-
-{
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{4pt}
 
 {
 \renewcommand{\arraystretch}{1.25}
@@ -33,8 +30,7 @@ We survey where \textbf{Pico} sits within a growing ecosystem of frameworks that
 \begin{table}[htbp]
     \centering
     \footnotesize
-    \caption{Comparison of Pico and related frameworks for interpretability and learning dynamics}
-    \label{tab:pico_comparison_final}
+
     \begin{tabular}{@{}p{2.6cm} p{1.8cm} p{2.6cm} p{2.4cm} p{2.0cm} p{2.3cm}@{}}
     \toprule
     \textbf{Tool} &
@@ -83,28 +79,42 @@ We survey where \textbf{Pico} sits within a growing ecosystem of frameworks that
     \vspace{0.5em}
     
     \raggedright
+    \caption{Comparison of Pico and related frameworks for interpretability and learning dynamics}
+    \label{tab:pico_comparison_final}
     \textbf{Legend:} \cmark = Fully supported; \xmark = Not supported; \warnmark = Partial or limited support
 \end{table}
 }
 
+\section{Situating \picolarge in the Landscape of Language Model Frameworks}
+\label{sec:pico-related}
 
+Language model research increasingly depends on infrastructure—not just for scaling up training, but for opening up models to analysis. As interest grows in how models acquire structure, allocate capacity, and evolve over time, researchers need frameworks that support more than just performance benchmarking. They need transparency into the training process itself.
 
-\subsection{Analysis Frameworks}
+Today's ecosystem of LLM tooling is rich but uneven. On one end are large-scale training platforms that emphasize throughput, hardware optimization, and production readiness. On the other are interpretability toolkits that provide detailed post-hoc analysis of model internals, often at the level of neurons, circuits, or activations. However, few systems support both perspectives simultaneously—training frameworks rarely expose the internal states needed for interpretability, and interpretability tools rarely integrate with the training loop.
 
-\paragraph{Post-hoc model probing.} Given that detailed training signals are often unavailable by default, many researchers have adopted post-hoc probing methods. Such approaches rely on external hooking libraries to intercept hidden states and attention patterns \cite{voita2019analyzing, clark2019does, michel2019sixteen}, looking at information flows within models to discover security or privacy vulnerabilities \cite{yao2024privacysurvey}. While powerful, these methods demand significant modifications and usually depend upon pre-existing checkpoints.% or training trajectory surrogates. 
+Pico is designed to bridge this gap. It supports full training from scratch, while offering built-in mechanisms to log and analyze activations, gradients, and other internal signals throughout training. This makes it possible to study learning dynamics not only retrospectively, but as they unfold.
 
-\paragraph{Mechanistic interpretability.} Over the past few years, \emph{mechanistic interpretability} (mechinterp) has gained traction as a framework for reverse-engineering neural networks at the algorithmic level \cite{olah2020zoom, elhage2021mathematical}. Mechinterp focuses on localizing and characterizing the internal “circuitry” of attention heads, MLP layers, or individual neurons. A variety of mechinterp libraries—e.g., TransformerLens \cite{nanda2022transformerlens}, ROME \cite{meng2022locating}, and ACDC \cite{conmy2023towards}—offer powerful tooling to dissect trained transformer models at inference time. However, these efforts typically assume that checkpoints are already available and do not natively capture the evolution of internal mechanisms and learning dynamics throughout the training loop.
+To understand the niche Pico fills, it helps to situate it relative to two major categories of tools: training frameworks and analysis frameworks.
 
-\vspace{-0.2cm}
-\paragraph{Developmental interpretability.} Traditional mechanistic interpretability typically performs post-hoc analysis on a fully trained model – dissecting features and circuits after training is complete. By contrast, developmental interpretability advocates \textit{in-situ} analysis: understanding the model as it learns, phase by phase \cite{hoogland2023towards,devinterpcode, hoogland2025losslandscape}. Timaeus' DevInterp \cite{devinterpcode} is a library that integrates with existing interpretability frameworks to analyze saved training checkpoints and discover structured knowledge (e.g. circuits or superposition patterns) within a trained model’s weights. 
+\paragraph{Training Frameworks} Large-scale systems like DeepSpeed, Megatron-LM, and MosaicML are highly optimized for training massive models. They handle distributed computation and mixed-precision arithmetic efficiently, but their training pipelines are complex and often opaque. Modifying or instrumenting them to inspect model internals—let alone run repeated training interventions—can require significant effort. These frameworks are indispensable for production-scale pretraining, but ill-suited for small-scale, experiment-driven research.
 
-% What we do
-\textbf{What we do.} Against this backdrop of pretraining and analysis suites, \textbf{Pico} marries lightweight, flexible training procedures with built-in support for learning dynamics. Compared to existing training frameworks, \texttt{pico-train} records more detailed activations, gradients, and weights to reduce the burden of custom instrumentation, as well as provides the scale to efficiently train the type of model one might use in production environments. Compared to existing analysis frameworks, \texttt{pico-analyze} takes advantage of real-time, in-situ tracking of learning dynamics, provides a streamlined, modular structure optimized for iterative experimentation, and offers an unopinionated framework to fit into most user workflows. In short, \textbf{Pico} facilitates rapid experimentation and flexible training interventions, and enables researchers to quickly explore a wide range of model analyses.%— addressing some of the rigidity found in existing workflows, and making it easier for researchers to focus on the most interesting parts of research.
+In contrast, lightweight training frameworks such as NanoGPT, SmolLM2, and TinyLlama emphasize simplicity and fast iteration. Their codebases are accessible and easy to modify, making them ideal for prototyping new ideas. However, they tend to treat training as a black box. Logging activations or inspecting weight evolution generally requires manual modification, and internal state tracking is minimal or absent. These frameworks make it easy to run experiments, but hard to measure what's happening inside.
+
+Pico aims to combine the best of both worlds. It is optimized for small and mid-sized models (1M--1B parameters) and is built in modular PyTorch for ease of use. But unlike most lightweight suites, it is designed from the ground up to expose model internals. It logs key training signals by default—weights, activations, gradients—and does so in structured, extensible formats. This makes Pico not just a tool for training models, but a platform for studying how they learn.
+
+\paragraph{Analysis Frameworks} Where training frameworks help build models, analysis frameworks help interpret them. Recent progress in mechanistic interpretability has produced tools like TransformerLens, ROME, and ACDC, which allow detailed inspection of trained transformer circuits. These tools have been invaluable for understanding how attention heads specialize or how knowledge is stored and retrieved. But they are mostly post-hoc: they assume a trained model and operate over static checkpoints.
+
+Complementing these are tools like DevInterp, which begin to trace how models develop during training by analyzing intermediate checkpoints. This shift toward developmental interpretability has revealed that models undergo discrete representational shifts, acquire capabilities in phases, and sometimes diverge in ways that are hard to recover from. Still, most of these frameworks remain downstream—they depend on external training pipelines and cannot modify or influence the training process itself.
+
+Here again, Pico closes a key loop. By integrating training and analysis into the same workflow, it enables fine-grained, in-situ investigation of representational dynamics. Rather than relying on occasional checkpoints saved by another framework, Pico makes detailed logging a native part of the training loop. This allows researchers to monitor changes in capacity usage, representation similarity, or sparsity metrics in real time, and to test hypotheses by intervening directly in training.
+
+\paragraph{Toward Integrated Research Infrastructure} The distinctions between training and analysis frameworks have historically reflected different goals—efficiency vs. interpretability, scale vs. visibility. But to understand how language models learn, especially at small and intermediate scales, these goals need to be brought together. Pico is an attempt to unify them into a single research workflow, one that enables controlled experimentation, rapid iteration, and structured analysis without sacrificing clarity or flexibility.
+
+Table~\ref{tab:pico_comparison_final} provides a comparative summary of how Pico fits into the current landscape, alongside other commonly used frameworks. While each tool has strengths of its own, Pico is distinct in offering custom training, rich logging, and built-in analysis—all in a lightweight package designed for learning dynamics research.
 
 \section{\picolarge}
 
 In this section we provide a concise overview of the two \textbf{Pico} libraries: \texttt{pico-train} and \texttt{pico-analyze}. 
-
 
 \subsection{\texttt{pico-train}: A Minimalist Approach to Model Training}
 
