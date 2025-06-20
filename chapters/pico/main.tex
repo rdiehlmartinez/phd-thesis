@@ -22,6 +22,73 @@ We survey where \textbf{Pico} sits within a growing ecosystem of frameworks that
 
 \paragraph{Large-scale and efficient frameworks.} Platforms such as NVIDIA's Megatron-LM \cite{narayanan2021megatron} and Microsoft's DeepSpeed \cite{rasley2020deepspeed} excel at distributed training for models with billions of parameters, though they lack native mechanisms for inspecting intermediate states. Similarly, MosaicML’s MPT \cite{mosaic2023mpt} emphasizes hardware efficiency and hyperparameter tuning for production environments, often requiring users to retrofit logging to study learning dynamics.
 
+{
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{4pt}
+
+{
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{4pt}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \caption{Comparison of Pico and related frameworks for interpretability and learning dynamics}
+    \label{tab:pico_comparison_final}
+    \begin{tabular}{@{}p{2.6cm} p{1.8cm} p{2.6cm} p{2.4cm} p{2.0cm} p{2.3cm}@{}}
+    \toprule
+    \textbf{Tool} &
+    \textbf{Custom Training} &
+    \textbf{Checkpointing \& Logging} &
+    \textbf{Analysis \& Extensibility} &
+    \textbf{Small Scale Suitability} &
+    \textbf{Ease of Use} \\
+    \midrule
+    \textbf{\pico} & 
+    \cmark \newline Modular PyTorch &
+    \cmark \newline Activations, grads, weights &
+    \cmark \newline Extensible metrics \& components &
+    \cmark \newline Built for 1M-1B models &
+    \cmark \newline Extensive documentation, simple setup\\
+
+    \midrule
+
+    TransformerLens & 
+    \xmark & \xmark & \cmark & \cmark & \warnmark \\
+
+    ACDC & 
+    \xmark & \warnmark & \cmark & \cmark & \xmark \\
+
+    ROME & 
+    \xmark & \warnmark & \cmark & \cmark & \xmark \\
+
+    \midrule
+
+    DevInterp & 
+    \warnmark & \cmark & \cmark & \warnmark & \warnmark \\
+
+    \midrule
+
+    SmolLM2 & 
+    \xmark & \warnmark & \warnmark & \cmark & \cmark \\
+
+    Pythia Suite & 
+    \warnmark & \warnmark & \xmark & \cmark & \xmark \\
+
+    OLMo & 
+    \warnmark & \warnmark & \xmark & \warnmark & \xmark \\
+
+    \bottomrule
+    \end{tabular}
+    \vspace{0.5em}
+    
+    \raggedright
+    \textbf{Legend:} \cmark = Fully supported; \xmark = Not supported; \warnmark = Partial or limited support
+\end{table}
+}
+
+
+
 \subsection{Analysis Frameworks}
 
 \paragraph{Post-hoc model probing.} Given that detailed training signals are often unavailable by default, many researchers have adopted post-hoc probing methods. Such approaches rely on external hooking libraries to intercept hidden states and attention patterns \cite{voita2019analyzing, clark2019does, michel2019sixteen}, looking at information flows within models to discover security or privacy vulnerabilities \cite{yao2024privacysurvey}. While powerful, these methods demand significant modifications and usually depend upon pre-existing checkpoints.% or training trajectory surrogates. 
@@ -136,7 +203,8 @@ Training will start immediately, automatically saving learning dynamics checkpoi
     \centering
     \renewcommand{\arraystretch}{1.2} % Adjust row spacing
     \setlength{\tabcolsep}{8pt} % Adjust column spacing
-    \begin{tabular}{|>{\centering\arraybackslash}p{3cm}|p{5cm}|p{6.2cm}|}
+    \footnotesize
+    \begin{tabular}{|>{\centering\arraybackslash}p{3cm}|p{5cm}|p{5.5cm}|}
         \hline
         \textbf{Category} & \textbf{Parameter} & \textbf{Default Value} \\
         \hline
@@ -224,77 +292,6 @@ With a configuration file in place, launching an analysis is as simple as runnin
 This command will execute the analysis specified in the configuration file directly on the model checkpoints uploaded to Hugging Face by the corresponding \texttt{pico-train} run, identified using \verb|repo_id| and \verb|branch|. Once run, the analysis results can be stored locally or uploaded to Weights \& Biases (wandb) \citep{wandb} for visualization, allowing for efficient tracking of learning dynamics across multiple runs.  
 
 By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provides a structured, reproducible framework for studying learning dynamics, enabling researchers to explore how representations form and evolve over training. In \cref{fig:demo_full_run} we visualize the output of this analysis and more generally the typical output of running the two libraries. 
-
-\begin{table*}[h!]
-    \centering
-    \renewcommand{\arraystretch}{1.2} % Adjust row spacing
-    \setlength{\tabcolsep}{4pt}
-    \begin{tabular}{|p{3.5cm}|p{7.5cm}|p{2.2cm}|p{2cm}|}
-        \hline
-        \textbf{Metric} & \textbf{Description} & \textbf{Data Type} & \textbf{Category} \\
-        \hline
-        \hline
-        \textbf{CKA \newline (Centered Kernel Alignment)} 
-        \citep{kornblith2019cka} &  
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Measures similarity between activations at different checkpoints
-            \item Uses kernel methods to track representation evolution
-        \end{itemize}
-        & Activations & \textbf{Similarity} \\
-        \hline
-        \textbf{PWCCA \newline (Projection-Weighted CCA) }\cite{morcos2018pwcca} & 
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Measures activation similarity across training
-            \item Emphasizes important components via projections
-        \end{itemize}  
-        & Activations & \textbf{Similarity} \\
-        \hline
-        \hline
-        \textbf{Condition Number} &  
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Computes ratio of largest to smallest singular value
-            \item Indicates sensitivity to small input changes
-        \end{itemize}
-        & Weights\newline Activations\newline Gradients & \textbf{Rank} \\
-        \hline
-        \textbf{PER \newline (Proportional \newline Effective Rank)} \citep{diehlmartinez2024tending} &  
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Measures entropy of normalized singular values
-            \item Indicates effective parameter usage
-        \end{itemize}  
-        & Weights\newline Gradients & \textbf{Rank} \\
-        \hline
-        \hline
-        \textbf{Gini Coefficient} \citep{hurley2009gini} &  
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Measures sparsity via weight distribution inequality
-        \end{itemize}  
-        & Weights\newline Activations\newline Gradients & \textbf{Sparsity} \\
-        \hline
-        \textbf{Hoyer's Sparsity} \citep{hoyer2004sparsity} &  
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Measures sparsity by computing ratio of L1/L2 norms
-        \end{itemize}  
-        & Weights\newline Activations\newline Gradients & \textbf{Sparsity} \\
-        \hline
-        \hline
-        \textbf{Norm} &  
-        \vspace{-0.8em}
-        \begin{itemize}
-            \item Frobenius, Nuclear, Infinity matrix norms
-        \end{itemize}  
-        & Weights\newline Activations\newline Gradients & \textbf{Norm} \\
-        \hline
-    \end{tabular}
-    \caption{Overview of built-in metrics in \texttt{pico-analyze}. \textbf{Data Types} indicates on what types of checkpoint data the metrics can be applied. The \textbf{Category} column classifies metrics based on their primary purpose.}
-    \label{tab:pico_analyze_metrics}
-\end{table*}
 
 
 \section{Pico Model Suite}

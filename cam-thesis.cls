@@ -609,6 +609,8 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \usepackage{pifont}
 \newcommand{\cmark}{\textcolor{green!60!black}{\ding{51}}} % green checkmark
 \newcommand{\xmark}{\textcolor{red}{\ding{55}}}     
+\newcommand{\warnmark}{\textcolor{orange}{\ding{115}}} % Triangle symbol
+
 \usepackage{enumitem}
 
 % Table packages: 
