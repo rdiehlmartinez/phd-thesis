@@ -306,6 +306,45 @@ This command will execute the analysis specified in the configuration file direc
 
 By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provides a structured, reproducible framework for studying learning dynamics, enabling researchers to explore how representations form and evolve over training. In \cref{fig:demo_full_run} we visualize the output of this analysis and more generally the typical output of running the two libraries. 
 
+\begin{table*}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.2} % Adjust row spacing
+    \setlength{\tabcolsep}{4pt}
+    \footnotesize
+    \begin{tabular}{|p{3.5cm}|p{7.5cm}|p{2.2cm}|p{2cm}|}
+        \hline
+        \textbf{Metric} & \textbf{Description} & \textbf{Data Type} & \textbf{Category} \\
+        \hline
+        \hline
+        \textbf{CKA \newline (Centered Kernel Alignment)} \citep{kornblith2019cka} &  
+        Measures similarity between activations at different checkpoints using kernel methods to track representation evolution. & Activations & \textbf{Similarity} \\
+        \hline
+        \textbf{PWCCA \newline (Projection-Weighted CCA)} \cite{morcos2018pwcca} & 
+        Measures activation similarity across training, emphasizing important components via projections. & Activations & \textbf{Similarity} \\
+        \hline
+        \hline
+        \textbf{Condition Number} &  
+        Computes the ratio of largest to smallest singular value, indicating sensitivity to small input changes. & Weights\newline Activations\newline Gradients & \textbf{Rank} \\
+        \hline
+        \textbf{PER \newline (Proportional Effective Rank)} \citep{diehlmartinez2024tending} &  
+        Measures entropy of normalized singular values to estimate effective parameter usage. & Weights\newline Gradients & \textbf{Rank} \\
+        \hline
+        \hline
+        \textbf{Gini Coefficient} \citep{hurley2009gini} &  
+        Measures sparsity via inequality in the distribution of weights, activations, or gradients. & Weights\newline Activations\newline Gradients & \textbf{Sparsity} \\
+        \hline
+        \textbf{Hoyer's Sparsity} \citep{hoyer2004sparsity} &  
+        Measures sparsity using the ratio of L1 to L2 norms. & Weights\newline Activations\newline Gradients & \textbf{Sparsity} \\
+        \hline
+        \hline
+        \textbf{Norm} &  
+        Uses Frobenius, Nuclear, or Infinity matrix norms to quantify magnitude. & Weights\newline Activations\newline Gradients & \textbf{Norm} \\
+        \hline
+    \end{tabular}
+    \caption{Overview of built-in metrics in \texttt{pico-analyze}. \textbf{Data Types} indicates on what types of checkpoint data the metrics can be applied. The \textbf{Category} column classifies metrics based on their primary purpose.}
+    \label{tab:pico_analyze_metrics}
+\end{table*}
+
 
 \section{Pico Model Suite}
 
