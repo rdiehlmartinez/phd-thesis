@@ -805,6 +805,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 % Pico - Macros 
 \newcommand{\pico}{{\rammetto\fontsize{10pt}{12pt}\selectfont Pico}\xspace}
 \newcommand{\picolarge}{{\rammetto\fontsize{12pt}{14pt}\selectfont Pico}\xspace}
+\newcommand{\picosupabig}{{\rammetto\fontsize{24pt}{26pt}\selectfont Pico}\xspace}
 
 
 %%%%% EOF: cam-thesis.cls

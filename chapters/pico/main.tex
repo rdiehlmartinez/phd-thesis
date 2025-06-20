@@ -1,14 +1,8 @@
-\chapter{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}
-\label{chapter:Pico}
+\chapter{\picosupabig: A Lightweight Framework for Studying Language Model Learning Dynamics}
+\label{chapter:Pic}
 
 Recent advances in large language models (LLMs) have produced systems capable of remarkable performance across a broad range of natural language tasks \citep{hendrycks2021mmlu, cobbe2021gsm8k, srivastava2023bigbench}. Yet the growing complexity of these models makes it challenging to investigate their internal mechanisms. While existing frameworks enable large-scale training \citep{rasley2020deepspeed, narayanan2021megatron}, most prioritize production over interpretability, limiting detailed tracking of parameters and internal representations throughout training.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{chapters/chapter 4/figures/demo_full_run.png}
-    \caption{Sample analysis output of a dummy model trained using \texttt{pico-train} and analyzed with \texttt{pico-analyze}. The top row illustrates some sample metrics computed by \texttt{pico-analyze} on the dummy model that was trained for 100 steps using \texttt{pico-train}, the bottom row shows training logs.}
-    \label{fig:demo_full_run}
-\end{figure}
 
 In this paper, we present \pico, a modular framework that streamlines research into language model learning dynamics at small to medium scales (1M--1B parameters). \textbf{Pico} is composed of two libraries: \texttt{pico-train} for training models from scratch and \texttt{pico-analyze} for analyzing them. 
 
@@ -22,15 +16,15 @@ We survey where \textbf{Pico} sits within a growing ecosystem of frameworks that
 
 \subsection{Training Frameworks}
 
-\paragraph{Open-source initiatives.} Initiatives by EleutherAI—including GPT-Neo, GPT-J, and the interpretability-focused Pythia suite \cite{biderman2023pythia}—as well as projects like the Allen Institute's OLMo \citep{groeneveld2024olmo}, Meta’s LLAMA \cite{touvron2023llama}, BigScience’s BLOOM \cite{le2023bloom}, and Databricks’ Dolly \cite{databricksdolly2023}, have democratized access to pretrained weights and checkpoints. While these frameworks support post-hoc investigations into phenomena such as linguistic emergence and scaling effects \cite{belrose2023eliciting, gurnee2023finding, michaelov2023emergent, diehlmartinez2024tending}, they typically do not capture detailed, in-training signals by default.
+\paragraph{Open-source initiatives.} Initiatives by EleutherAI—including GPT-Neo, GPT-J, and the interpretability-focused Pythia suite \cite{biderman2023pythia}—as well as projects like the Allen Institute's OLMo \citep{groeneveld2024olmo}, Meta's LLAMA \cite{touvron2023llama}, BigScience's BLOOM \cite{le2023bloom}, and Databricks’ Dolly \cite{databricksdolly2023}, have democratized access to pretrained weights and checkpoints. While these frameworks support post-hoc investigations into phenomena such as linguistic emergence and scaling effects \cite{belrose2023eliciting, gurnee2023finding, michaelov2023emergent, diehlmartinez2024tending}, they typically do not capture detailed, in-training signals by default.
 
-\paragraph{Rapid experimentation suites.} Smaller frameworks like SmolLM \citep{allal2025smollm2}, TinyLlama \citep{zhang2024tinyllama}, NanoGPT \cite{karpathy2023nanogpt},  and TinyStories \cite{eldan2023tinystoriessmalllanguagemodels} offer minimalistic, modular training loops that facilitate quick experimentation. However, they usually leave the implementation of fine-grained monitoring (e.g., activations or gradient flows) to the user.
+\paragraph{Rapid experimentation suites.} Smaller frameworks like SmolLM \citep{allal2025smollm2}, TinyLlama \citep{zhang2024tinyllama}, NanoGPT \cite{karpathy2023nanogpt},  and TinyStories \cite{eldan2023tinystories} offer minimalistic, modular training loops that facilitate quick experimentation. However, they usually leave the implementation of fine-grained monitoring (e.g., activations or gradient flows) to the user.
 
-\paragraph{Large-scale and efficient frameworks.} Platforms such as NVIDIA’s Megatron-LM \cite{narayanan2021megatron} and Microsoft’s DeepSpeed \cite{rasley2020deepspeed} excel at distributed training for models with billions of parameters, though they lack native mechanisms for inspecting intermediate states. Similarly, MosaicML’s MPT \cite{mosaic2023mpt} emphasizes hardware efficiency and hyperparameter tuning for production environments, often requiring users to retrofit logging to study learning dynamics.
+\paragraph{Large-scale and efficient frameworks.} Platforms such as NVIDIA's Megatron-LM \cite{narayanan2021megatron} and Microsoft's DeepSpeed \cite{rasley2020deepspeed} excel at distributed training for models with billions of parameters, though they lack native mechanisms for inspecting intermediate states. Similarly, MosaicML’s MPT \cite{mosaic2023mpt} emphasizes hardware efficiency and hyperparameter tuning for production environments, often requiring users to retrofit logging to study learning dynamics.
 
 \subsection{Analysis Frameworks}
 
-\paragraph{Post-hoc model probing.} Given that detailed training signals are often unavailable by default, many researchers have adopted post-hoc probing methods. Such approaches rely on external hooking libraries to intercept hidden states and attention patterns \cite{voita2019analyzing, clark2019does, michel2019sixteen}, looking at information flows within models to discover security or privacy vulnerabilities \cite{roger2023negativelyreinforced, yao2024privacysurvey}. While powerful, these methods demand significant modifications and usually depend upon pre-existing checkpoints.% or training trajectory surrogates. 
+\paragraph{Post-hoc model probing.} Given that detailed training signals are often unavailable by default, many researchers have adopted post-hoc probing methods. Such approaches rely on external hooking libraries to intercept hidden states and attention patterns \cite{voita2019analyzing, clark2019does, michel2019sixteen}, looking at information flows within models to discover security or privacy vulnerabilities \cite{yao2024privacysurvey}. While powerful, these methods demand significant modifications and usually depend upon pre-existing checkpoints.% or training trajectory surrogates. 
 
 \paragraph{Mechanistic interpretability.} Over the past few years, \emph{mechanistic interpretability} (mechinterp) has gained traction as a framework for reverse-engineering neural networks at the algorithmic level \cite{olah2020zoom, elhage2021mathematical}. Mechinterp focuses on localizing and characterizing the internal “circuitry” of attention heads, MLP layers, or individual neurons. A variety of mechinterp libraries—e.g., TransformerLens \cite{nanda2022transformerlens}, ROME \cite{meng2022locating}, and ACDC \cite{conmy2023towards}—offer powerful tooling to dissect trained transformer models at inference time. However, these efforts typically assume that checkpoints are already available and do not natively capture the evolution of internal mechanisms and learning dynamics throughout the training loop.
 
@@ -49,7 +43,7 @@ In this section we provide a concise overview of the two \textbf{Pico} libraries
 
 \texttt{pico-train} is a lightweight, transparent framework for training small- to medium-scale language models. Unlike many existing training libraries that prioritize efficiency at the cost of clarity, \texttt{pico-train} is designed to be simple, modular, and easy to modify—making it a flexible foundation for experimentation in language model research.
 
-Out of the box, \texttt{pico-train} implements \texttt{pico-decoder}, a LLaMA-style transformer \citep{touvron2023llama} that incorporates key features of modern auto-regressive language models, including Grouped Query Attention (GQA) \citep{ainslie2023gqa}, Rotary Position Embeddings (RoPE) \citep{su2024rope}, FlashAttention \citep{dao2022flashattention}, SwiGLU activations \citep{shazeer2020glu}, and RMSNorm \citep{zhang2019rms}. All components—except FlashAttention—are re-implemented from scratch in plain PyTorch \citep{paszke2017pytorch}, with an emphasis on readability and documentation. Future iterations of \textbf{Pico} will introduce additional architectures, such as \texttt{pico-diffusion} and \texttt{pico-statespace} models, all adhering to the same guiding principle: every \texttt{pico-*} model must be simple, well-documented, and serve as a clear base implementation for the given model architecture.
+Out of the box, \texttt{pico-train} implements \texttt{pico-decoder}, a LLaMA-style transformer \citep{touvron2023llama} that incorporates key features of modern auto-regressive language models, including Grouped Query Attention (GQA) \citep{ainslie2023gqa}, Rotary Position Embeddings (RoPE) \citep{su2024rope}, FlashAttention \citep{dao2022flashattention}, SwiGLU activations \citep{shazeer2020glu}, and RMSNorm \citep{zhang2019rmsnorm}. All components—except FlashAttention—are re-implemented from scratch in plain PyTorch \citep{paszke2017pytorch}, with an emphasis on readability and documentation. Future iterations of \textbf{Pico} will introduce additional architectures, such as \texttt{pico-diffusion} and \texttt{pico-statespace} models, all adhering to the same guiding principle: every \texttt{pico-*} model must be simple, well-documented, and serve as a clear base implementation for the given model architecture.
 
 To ensure efficient multi-GPU and distributed training, \texttt{pico-train} is built on Lightning Fabric \citep{lightning-fabric}—a framework that, like \textbf{Pico}, prioritizes simplicity and flexibility. Lightning Fabric enables users to scale up training across multiple GPUs or nodes without introducing excessive abstractions and ensures that the core training logic remains easy to understand and modify.
 
@@ -64,9 +58,19 @@ A distinguishing feature of \texttt{pico-train} is its systematic checkpointing 
 \vspace{-0.2em}
 All checkpoints are automatically uploaded and version-controlled on Hugging Face, ensuring that researchers can revisit any point in training to analyze how the model evolved over time. These structured checkpoints integrate seamlessly with \texttt{pico-analyze}, enabling learning dynamics research with minimal setup.
 
-To simplify experimentation, \texttt{pico-train} uses a pre-tokenized, pre-chunked, and pre-shuffled version of Dolma \citep{soldaini2024dolma}, a large, open-source English dataset. We provide a more precise explanation of the preprocessing steps in \cref{app:pretokenized-dolma}. We release this preprocessed version of Dolma - \texttt{pretokenized-dolma} - on HuggingFace. Our dataset eliminates preprocessing overhead, guarantees consistency across experiments and can be loaded in as a streaming dataset, reducing the need for large amounts of storage.
+\subsection{Pretokenized Dataset: \texttt{pretokenized-dolma}}
 
-By focusing on minimalism, modularity, and transparency, \texttt{pico-train} makes it easy to modify all aspects of the training pipeline. 
+To simplify experimentation, \texttt{pico-train} uses a pre-tokenized, pre-chunked, and pre-shuffled version of Dolma \citep{soldaini2024dolma}, a large, open-source English dataset. 
+
+To prepare the \texttt{pretokenized-dolma} dataset used in our experiments, we begin by downloading the Dolma corpus and selecting a random 30\% subset. The text is then tokenized using the \verb|allenai/OLMo-7B-0724-hf| tokenizer and split into fixed-length sequences of 2049 tokens (2048 + 1 for next-token prediction). We ensure consistency across shards by chunking token streams without overlap, dropping any remainder shorter than the full sequence length.
+
+After tokenization and chunking, we shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. The resulting dataset is saved as Parquet files and uploaded to our Hugging Face organization under \verb|pico-lm/pretokenized-dolma|.
+
+To facilitate scalable loading and training, we further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (~78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. We release all of the scripts we use for preprocessing data in our GitHub repository.
+
+We release this preprocessed version of Dolma - \texttt{pretokenized-dolma} - on HuggingFace. Our dataset eliminates preprocessing overhead, guarantees consistency across experiments and can be loaded in as a streaming dataset, reducing the need for large amounts of storage.
+
+Our design philosophy for the dataset is the same as for \texttt{pico-train}: minimalism, modularity, and transparency, that enable users to easily modify all aspects of the training pipeline. 
 
 \subsection{\texttt{pico-analyze}: A General-Purpose Framework for Studying Learning Dynamics}
 
@@ -103,7 +107,7 @@ This section describes a practical workflow for training language models using \
 Setting up the \texttt{pico-train} codebase is as easy as:
 
 \begin{center}
-    \includegraphics[width=\columnwidth]{chapters/chapter 4/figures/demo/demo_setup.png}
+    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_setup.png}
 \end{center}
 
 We provide a simple \verb|setup.sh| script that uses Poetry \citep{poetry} to install dependencies and configure the environment.
@@ -112,7 +116,7 @@ Training a model requires only a configuration file. \texttt{pico-train} uses fl
 
 \begin{figure}[h!] 
     \centering
-    \includegraphics[width=\columnwidth]{chapters/chapter 4/figures/demo/demo_config.png}
+    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_config.png}
     \caption{The abridged demo configuration setup that we include with \texttt{pico-train}.}
     \label{fig:demo_config}
 \end{figure}
@@ -122,88 +126,17 @@ In general, the configuration file consists of six main components, each control
 Using this demo configuration file, we can now easily launch a training run:
 
 \begin{center}
-    \includegraphics[width=\columnwidth]{chapters/chapter 4/figures/demo/demo_run.png}
+    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_run.png}
 \end{center}
 
 Training will start immediately, automatically saving learning dynamics checkpoints both locally and on Hugging Face.
 
-\subsection{Analyzing Models with \texttt{pico-analyze}}
-
-Once training is complete, we can inspect various aspects of the model’s learning dynamics using \texttt{pico-analyze}. Setup follows the same process as \texttt{pico-train}. \texttt{pico-analyze} operates directly on the structured checkpoints saved by \texttt{pico-train}, using model states, gradients, activations to provide insights into how the model evolved over training. To streamline experimentation, \texttt{pico-analyze} employs a YAML-based configuration system, enabling users to specify which layers, metrics, and training steps to run analyzes over. Below is an example of an abridged YAML configuration:
-
-\begin{figure}[h!] 
-    \centering
-    \includegraphics[width=\columnwidth]{chapters/chapter 4/figures/demo/demo_config_analyze.png}
-    \caption{The abridged demo configuration setup that we include with \texttt{pico-analyze}.}
-    \label{fig:demo_analysis_config}
-\end{figure}
-
-In this example, we configure \texttt{pico-analyze} to compute the CKA metric for the OV circuit in layers 0 and 11 of a trained model.
-
-In general, users can easily customize their own YAML configuration files by specifying different model components and analysis metrics. The full list of available metrics is provided in \cref{tab:pico_analyze_metrics}. We include a complete sample configuration at \texttt{configs/demo.yaml} within the \texttt{pico-analyze} library.
-
-With a configuration file in place, launching an analysis is as simple as running:
-
-\begin{center}
-    \includegraphics[width=\columnwidth]{chapters/chapter 4/figures/demo/demo_run_analyze.png}
-\end{center}
-
-This command will execute the analysis specified in the configuration file directly on the model checkpoints uploaded to Hugging Face by the corresponding \texttt{pico-train} run, identified using \verb|repo_id| and \verb|branch|. Once run, the analysis results can be stored locally or uploaded to Weights \& Biases (wandb) \citep{wandb} for visualization, allowing for efficient tracking of learning dynamics across multiple runs.  
-
-By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provides a structured, reproducible framework for studying learning dynamics, enabling researchers to explore how representations form and evolve over training. In \cref{fig:demo_full_run} we visualize the output of this analysis and more generally the typical output of running the two libraries. 
-
-\section{Pico Model Suite}
-
-We train a suite of \texttt{pico-decoder} models at various scales using \texttt{pico-train}, all of which are open-sourced on our Hugging Face organization. These models range from 11M to 570M parameters, with plans to extend up to 1B, and serve both as evaluations of our training pipeline and as testbeds for research on scaling laws and interpretability. We provide a comparison of these models in \cref{tab:pico-decoder-configs}.
-
-Each model is scheduled to train for 200,000 steps (covering 400B tokens), though we have already released early checkpoints at 50,000 steps (100B tokens). We evaluate these initial checkpoints on the Paloma benchmark \citep{magnusson2024paloma}, comparing performance against established decoder models. Notably, our partially trained models are quickly closing in on the results of fully trained counterparts, despite running on an academic-level compute budget (4 nodes of 4 A100s each).
-
-\begin{table}[htbp]
-\centering
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{lccc}
-\hline
-\textbf{Family} & \textbf{Size} & \textbf{\#Tokens} & \textbf{Perplexity} \\
-\hline \hline
-
-\textbf{\pico} & 11M & 100B & 167.72 \\
-             & 65M & 100B & 46.41 \\
-             & 181M & 100B & 34.04 \\
-             & 570M & 100B & 26.52 \\
-\hline
-
-\textbf{Pythia} & 14M & 300B & 86.64 \\
-                & 70M & 300B & 43.76 \\
-                & 160M & 300B & 29.96 \\
-                & 410M & 300B & 20.55 \\
-\hline
-
-\textbf{OPT} & 125M & 300B & 27.22 \\
-             & 350M & 300B & 20.91 \\
-\hline
-
-\textbf{OLMO} & 1B & 2T & 13.40 \\
-\hline
-\end{tabular}
-\caption{Perplexity of various models on the Paloma dataset. All models use similar BPE-based tokenizers, with nearly identical vocabulary sizes.}
-\label{tab:model_perplexities}
-\end{table}
-
-\vspace{-0.5em}
-\section{Conclusion}
-
-We introduce \pico, a modular framework for training and analyzing small to medium-scale language models. \texttt{pico-train} provides a minimal yet flexible environment for training language models that emphasizes transparency and checkpointing for learning dynamics research. \texttt{pico-analyze} then uses these checkpoints to facilitate a broad set of learning dynamics analyses including model convergence patterns, sparsity, and rank dynamics.
-
-In addition, we presented the \textbf{Pico} Model Suite, a collection of \texttt{pico-decoder} models ranging from 11M to 570M parameters, with future plans to scale to 1B+. These models are trained under controlled conditions, supporting research on scaling laws and representation learning.
-
-By bridging training and analysis in a lightweight, extensible framework, \textbf{Pico} lowers the barrier for studying language model learning dynamics. Future work will expand the model suite and integrate advanced interpretability tools, further enhancing its utility for rigorous and reproducible research.
-
 
 \begin{table*}[h!]
     \centering
-    \renewcommand{\arraystretch}{1} % Adjust row spacing
+    \renewcommand{\arraystretch}{1.2} % Adjust row spacing
     \setlength{\tabcolsep}{8pt} % Adjust column spacing
-    \begin{tabular}{|>{\centering\arraybackslash}p{3cm}|p{5cm}|p{6.5cm}|}
+    \begin{tabular}{|>{\centering\arraybackslash}p{3cm}|p{5cm}|p{6.2cm}|}
         \hline
         \textbf{Category} & \textbf{Parameter} & \textbf{Default Value} \\
         \hline
@@ -217,14 +150,14 @@ By bridging training and analysis in a lightweight, extensible framework, \textb
             & Key/Value Heads & 4 \\
             & Activation Hidden Dim & 3,072 \\
             & Normalization Epsilon & $1 \times 10^{-6}$ \\
-            & Positional Embedding Theta & 10,000.0 \\
+            & Positional Emb. Theta & 10,000.0 \\
         \hline
         \multirow{7}{*}{\textbf{Training}}  
             & Optimizer & AdamW \\
             & Learning Rate & $3 \times 10^{-4}$ \\
             & LR Scheduler & Linear w/ Warmup \\
             & Warmup Steps & 2,500 \\
-            & Gradient Accumulation Steps & 128 \\
+            & Gradient Accum. Steps & 128 \\
             & Max Training Steps & 200,000 \\
             & Precision & BF16 Mixed \\
             %& Accelerator & CUDA \\
@@ -232,7 +165,7 @@ By bridging training and analysis in a lightweight, extensible framework, \textb
             %& Devices per Node & 1 \\
         \hline
         \multirow{3}{*}{\textbf{Data}}  
-            & Dataset Name & \texttt{pico-lm/pretokenized-dolma} \\
+            & Dataset Name & \texttt{pretokenized-dolma} \\
             & Batch Size & 1,024 \\
             & Tokenizer & \texttt{allenai/OLMo-7B-0724-hf} \\
         \hline
@@ -241,11 +174,11 @@ By bridging training and analysis in a lightweight, extensible framework, \textb
             & Save Every N Steps & 1,000 \\
             %& Save to Hugging Face & False \\
             & Learning Dynamics Layers & \texttt{"attention.v\_proj",} \newline \texttt{"attention.o\_proj",} \newline \texttt{"swiglu.w\_2"} \\
-            & Learning Dynamics Eval Data & \texttt{pico-lm/pretokenized-paloma-tinsy} \\
+            & Learning Dynamics Data & \texttt{pretokenized-paloma-tinsy} \\
         \hline
         \multirow{3}{*}{\textbf{Evaluation}}  
             & Metrics & \texttt{["paloma"]} \\
-            & Paloma Dataset Name & \texttt{pico-lm/pretokenized-paloma-tinsy} \\
+            & Eval Dataset Name & \texttt{pretokenized-paloma-tinsy} \\
             & Eval Batch Size & 16 \\
         \hline
         \multirow{3}{*}{\textbf{Monitoring}}  
@@ -258,33 +191,43 @@ By bridging training and analysis in a lightweight, extensible framework, \textb
     \label{tab:default_configs}
 \end{table*}
 
-\section{\texttt{pico-decoder} models comparison}
-\begin{table}[h!]
-\centering
-\renewcommand{\arraystretch}{1}
-\begin{tabular}{|p{0.30\textwidth}||p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|}
-\hline
-\multicolumn{5}{|c|}{\textbf{Pico-Decoder Model Comparison}} \\
-\hline
-\textbf{Attribute} & \texttt{tiny} & \texttt{small} & \texttt{medium} & \texttt{large} \\
-\hline
-Parameter Count & 11M & 65M & 181M & 570M \\
-Hidden Dimension ($d_{\text{model}}$) & 96 & 384 & 768 & 1536 \\
-Feed-forward Dim & 384 & 1536 & 3072 & 6144 \\
-Training Time (50K steps) & 10d 9h & 15d 6h & 17d 15h & 23d 16h \\
-\hline
-\end{tabular}
-\vspace{0.5em}
-\caption{Comparison of \texttt{pico-decoder} model variants trained with default \texttt{pico-train} configurations. Except for hidden and feed-forward dimension, all models share the training settings detailed in \cref{tab:default_configs}. Models are scheduled for 200,000 total training steps on 16 NVIDIA A100-SXM4-80GB GPUs; the listed training times correspond to the initial 50,000 steps.}
-\label{tab:pico-decoder-configs}
-\end{table}
+\subsection{Analyzing Models with \texttt{pico-analyze}}
 
 
-\section{Available metrics in \texttt{pico-analyze}}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{chapters/pico/figures/demo_full_run.png}
+    \caption{Sample analysis output of a dummy model trained using \texttt{pico-train} and analyzed with \texttt{pico-analyze}. The top row illustrates some sample metrics computed by \texttt{pico-analyze} on the dummy model that was trained for 100 steps using \texttt{pico-train}, the bottom row shows training logs.}
+    \label{fig:demo_full_run}
+\end{figure}
+
+
+Once training is complete, we can inspect various aspects of the model's learning dynamics using \texttt{pico-analyze}. Setup follows the same process as \texttt{pico-train}. \texttt{pico-analyze} operates directly on the structured checkpoints saved by \texttt{pico-train}, using model states, gradients, activations to provide insights into how the model evolved over training. To streamline experimentation, \texttt{pico-analyze} employs a YAML-based configuration system, enabling users to specify which layers, metrics, and training steps to run analyzes over. Below is an example of an abridged YAML configuration:
+
+\begin{figure}[h!] 
+    \centering
+    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_config_analyze.png}
+    \caption{The abridged demo configuration setup that we include with \texttt{pico-analyze}.}
+    \label{fig:demo_analysis_config}
+\end{figure}
+
+In this example, we configure \texttt{pico-analyze} to compute the CKA metric for the OV circuit in layers 0 and 11 of a trained model.
+
+In general, users can easily customize their own YAML configuration files by specifying different model components and analysis metrics. The full list of available metrics is provided in \cref{tab:pico_analyze_metrics}. We include a complete sample configuration at \texttt{configs/demo.yaml} within the \texttt{pico-analyze} library.
+
+With a configuration file in place, launching an analysis is as simple as running:
+
+\begin{center}
+    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_run_analyze.png}
+\end{center}
+
+This command will execute the analysis specified in the configuration file directly on the model checkpoints uploaded to Hugging Face by the corresponding \texttt{pico-train} run, identified using \verb|repo_id| and \verb|branch|. Once run, the analysis results can be stored locally or uploaded to Weights \& Biases (wandb) \citep{wandb} for visualization, allowing for efficient tracking of learning dynamics across multiple runs.  
+
+By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provides a structured, reproducible framework for studying learning dynamics, enabling researchers to explore how representations form and evolve over training. In \cref{fig:demo_full_run} we visualize the output of this analysis and more generally the typical output of running the two libraries. 
 
 \begin{table*}[h!]
     \centering
-    \renewcommand{\arraystretch}{1.1} % Adjust row spacing
+    \renewcommand{\arraystretch}{1.2} % Adjust row spacing
     \setlength{\tabcolsep}{4pt}
     \begin{tabular}{|p{3.5cm}|p{7.5cm}|p{2.2cm}|p{2cm}|}
         \hline
@@ -353,10 +296,74 @@ Training Time (50K steps) & 10d 9h & 15d 6h & 17d 15h & 23d 16h \\
     \label{tab:pico_analyze_metrics}
 \end{table*}
 
-\section{Preprocessing of the \texttt{pretokenized-dolma} dataset}
-\label{app:pretokenized-dolma}
-To prepare the \texttt{pretokenized-dolma} dataset used in our experiments, we begin by downloading the Dolma corpus and selecting a random 30\% subset. The text is then tokenized using the \verb|allenai/OLMo-7B-0724-hf| tokenizer and split into fixed-length sequences of 2049 tokens (2048 + 1 for next-token prediction). We ensure consistency across shards by chunking token streams without overlap, dropping any remainder shorter than the full sequence length.
 
-After tokenization and chunking, we shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. The resulting dataset is saved as Parquet files and uploaded to our Hugging Face organization under \verb|pico-lm/pretokenized-dolma|.
+\section{Pico Model Suite}
 
-To facilitate scalable loading and training, we further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (∼78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. We release all of the scripts we use for preprocessing data in our GitHub repository.
+We train a suite of \texttt{pico-decoder} models at various scales using \texttt{pico-train}, all of which are open-sourced on our Hugging Face organization. These models range from 11M to 570M parameters, with plans to extend up to 1B, and serve both as evaluations of our training pipeline and as testbeds for research on scaling laws and interpretability. We provide a comparison of these models in \cref{tab:pico-decoder-configs}.
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|p{0.30\textwidth}||p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|}
+    \hline
+    \multicolumn{5}{|c|}{\textbf{Pico-Decoder Model Comparison}} \\
+    \hline
+    \textbf{Attribute} & \texttt{tiny} & \texttt{small} & \texttt{medium} & \texttt{large} \\
+    \hline
+    Parameter Count & 11M & 65M & 181M & 570M \\
+    Hidden Dimension ($d_{\text{model}}$) & 96 & 384 & 768 & 1536 \\
+    Feed-forward Dim & 384 & 1536 & 3072 & 6144 \\
+    Training Time (50K steps) & 10d 9h & 15d 6h & 17d 15h & 23d 16h \\
+    \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \caption{Comparison of \texttt{pico-decoder} model variants trained with default \texttt{pico-train} configurations. Except for hidden and feed-forward dimension, all models share the training settings detailed in \cref{tab:default_configs}. Models are scheduled for 200,000 total training steps on 16 NVIDIA A100-SXM4-80GB GPUs; the listed training times correspond to the initial 50,000 steps.}
+    \label{tab:pico-decoder-configs}
+    \end{table}
+
+Each model is scheduled to train for 200,000 steps (covering 400B tokens), though we have already released early checkpoints at 125,000 steps (250B tokens). We evaluate these initial checkpoints on the Paloma benchmark \citep{magnusson2024paloma}, comparing performance against established decoder models. Notably, our partially trained models are quickly closing in on the results of fully trained counterparts, despite running on an academic-level compute budget (4 nodes of 4 A100s each).
+
+\begin{table}[htbp]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lccc}
+\hline
+\textbf{Family} & \textbf{Size} & \textbf{\#Tokens} & \textbf{Perplexity} \\
+\hline \hline
+
+\textbf{\pico} & 11M & 100B & 167.72 \\
+             & 65M & 100B & 46.41 \\
+             & 181M & 100B & 34.04 \\
+             & 570M & 100B & 26.52 \\
+\hline
+
+\textbf{Pythia} & 14M & 300B & 86.64 \\
+                & 70M & 300B & 43.76 \\
+                & 160M & 300B & 29.96 \\
+                & 410M & 300B & 20.55 \\
+\hline
+
+\textbf{OPT} & 125M & 300B & 27.22 \\
+             & 350M & 300B & 20.91 \\
+\hline
+
+\textbf{OLMO} & 1B & 2T & 13.40 \\
+\hline
+\end{tabular}
+\caption{Perplexity of various models on the Paloma dataset. All models use similar BPE-based tokenizers, with nearly identical vocabulary sizes.}
+\label{tab:model_perplexities}
+\end{table}
+
+\vspace{-0.5em}
+\section{Conclusion}
+
+We introduce \pico, a modular framework for training and analyzing small to medium-scale language models. \texttt{pico-train} provides a minimal yet flexible environment for training language models that emphasizes transparency and checkpointing for learning dynamics research. \texttt{pico-analyze} then uses these checkpoints to facilitate a broad set of learning dynamics analyses including model convergence patterns, sparsity, and rank dynamics.
+
+In addition, we presented the \textbf{Pico} Model Suite, a collection of \texttt{pico-decoder} models ranging from 11M to 570M parameters, with future plans to scale to 1B+. These models are trained under controlled conditions, supporting research on scaling laws and representation learning.
+
+By bridging training and analysis in a lightweight, extensible framework, \textbf{Pico} lowers the barrier for studying language model learning dynamics. Future work will expand the model suite and integrate advanced interpretability tools, further enhancing its utility for rigorous and reproducible research.
+
+
+
+
+
