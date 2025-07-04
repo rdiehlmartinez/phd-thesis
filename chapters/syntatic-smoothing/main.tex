@@ -68,16 +68,18 @@ While frequency bias and anisotropy are prevalent in language modeling, quantify
 \section{Frequency Bias}
 \label{section:freq-bias}
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/blimp_bias_example.pdf}
-    \caption{Illustration of the BLiMP \textbf{frequency bias} calculation used to evaluate a model's reliance on frequency statistics when making predictions. The example BLiMP values are from a baseline RoBERTa model.}
-    \label{fig:blimp_bias}
-    \vspace{-1em}
-\end{figure}
+
 
 BLiMP is carefully balanced to ensure individual tokens occur equally in both sentence types. However, within a single pair, there may be an imbalance in average token frequency: For instance, the sentence
 \textit{Grace's piano teachers are \textbf{known}} has a log frequency of 8.35 while its associated minimal pair \textit{Grace's piano teachers are \textbf{replied}} has a log frequency of 6.20.  We hypothesize that despite the minimal difference in BLiMP pairs, models trained in a typical manner will be biased by token frequency when determining grammatical acceptability.
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+    \centering
+    \includegraphics[width=0.6\textwidth]{chapters/syntatic-smoothing/figures/blimp_bias_example.pdf}
+    \caption{Illustration of the BLiMP \textbf{frequency bias} calculation used to evaluate a model's reliance on frequency statistics when making predictions. The example BLiMP values are from a baseline RoBERTa model.}
+    \label{fig:blimp_bias}
+    \vspace{-1em}
+\end{wrapfigure}
 
 Our goal is to quantify how language model performance differs between BLIMP pairs with large positive frequency differences (where the correct sentence has more frequently occurring tokens) and with large negative frequency differences (where the correct sentence has much less frequently occurring tokens). We do so in three steps.
 
@@ -169,9 +171,10 @@ We introduce three types of baselines:
 \begin{table*}[ht!]
     \centering
     \small
+    \setlength{\tabcolsep}{4pt}  % Reduce column spacing
     \begin{tabular}{ll||cc|ccccc}
     \toprule
-    \textbf{Model}  & $\alpha$ & \textbf{Bias}  & \textbf{Anisotropy} & \textbf{BLiMP} & \textbf{COLA} & \textbf{SST-2} & \textbf{MNLI} & \textbf{QNLI}  \\
+    \textbf{Model}  & $\alpha$ & \textbf{Bias}  & \textbf{Anisostropy} & \textbf{BLiMP} & \textbf{COLA} & \textbf{SST-2} & \textbf{MNLI} & \textbf{QNLI}  \\
     \midrule
     OPT   & - & 10.6 & - & 63.2 & 64.6 & 81.9 & 57.6 & 61.5\\
     RoBERTa & - & 13.7 & - & 69.8 & 70.8 & 87.0 & 73.2 & 77\\

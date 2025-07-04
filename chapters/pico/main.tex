@@ -23,6 +23,7 @@ Pico was built to address a concrete gap identified in the previous chapter: exi
 The rest of this chapter is structured as follows. We begin by situating Pico within the broader ecosystem of language model training and interpretability frameworks, reviewing both large-scale production platforms and experimental research toolkits. We then describe the key architectural and design decisions behind \texttt{pico-train} and \texttt{pico-analyze}, highlighting how they support training-time experimentation. Finally, we compare Pico to existing frameworks in terms of flexibility, granularity, and ease of use, showing how it enables new kinds of research in learning dynamics and model interpretability.
 
 
+
 {
 \renewcommand{\arraystretch}{1.25}
 \setlength{\tabcolsep}{4pt}
@@ -30,58 +31,50 @@ The rest of this chapter is structured as follows. We begin by situating Pico wi
 \begin{table}[htbp]
     \centering
     \footnotesize
-
-    \begin{tabular}{@{}p{2.6cm} p{1.8cm} p{2.6cm} p{2.4cm} p{2.0cm} p{2.3cm}@{}}
+    \begin{tabular}{@{}p{2.7cm} p{1.7cm} p{2.4cm} p{2.3cm} p{2.3cm} p{2.2cm}@{}}
     \toprule
     \textbf{Tool} &
-    \textbf{Custom Training} &
-    \textbf{Checkpointing \& Logging} &
-    \textbf{Analysis \& Extensibility} &
-    \textbf{Small Scale Suitability} &
-    \textbf{Ease of Use} \\
+    \textbf{Custom \newline Training} &
+    \textbf{Checkpoint \newline Support} &
+    \textbf{Feature \newline Extraction} &
+    \textbf{Analysis \newline Tools} &
+    \textbf{Low-Budget \newline Friendly} \\
     \midrule
     \textbf{\pico} & 
-    \cmark \newline Modular PyTorch &
-    \cmark \newline Activations, grads, weights &
-    \cmark \newline Extensible metrics \& components &
-    \cmark \newline Built for 1M-1B models &
-    \cmark \newline Extensive documentation, simple setup\\
+    \cmark \newline Modular \newline PyTorch &
+    \cmark \newline Optimizer, \newline weights \& data &
+    \cmark \newline Activations \& \newline gradients &
+    \cmark \newline \texttt{pico-analyze} \newline metrics &
+    \cmark \newline Academic \newline GPU-scale \\
 
     \midrule
 
     TransformerLens & 
-    \xmark & \xmark & \cmark & \cmark & \warnmark \\
+    \xmark & \xmark & \cmark & \cmark & \cmark \\
 
     ACDC & 
-    \xmark & \warnmark & \cmark & \cmark & \xmark \\
+    \xmark & \xmark & \cmark & \cmark & \cmark \\
 
-    ROME & 
-    \xmark & \warnmark & \cmark & \cmark & \xmark \\
-
-    \midrule
-
-    DevInterp & 
-    \warnmark & \cmark & \cmark & \warnmark & \warnmark \\
+    SAELens & 
+    \xmark & \xmark & \warnmark & \cmark & \cmark \\
 
     \midrule
 
     SmolLM2 & 
-    \xmark & \warnmark & \warnmark & \cmark & \cmark \\
+    \cmark & \warnmark & \xmark & \xmark & \cmark \\
 
     Pythia Suite & 
-    \warnmark & \warnmark & \xmark & \cmark & \xmark \\
+    \warnmark & \warnmark & \xmark & \warnmark & \cmark \\
 
     OLMo & 
-    \warnmark & \warnmark & \xmark & \warnmark & \xmark \\
+    \cmark & \warnmark & \xmark & \xmark & \warnmark \\
 
     \bottomrule
     \end{tabular}
-    \vspace{0.5em}
-    
-    \raggedright
-    \caption{Comparison of Pico and related frameworks for interpretability and learning dynamics}
-    \label{tab:pico_comparison_final}
-    \textbf{Legend:} \cmark = Fully supported; \xmark = Not supported; \warnmark = Partial or limited support
+
+    \caption{Comparison of Pico and related frameworks for interpretability and learning dynamics. 
+    \label{tab:pico_comparison} \newline
+    \textbf{Legend:} \cmark = Fully supported; \warnmark = Partial; \xmark = Not supported.}
 \end{table}
 }
 
@@ -345,6 +338,57 @@ By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provid
     \label{tab:pico_analyze_metrics}
 \end{table*}
 
+\section{Case Studies}
+
+
+We illustrate how \textbf{Pico} enables systematic, hypothesis-driven experimentation through two case studies: (1) meta-learning pre-training, (2) low-rank adapter pre-training.
+
+\subsection{Meta-Learning Pre-Training}
+
+Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to adapt quickly by alternating between short bursts of task-specific learning and a global update that improves generalization. This setup encourages models to find initialization points that adapt well to new tasks. While MAML is typically used for fine-tuning, we follow prior work \citep{bansal2020smlmt, li2021semisupervised} in applying it during pretraining.%, using synthetic token classification tasks.
+
+
+\paragraph{Implementation} We implemented MAML in \texttt{pico-train} by adding a lightweight inner loop that updates a classification head on masked token tasks, followed by a meta-update to the full model. \texttt{pico-train} automatically handles distributed GPU synchronization, requiring no changes to \textbf{Pico}'s core training logic.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{chapters/pico/figures/maml-example.pdf}
+    \caption{Training dynamics under MAML.
+    \textbf{Top to bottom:} Training loss and proportional effective rank (PER) of weights and gradients.
+    Sharp drops in PER align with spikes in loss. Shaded regions correpond to different observed phases in training. 
+    }
+    \label{fig:maml_example}
+\end{figure}
+
+
+\paragraph{Analysis} We evaluate MAML on Paloma perplexity and observe consistent 4-15\% gains over standard pretraining. To better understand this improvement, we analyze the proportional effective rank (PER) \citep{diehlmartinez2024tending} of both weights and gradients over time. PER captures the dimensionality of a tensor's signal. In meta-learning, one concern is that inner-loop updates may overly constrain model updates to a low-dimensional subspace, potentially limiting generalization. As shown in \cref{fig:maml_example}, we observe synchronized troughs in PER and spikes in both loss and perplexity. This suggests that inner-loop updates temporarily compress the model's capacity into a low-rank subspace before the outer-loop update restores variance and expressivity.
+
+\paragraph{New Hypothesis and Next Steps}
+These results support the hypothesis that MAML's learning dynamics involve cycles of compression and recovery. This raises concrete follow-up questions: could adjusting the inner-loop learning rate reduce excessive compression? Would alternative meta-learning schedules or task mixes stabilize the representational space more effectively? Using Pico's modular training and built-in logging, these variants can be tested with minimal friction. By comparing learning dynamics and outcomes across runs, researchers can refine their design choices in a reproducible, hypothesis-driven loop.% — illustrating Pico’s role as a practical sandbox for systematic small LM research.
+
+
+\subsection{Low-Rank Adapter Pre-Training}
+
+ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning technique that freezes pretrained weights and injects trainable low-rank matrices, into the pretraining loop. In theory, this could provide a sample-efficient way to train large models by constraining updates to a low-rank subspace. %However, its impact on pretraining stability remains poorly understood.
+
+\paragraph{Implementation} We incorporate ReLoRA into \texttt{pico-train} by adding a lightweight wrapper around attention and MLP weight matrices, and by modifying the learning rate schedule to handle periodic resets. We evaluated the model on BLiMP \citep{warstadt2020blimp}, which we configured via a single config entry. % and required minimal code modification. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{chapters/pico/figures/relora-example.pdf}
+    \caption{Training dynamics under ReLoRA.
+    \textbf{Top to bottom:} BLiMP accuracy over time, averaged condition numbers of the gradient updates for the attention value and output projection matrices. Condition number shows wide inter-layer variance.
+    }
+    \label{fig:relora_example}
+\end{figure}
+
+\paragraph{Analysis} We find that ReLoRA surprisingly underperforms standard pretraining on BLiMP (see \cref{fig:relora_example}, top) \citep{warstadt2020blimp}. To investigate this, we analyze the condition numbers of the gradient updates across layers and training checkpoints. This metric reflects how sensitive gradient-based updates are to numerical instability, a relevant concern for methods like ReLoRA that repeatedly project updates into a low-rank subspace. As shown in \cref{fig:relora_example} (bottom), ReLoRA gradients are substantially more ill-conditioned and exhibit high inter-layer variance. 
+
+% If the optimization geometry becomes poorly conditioned, learning can become more erratic.
+
+\paragraph{New Hypothesis and Next Steps}
+This pattern suggests that repeated low-rank resets may amplify gradient instability, undermining ReLoRA's intended efficiency gains. Several next steps follow naturally: for example, adding layerwise condition number regularization, adjusting the rank dynamically, or modifying the reset schedule to reduce instability. Because \texttt{pico-train} and \texttt{pico-analyze} modularize core components and log detailed in-situ signals, researchers can test these changes quickly, track their effects on gradient stability, and iterate systematically. This demonstrates \textbf{Pico}'s value as a scientific sandbox for implementing, analyzing, and refining design choices in the small LM regime.
+
 
 \section{Pico Model Suite}
 
@@ -372,38 +416,42 @@ We train a suite of \texttt{pico-decoder} models at various scales using \texttt
 
 Each model is scheduled to train for 200,000 steps (covering 400B tokens), though we have already released early checkpoints at 125,000 steps (250B tokens). We evaluate these initial checkpoints on the Paloma benchmark \citep{magnusson2024paloma}, comparing performance against established decoder models. Notably, our partially trained models are quickly closing in on the results of fully trained counterparts, despite running on an academic-level compute budget (4 nodes of 4 A100s each).
 
-\begin{table}[htbp]
-\centering
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{lccc}
-\hline
-\textbf{Family} & \textbf{Size} & \textbf{\#Tokens} & \textbf{Perplexity} \\
-\hline \hline
 
-\textbf{\pico} & 11M & 100B & 167.72 \\
-             & 65M & 100B & 46.41 \\
-             & 181M & 100B & 34.04 \\
-             & 570M & 100B & 26.52 \\
-\hline
+\begin{table*}[htbp!]
+    \centering
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{lcccccc}
+    \hline
+    \textbf{Family} & \textbf{Size} & \textbf{\#Tokens} &
+    \textbf{Paloma$\;\downarrow$} &
+    \textbf{HellaSwag$\;\uparrow$} &
+    \textbf{ARC-Easy$\;\uparrow$} &
+    \textbf{TruthfulQA$\;\uparrow$} \\
+    \hline\hline
+    
+    \textbf{\pico} & 11M  & 250B & 136.17 & 25.62 & 32.79 & 51.75 \\
+                   & 65M  & 250B &  42.24 & 27.25 & 38.22 & 46.13 \\
+                   & 181M & 250B &  30.08 & 30.69 & 44.65 & 41.85 \\
+                   & 570M & 250B &  22.96 & 37.33 & 48.99 & 36.33 \\
+    \hline
+    
+    \textbf{Pythia} & 14M  & 300B &  86.64 & 26.15 & 31.31 & 50.14 \\
+                    & 70M  & 300B &  43.76 & 27.56 & 36.23 & 47.02 \\
+                    & 160M & 300B &  29.96 & 30.26 & 43.73 & 44.51 \\
+                    & 410M & 300B &  20.55 & 40.55 & 52.10 & 41.23 \\
+    \hline
+    
+    \textbf{OPT}    & 125M & 300B &  27.22 & 31.33 & 43.48 & 42.89 \\
+                    & 350M & 300B &  20.91 & 36.66 & 44.06 & 41.01 \\
+    \hline
+    \end{tabular}
+    \caption{Performance of small-scale language models on four benchmarks.
+    Lower is better for Paloma perplexity ($\downarrow$); higher is better for
+    HellaSwag, ARC-Easy, and Truthful QA accuracies ($\uparrow$).}
+    \label{tab:model_benchmarks}
+    %\vspace{-0.5cm}
+    \end{table*}
 
-\textbf{Pythia} & 14M & 300B & 86.64 \\
-                & 70M & 300B & 43.76 \\
-                & 160M & 300B & 29.96 \\
-                & 410M & 300B & 20.55 \\
-\hline
-
-\textbf{OPT} & 125M & 300B & 27.22 \\
-             & 350M & 300B & 20.91 \\
-\hline
-
-\textbf{OLMO} & 1B & 2T & 13.40 \\
-\hline
-\end{tabular}
-\caption{Perplexity of various models on the Paloma dataset. All models use similar BPE-based tokenizers, with nearly identical vocabulary sizes.}
-\label{tab:model_perplexities}
-\end{table}
-
-\vspace{-0.5em}
 \section{Conclusion}
 
 We introduce \pico, a modular framework for training and analyzing small to medium-scale language models. \texttt{pico-train} provides a minimal yet flexible environment for training language models that emphasizes transparency and checkpointing for learning dynamics research. \texttt{pico-analyze} then uses these checkpoints to facilitate a broad set of learning dynamics analyses including model convergence patterns, sparsity, and rank dynamics.
