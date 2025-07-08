@@ -3,9 +3,9 @@
 
 The rapid progress of large language models (LLMs) has produced systems that excel at a wide range of natural language tasks, from reasoning and summarization to coding and multilingual translation \citep{hendrycks2021mmlu, cobbe2021gsm8k, srivastava2023bigbench}. Yet this progress has also introduced new challenges: as models grow larger and more complex, they become harder to analyze, diagnose, and refine. Understanding how these models acquire knowledge—particularly how their internal representations evolve during training—remains a critical yet under-explored research frontier.
 
-Existing model development frameworks such as DeepSpeed \citep{rasley2020deepspeed}, Megatron-LM \citep{narayanan2021megatron}, and MosaicML’s MPT \citep{mosaic2023mpt} have pushed the boundaries of efficient, large-scale training. However, their emphasis on production performance and throughput often comes at the cost of transparency. Intermediate representations, gradients, and activations are rarely captured in a structured way, and instrumentation for fine-grained interpretability is typically an afterthought. As a result, researchers seeking to study learning dynamics or test training interventions face steep technical overhead.
+Existing model development frameworks such as DeepSpeed \citep{rasley2020deepspeed}, Megatron-LM \citep{narayanan2021megatron}, and MosaicML's MPT \citep{mosaic2023mpt} have pushed the boundaries of efficient, large-scale training. However, their emphasis on production performance and throughput often comes at the cost of transparency. Intermediate representations, gradients, and activations are rarely captured in a structured way, and instrumentation for fine-grained interpretability is typically an afterthought. As a result, researchers seeking to study learning dynamics or test training interventions face steep technical overhead.
 
-Conversely, frameworks built for interpretability—such as TransformerLens \citep{nanda2022transformerlens}, ROME \citep{meng2022locating}, and ACDC \citep{conmy2023towards}—enable detailed circuit-level analysis but are mostly limited to post-hoc exploration of fully trained models. They rarely support modifications to the training process itself, and when they do, such interventions tend to be tightly coupled to specific checkpoints, architectures, or datasets. Even frameworks explicitly designed for developmental analysis, like DevInterp \citep{devinterpcode}, rely on external checkpointing pipelines and are often decoupled from model training.
+Conversely, frameworks built for interpretability, including TransformerLens \citep{nanda2022transformerlens}, SAELens \citep{bloom2024saelens}, and ACDC \citep{conmy2023towards}, enable detailed circuit-level analysis but are mostly limited to post-hoc exploration of fully trained models. They rarely support modifications to the training process itself, and when they do, such interventions tend to be tightly coupled to specific checkpoints, architectures, or datasets. Even frameworks explicitly designed for developmental analysis, like DevInterp \citep{devinterpcode}, rely on external checkpointing pipelines and are often decoupled from model training.
 
 To support the growing demand for training-time interpretability—that is, the ability to track and intervene in the learning process as it unfolds—we need a framework that makes the training loop itself an object of study. We need infrastructure that not only logs activations and gradients but also invites experimentation with training interventions, architectural variants, and representational diagnostics. Crucially, this framework should be lightweight and accessible, making it possible to iterate quickly without requiring industrial-scale compute or engineering resources.
 
@@ -137,7 +137,7 @@ To simplify experimentation, \texttt{pico-train} uses a pre-tokenized, pre-chunk
 
 To prepare the \texttt{pretokenized-dolma} dataset used in our experiments, we begin by downloading the Dolma corpus and selecting a random 30\% subset. The text is then tokenized using the \verb|allenai/OLMo-7B-0724-hf| tokenizer and split into fixed-length sequences of 2049 tokens (2048 + 1 for next-token prediction). We ensure consistency across shards by chunking token streams without overlap, dropping any remainder shorter than the full sequence length.
 
-After tokenization and chunking, we shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. The resulting dataset is saved as Parquet files and uploaded to our Hugging Face organization under \verb|pico-lm/pretokenized-dolma|.
+After tokenization and chunking, we shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. The resulting dataset is saved as Parquet files and uploaded to our Hugging Face organization under \href{https://huggingface.co/datasets/pico-lm/pretokenized-dolma}{\texttt{pico-lm/pretokenized-dolma}}.
 
 To facilitate scalable loading and training, we further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (~78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. We release all of the scripts we use for preprocessing data in our GitHub repository.
 
@@ -180,30 +180,74 @@ This section describes a practical workflow for training language models using \
 Setting up the \texttt{pico-train} codebase is as easy as:
 
 \begin{center}
-    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_setup.png}
+    \begin{codelisting}
+        git clone https://github.com/pico-lm/pico-train.git
+        cd pico-train
+        echo "HF_TOKEN=your_huggingface_token" >> .env
+        echo "WANDB_API=your_wandb_key" >> .env
+        source setup.sh
+    \end{codelisting}
 \end{center}
 
 We provide a simple \verb|setup.sh| script that uses Poetry \citep{poetry} to install dependencies and configure the environment.
 
 Training a model requires only a configuration file. \texttt{pico-train} uses flexible dataclasses with sensible defaults that can be easily customized for each run. We report all of the defaults in \cref{tab:default_configs}. For demonstration purposes, we include a sample configuration file in \texttt{pico-train} that can be found under \verb|configs/demo.yaml|. Here we show an abridged version of this configuration:
 
-\begin{figure}[h!] 
-    \centering
-    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_config.png}
-    \caption{The abridged demo configuration setup that we include with \texttt{pico-train}.}
-    \label{fig:demo_config}
-\end{figure}
+
+\begin{center}
+    \begin{configlisting}
+        data:
+            # dataset and dataloading configurations
+            ...
+
+        checkpointing:
+            run_name: "pico-decoder-demo-run"
+            save_to_hf: true
+
+            hf_checkpoint_id:
+                repo_id: "pico-lm/demo"
+        
+        model:
+            # model and model loading configurations
+            ...
+
+        evaluation:
+            # evaluation configurations
+            ...
+
+        monitoring:
+            # monitoring and monitoring loading configurations
+            save_to_wandb: true
+            wandb:
+                project: "pico-demo"
+                entity: "pico-lm"
+            
+        training:
+            # training configurations
+            ...
+    \end{configlisting}
+\end{center}
+% \begin{figure}[h!] 
+%     \centering
+%     \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_config.png}
+%     \caption{The abridged demo configuration setup that we include with \texttt{pico-train}.}
+%     \label{fig:demo_config}
+% \end{figure}
 
 In general, the configuration file consists of six main components, each controlling key aspects of model training. 
 
 Using this demo configuration file, we can now easily launch a training run:
 
 \begin{center}
-    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_run.png}
+    \begin{codelisting}
+        poetry run pico-train --config_path configs/demo.yaml
+    \end{codelisting}
 \end{center}
 
 Training will start immediately, automatically saving learning dynamics checkpoints both locally and on Hugging Face.
 
+
+In \cref{tab:default_configs} we report the default configuration settings used in \texttt{pico-train}; users should refer to this table when configuring their own runs.
 
 \begin{table*}[h!]
     \centering
@@ -278,21 +322,47 @@ Training will start immediately, automatically saving learning dynamics checkpoi
 
 Once training is complete, we can inspect various aspects of the model's learning dynamics using \texttt{pico-analyze}. Setup follows the same process as \texttt{pico-train}. \texttt{pico-analyze} operates directly on the structured checkpoints saved by \texttt{pico-train}, using model states, gradients, activations to provide insights into how the model evolved over training. To streamline experimentation, \texttt{pico-analyze} employs a YAML-based configuration system, enabling users to specify which layers, metrics, and training steps to run analyzes over. Below is an example of an abridged YAML configuration:
 
-\begin{figure}[h!] 
-    \centering
-    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_config_analyze.png}
-    \caption{The abridged demo configuration setup that we include with \texttt{pico-analyze}.}
-    \label{fig:demo_analysis_config}
-\end{figure}
+\begin{center}
+    \begin{configlisting}
+        analysis_name: "pico-decoder-demo-1-analysis"
+
+        metric: 
+            - metric_name: "cka"
+              target_checkpoint: 100
+              data_split: "val"
+
+              components:
+                - component_name: ov_circuit
+                  data_type: "activations"
+                  layer_suffixes:
+                    output_layer: "attention.o_proj"
+                    value_layer: "attention.v_proj"
+
+        steps:
+            start: 0
+            end: 100
+            step: 50
+
+        monitoring:
+            save_to_wandb: true
+            wandb:
+                project: "pico-demo"
+                entity: "pico-lm"
+    \end{configlisting}
+\end{center}
 
 In this example, we configure \texttt{pico-analyze} to compute the CKA metric for the OV circuit in layers 0 and 11 of a trained model.
 
 In general, users can easily customize their own YAML configuration files by specifying different model components and analysis metrics. The full list of available metrics is provided in \cref{tab:pico_analyze_metrics}. We include a complete sample configuration at \texttt{configs/demo.yaml} within the \texttt{pico-analyze} library.
 
 With a configuration file in place, launching an analysis is as simple as running:
-
 \begin{center}
-    \includegraphics[width=0.7\columnwidth]{chapters/pico/figures/demo/demo_run_analyze.png}
+    \begin{codelisting}
+        poetry run pico-analyze \
+            --config_path configs/demo.yaml \
+            --repo_id pico-lm/demo \
+            --branch pico-decoder-demo-1
+    \end{codelisting}
 \end{center}
 
 This command will execute the analysis specified in the configuration file directly on the model checkpoints uploaded to Hugging Face by the corresponding \texttt{pico-train} run, identified using \verb|repo_id| and \verb|branch|. Once run, the analysis results can be stored locally or uploaded to Weights \& Biases (wandb) \citep{wandb} for visualization, allowing for efficient tracking of learning dynamics across multiple runs.  
@@ -352,16 +422,17 @@ Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to ada
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{chapters/pico/figures/maml-example.pdf}
+    \includegraphics[width=0.6\textwidth]{chapters/pico/figures/maml-example.pdf}
     \caption{Training dynamics under MAML.
     \textbf{Top to bottom:} Training loss and proportional effective rank (PER) of weights and gradients.
-    Sharp drops in PER align with spikes in loss. Shaded regions correpond to different observed phases in training. 
+    Sharp drops in PER align with spikes in loss. Shaded regions correspond to different observed phases in training. 
     }
     \label{fig:maml_example}
 \end{figure}
 
 
 \paragraph{Analysis} We evaluate MAML on Paloma perplexity and observe consistent 4-15\% gains over standard pretraining. To better understand this improvement, we analyze the proportional effective rank (PER) \citep{diehlmartinez2024tending} of both weights and gradients over time. PER captures the dimensionality of a tensor's signal. In meta-learning, one concern is that inner-loop updates may overly constrain model updates to a low-dimensional subspace, potentially limiting generalization. As shown in \cref{fig:maml_example}, we observe synchronized troughs in PER and spikes in both loss and perplexity. This suggests that inner-loop updates temporarily compress the model's capacity into a low-rank subspace before the outer-loop update restores variance and expressivity.
+
 
 \paragraph{New Hypothesis and Next Steps}
 These results support the hypothesis that MAML's learning dynamics involve cycles of compression and recovery. This raises concrete follow-up questions: could adjusting the inner-loop learning rate reduce excessive compression? Would alternative meta-learning schedules or task mixes stabilize the representational space more effectively? Using Pico's modular training and built-in logging, these variants can be tested with minimal friction. By comparing learning dynamics and outcomes across runs, researchers can refine their design choices in a reproducible, hypothesis-driven loop.% — illustrating Pico’s role as a practical sandbox for systematic small LM research.
@@ -375,7 +446,7 @@ ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning te
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{chapters/pico/figures/relora-example.pdf}
+    \includegraphics[width=0.6\textwidth]{chapters/pico/figures/relora-example.pdf}
     \caption{Training dynamics under ReLoRA.
     \textbf{Top to bottom:} BLiMP accuracy over time, averaged condition numbers of the gradient updates for the attention value and output projection matrices. Condition number shows wide inter-layer variance.
     }

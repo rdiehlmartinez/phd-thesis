@@ -652,6 +652,85 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \defaultfontfeatures{Path=fonts/}
 \newfontface\rammetto{RammettoOne-Regular.ttf}
 
+% Code 
+
+\definecolor{codegray}{RGB}{245,245,245}
+\definecolor{codered}{RGB}{215,25,32}
+\definecolor{codegreen}{RGB}{0,150,0}
+\definecolor{codeorange}{RGB}{255,150,0}
+\definecolor{codeblue}{RGB}{0,100,200}
+\usepackage{listings}
+
+% Custom style
+\lstdefinelanguage{BashCustom}{
+  sensitive=true,
+  morekeywords={git,cd,echo,source,poetry,run},
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+
+\lstdefinestyle{codestyle}{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeorange}\bfseries,
+  stringstyle=\color{codegreen},
+  commentstyle=\color{gray},
+  showstringspaces=false,
+  breaklines=true,
+  frame=none,
+}
+
+\newtcblisting{codelisting}{
+  listing only,
+  colback=codegray,
+  arc=8pt,
+  outer arc=8pt,
+  boxrule=0pt,
+  left=4pt,
+  right=4pt,
+  top=8pt,
+  bottom=8pt,
+  listing options={
+    language=BashCustom,
+    style=codestyle
+  }
+}
+
+\lstdefinelanguage{ConfigYAML}{
+  sensitive=true,
+  morekeywords={
+    data,checkpointing,run_name,save_to_hf,hf_checkpoint_id,repo_id,
+    model,evaluation,monitoring,save_to_wandb,wandb,project,entity,training,steps,analysis_name,metric,components,component_name,data_type,layer_suffixes,output_layer,value_layer,start,end,step,metric_name,target_checkpoint,data_split,
+    ...
+  },
+  morecomment=[l]{\#},
+  morestring=[b]"
+}
+
+\lstdefinestyle{jsonstyle}{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{codeorange}\bfseries,
+  stringstyle=\color{codegreen},
+  showstringspaces=false,
+  breaklines=true,
+  frame=none,
+  tabsize=2,
+}
+
+\newtcblisting{configlisting}{
+  listing only,
+  colback=codegray,
+  arc=4pt,
+  boxrule=0pt,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  listing options={
+    language=ConfigYAML,
+    style=jsonstyle
+  }
+}
+
 % clever referencing \cref 
 \usepackage{cleveref}
 \crefname{section}{\S}{\S\S}

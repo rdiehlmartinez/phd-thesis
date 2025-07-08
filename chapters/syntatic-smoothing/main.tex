@@ -198,15 +198,15 @@ We introduce three types of baselines:
 
 Our results are summarized in \cref{tbl:full-results}. We find that our method reduces frequency bias while retaining strong language modeling capabilities. At the same time, we observe that the models with the lowest frequency bias also demonstrate the lowest anisotropy. We then extend our analysis beyond the specific phenomenon of frequency bias and anisotropy by examining the impact of \texttt{Syntactic Smoothing} on the linguistic generalization capabilities of the model and its downstream performance after finetuning. Finally, we find that an alternative syntactic scoring metric leads to similar results as the cosine-based definition.
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.7\linewidth]{chapters/syntatic-smoothing/figures/biases.png}
-    \caption{Frequency bias plotted for the three open source pre-trained models, our base model, the two label smoothing (LS) baselines and our two \texttt{Syntactic Smoothing} (\texttt{SyS}) models.}
-    \label{fig:biases}
-    \vspace{-1em}
-\end{figure}
-
 \subsection{Anisotropy and Frequency Bias}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.5\textwidth]{chapters/syntatic-smoothing/figures/biases.png}
+    \caption{Frequency bias for the three open source models, our base model, the two label smoothing (LS) baselines and our two \texttt{Syntactic Smoothing} (\texttt{SyS}) models.}
+    \label{fig:biases}
+\end{wrapfigure}
+
 We conduct analyses to inspect the learning dynamics of our method and its effect on frequency bias and anisotropy in more detail. 
 
 \paragraph{\texttt{Syntactic Smoothing} reduces frequency bias.}
@@ -214,27 +214,32 @@ We find that all four pre-trained models exhibit strong frequency bias (see \cre
 
 By contrast, the two \texttt{Syntactic Smoothing} variants successfully reduce the frequency bias. The frequency bias is almost completely removed in the case of the \texttt{Mid} variant, which distributes exactly half of the training signal to syntactically similar tokens. We further observe that the Label Smoothing baselines also reduce bias but to a lesser extent than the corresponding \texttt{Syntactic Smoothing} models with the same degree of smoothing. 
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.7\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-learning-dynamics.png}
-    \caption{Anisotropy learning dynamics plotted for the baseline RoBERTa model, the two label smoothing (LS) baselines and our \texttt{Syntactic Smoothing} (\texttt{SyS}) models. Values in parentheses indicate the degree of smoothing.}
-    \label{fig:anisotropy-learing-dynamics}
-    \vspace{-1em}
-\end{figure}
 
 \paragraph{\texttt{Syntactic Smoothing} reduces anisotropy.}
 
-As shown in \cref{tbl:full-results}, \texttt{Syntactic Smoothing} reduces anisotropy over both the base model and label smoothing baselines.\footnote{Note that we do not compute the anisotropy for the three open-source pre-trained models (OPT, RoBERTa, T5) because these models use different architectural configurations than the models we train (e.g., larger hidden dimensions).} Label smoothing reduces anisotropy, but not to the same extent as our \texttt{Syntactic Smoothing} models. To better understand how anisotropy develops in a model, we compute the model's anisotropy scores at eight checkpoints during training, as shown in \cref{fig:anisotropy-learing-dynamics}. We find that a greater degree of smoothing leads to a greater reduction in anisotropy for our \texttt{Syntactic Smoothing} variants (it is less clear if this is the case for label smoothing), supporting our hypothesis that syntactic initialization helps promote better representation learning across the model's vocabulary. We also find that the pacing method leads to lower anisotropy than the flat method, with \texttt{SyS}-P (High) achieving the lowest anisotropy throughout.
-
-Over the course of training, we observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \texttt{Syntactic Smoothing} models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, we also plot the evolution of the anisotropy across several layers of our baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-layers}. Two observations stand out. The anisotropy of all layers in the \texttt{Syntactic Smoothing} model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \texttt{Syntactic Smoothing} model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citeauthor{ethayarajh2019contextual}. Notably, in the final layer—commonly used for sentence representations in downstream tasks—the anisotropy of the \texttt{Syntactic Smoothing} model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. 
+As shown in \cref{tbl:full-results}, \newline \texttt{Syntactic Smoothing} reduces anisotropy over both the base model and label smoothing baselines.\footnote{Note that we do not compute the anisotropy for the three open-source pre-trained models (OPT, RoBERTa, T5) because these models use different architectural configurations than the models we train (e.g., larger hidden dimensions).} Label smoothing reduces anisotropy, but not to the same extent as our \texttt{Syntactic Smoothing} models. To better understand how anisotropy develops in a model, we compute the model's anisotropy scores at eight checkpoints during training, as shown in \cref{fig:anisotropy-learing-dynamics}. We find that a greater degree of smoothing leads to a greater reduction in anisotropy for our \texttt{Syntactic Smoothing} variants (it is less clear if this is the case for label smoothing), supporting our hypothesis that syntactic initialization helps promote better representation learning across the model's vocabulary. We also find that the pacing method leads to lower anisotropy than the flat method, with \texttt{SyS}-P (High) achieving the lowest anisotropy throughout.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.75\linewidth]{chapters/syntatic-smoothing/figures/anisotropy-layers.png}
-    \caption{Anisotropy learning dynamics plotted for the baseline model and the paced \texttt{Syntactic Smoothing} model with high smoothing, across some of the models' layers. We highlight the difference in anisotropy of the final layer across the two models at the end of training.}
-    \label{fig:anisotropy-layers}
-    \vspace{-1em}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chapters/syntatic-smoothing/figures/anisotropy-learning-dynamics.png}
+        \label{fig:anisotropy-learing-dynamics}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{chapters/syntatic-smoothing/figures/anisotropy-layers.png}
+        \label{fig:anisotropy-layers}
+    \end{subfigure}
+    \caption{Anisotropy learning dynamics. \textbf{Left:} Comparison of the baseline RoBERTa model, two label smoothing (LS) baselines, and our \texttt{Syntactic Smoothing} (\texttt{SyS}) models, with values in parentheses indicating the degree of smoothing. \textbf{Right:} Anisotropy learning dynamics across selected layers for the baseline and paced \texttt{SyS} model with high smoothing, highlighting the final layer difference at the end of training.}
+    \label{fig:anisotropy-combined}
 \end{figure}
+
+
+Over the course of training, we observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \texttt{Syntactic Smoothing} models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, we also plot the evolution of the anisotropy across several layers of our baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-combined}. Two observations stand out. The anisotropy of all layers in the \texttt{Syntactic Smoothing} model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \texttt{Syntactic Smoothing} model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citeauthor{ethayarajh2019contextual}. Notably, in the final layer—commonly used for sentence representations in downstream tasks—the anisotropy of the \texttt{Syntactic Smoothing} model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. 
+
+
 
 \paragraph{Frequency bias and anisotropy are correlated.}
 
@@ -245,16 +250,18 @@ It is also evident that the pacing approach re-introduces frequency bias towards
 \paragraph{Frequency Bias Disproportionately Affects Content Words}
 \label{section:word-class-versus-word-frequency}
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.65\linewidth]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.png}
-    \caption{Distribution across POS tags of the top versus bottom 100 most frequent tokens.}
-    \label{fig:top-100-pos-dist}
-\end{figure}
 
 To better understand the linguistic categories most impacted by frequency bias, we analyze the relationship between token frequency and syntactic class. Specifically, we compare the POS tag distributions of the top 100 most frequent tokens and the bottom 100 least frequent tokens in our training data. 
 
-We find that content words—especially nouns—are over-represented in the low-frequency tail of the distribution, while function words dominate the high-frequency tokens. \cref{fig:top-100-pos-dist} illustrates this disparity. This suggests that frequency bias in language models may disproportionately hinder the learning of specialized vocabulary, particularly rare nouns and content-bearing expressions. It also reinforces the importance of a smoothing strategy that supports lexical generalization by leveraging syntactic structure.
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.49\textwidth]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.pdf}
+    \caption{Distribution across POS tags of the top \& bottom 100 most frequent tokens.}
+    \label{fig:top-100-pos-dist}
+\end{wrapfigure}
+
+
+We find that content words, especially nouns, are over-represented in the low-frequency tail of the distribution, while function words dominate the high-frequency tokens. \cref{fig:top-100-pos-dist} illustrates this disparity. This suggests that frequency bias in language models may disproportionately hinder the learning of specialized vocabulary, particularly rare nouns and content-bearing expressions. It also reinforces the importance of a smoothing strategy that supports lexical generalization by leveraging syntactic structure.
 
 
 \begin{figure}[ht!]
