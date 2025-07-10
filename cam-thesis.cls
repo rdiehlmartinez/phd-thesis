@@ -700,7 +700,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
   sensitive=true,
   morekeywords={
     data,checkpointing,run_name,save_to_hf,hf_checkpoint_id,repo_id,
-    model,evaluation,monitoring,save_to_wandb,wandb,project,entity,training,steps,analysis_name,metric,components,component_name,data_type,layer_suffixes,output_layer,value_layer,start,end,step,metric_name,target_checkpoint,data_split,
+    model,evaluation,monitoring,save_to_wandb,wandb,project,entity,training,steps,analysis_name,metric,components,component_name,data_type,layer_suffixes,output_layer,value_layer,start,end,step,metric_name,target_checkpoint,data_split,metrics,
     ...
   },
   morecomment=[l]{\#},
