@@ -291,20 +291,21 @@ While these results are correlational, they provide a foundation for future work
 % ===========
 \section{Conclusion}
 
-Our findings reveal consistent and interpretable distinctions in learning dynamics across model scales. Larger models exhibit faster and more monotonic convergence in their layer activations, and make fuller use of their representational capacity—evidenced by higher and more stable proportional effective ranks ($\per$) of both weights and gradients. In contrast, smaller models display delayed convergence, greater instability, and under-utilization of available capacity. These patterns suggest that part of the capability gap between small and large models may stem not from optimization failure per se, but from inefficient or truncated learning trajectories.
+Our findings reveal consistent and interpretable distinctions in learning dynamics across model scales. Larger models exhibit faster and more monotonic convergence in their layer activations, and make fuller use of their representational capacity; this is evidenced by higher and more stable proportional effective ranks ($\per$) of both weights and gradients. In contrast, smaller models display delayed convergence, greater instability, and under-utilization of available capacity. These patterns suggest that part of the capability gap between small and large models may stem not from optimization failure per se, but from inefficient or truncated learning trajectories.
 
-Importantly, these insights offer actionable hypotheses: for instance, that inducing higher-rank updates or more distributed gradient flows might help smaller models converge more like their larger counterparts. However, testing such hypotheses directly—by intervening on training dynamics and re-evaluating learning behavior—is difficult in practice.
+Importantly, these insights offer actionable hypotheses: for instance, that inducing higher-rank updates or more distributed gradient flows might help smaller models converge more like their larger counterparts. However, testing such hypotheses directly, for instance by intervening on training dynamics and re-evaluating learning behavior, is difficult in practice.
 
-Ideally, we would now like to modify the Pythia models—for example, to encourage higher effective rank early in training—and retrain them to see whether convergence patterns improve. Yet retraining Pythia is non-trivial. The framework poses several practical limitations:
+Ideally, we would now like to modify the Pythia models (for example, to encourage higher effective rank early in training) and retrain them to see whether convergence patterns improve. Yet retraining Pythia is non-trivial. There are several practical limitations:
 
 \begin{itemize}[label=\xmark]
-    \item \textbf{The dataset (The Pile)} is not easily streamable in its deduplicated format, and lacks a flexible preprocessing pipeline.
-    \item \textbf{Training requires Megatron-DeepSpeed}, which introduces heavy engineering overhead, tightly coupled dependencies, and strict hardware requirements.
-    \item \textbf{The models are distributed via Docker environments} with limited transparency, making it hard to debug, reproduce, or extend experiments.
-    \item \textbf{Checkpointing and evaluation tools are fragmented or poorly documented}, complicating integration with analysis workflows.
+    \item \textbf{The dataset (the Pile)} is not easily streamable in its deduplicated format, and lacks a flexible preprocessing pipeline. Simply downloading the dataset is non-trivial because it requires a large amount of disk space and running a custom preprocessing script.
+    \item \textbf{The model and training code requires Megatron-DeepSpeed}, which introduces heavy engineering overhead, tightly coupled dependencies, and strict hardware requirements. This additionally makes reading the code and intervening in the model architecture and training pipeline cumbersom.
+    \item \textbf{The training pipeline is distributed in Docker environments} with kubernetes for large-scale distributed training. Although this is good engineering practice in industry, these tools add overhead and complexity that is not necessary for small-scale research.
+    \item \textbf{Checkpointing is limited to weights}, meaning that intermediate activation or gradient states of the model are missing, and difficult to recover. For instance, it is not obvious how to determine the exact set of data that was seen by the model at a given checkpoint which would be necessary to reproduce the activations at that checkpoint.
+    \item \textbf{Pythia checkpoints do not natively plug in with analysis libraries}, making it difficult to use existing analysis tools to study learning dynamics.
 \end{itemize}
 
-To rigorously study learning dynamics—and in particular, to test targeted training interventions—we need a framework that makes model retraining as accessible as analysis. Such a framework should:
+To rigorously study learning dynamics, and in particular, to test targeted training interventions, we need a framework that makes model retraining as accessible as analysis. Such a framework should:
 
 \begin{tcolorbox}[
     colback=white,
@@ -335,10 +336,14 @@ To effectively support intervention-based research on language model training dy
     \item \textbf{Structured Logging}: Capture training statistics, gradients, and loss metrics in structured logs (e.g., JSONL, CSV) to enable downstream learning dynamics analysis.
     
     \item \textbf{Flexible Model Configuration}: Allow for easy experimentation with model size, layer depth, attention mechanisms, and other architectural choices through config files or flags.
+
+    \item \textbf{Automatically Plug-in With Existing Third-Party Tools}: Allow for easy integration with existing third-party tools (HuggingFace, Wandb, etc.) for analysis and visualization.
+
     
     \item \textbf{Lightweight Hardware Requirements}: Be optimized for small and mid-sized models to enable training and analysis on affordable GPU setups, supporting high-velocity prototyping.
 \end{itemize}
 \end{tcolorbox}
 
-These requirements motivate the development of the \pico model suite: a lightweight, transparent training and evaluation framework purpose-built for studying learning dynamics in small language models. In the next chapter, we introduce \pico and describe how it enables reproducible experiments on training dynamics, as well as targeted interventions to test and refine the hypotheses surfaced in this chapter.
+These requirements motivate the development of \pico: a lightweight, transparent framework designed to close the gap between training and analysis for small language models. In the next chapter, we introduce \pico and illustrate how it enables a full cycle of reproducible training, learning dynamics analysis, and hypothesis-driven interventions.
+
 

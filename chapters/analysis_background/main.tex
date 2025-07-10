@@ -80,16 +80,14 @@ Several tools also support causal and structural interventions. \citet{meng2022l
 
 For broader attribution analysis, \citet{kokhlikyan2020captum} developed Captum, a general-purpose library for feature attribution in PyTorch. While not transformer-specific, it includes a suite of interpretability tools—such as Integrated Gradients and DeepLIFT—that are useful for probing feature importance across different model architectures.
 
+% \section{Developmental Interpretability}
+% While mechanistic interpretability reveals the internal structure of trained models, developmental interpretability shifts focus to how those structures emerge during training. By analyzing checkpoints over time, this approach captures the trajectory of learning—offering insight into when and how linguistic capabilities arise.
 
+% \citet{hoogland2023towards} introduced this paradigm by identifying phase transitions in learning, supported by the Local Learning Coefficient as a measure of representational complexity. Building on this, \citet{hoogland2025losslandscape} connected stagewise learning to loss landscape geometry, revealing that shifts in capability often align with flat or degenerate regions in the optimization surface.
 
-\section{Developmental Interpretability}
-While mechanistic interpretability reveals the internal structure of trained models, developmental interpretability shifts focus to how those structures emerge during training. By analyzing checkpoints over time, this approach captures the trajectory of learning—offering insight into when and how linguistic capabilities arise.
+% To support empirical analysis, \citet{devinterpcode} developed DevInterp, a toolkit for tracking model development over time. Together, these contributions establish developmental interpretability as a powerful complement to static and circuit-based approaches—highlighting not just what models learn, but when and how they acquire it.
 
-\citet{hoogland2023towards} introduced this paradigm by identifying phase transitions in learning, supported by the Local Learning Coefficient as a measure of representational complexity. Building on this, \citet{hoogland2025losslandscape} connected stagewise learning to loss landscape geometry, revealing that shifts in capability often align with flat or degenerate regions in the optimization surface.
-
-To support empirical analysis, \citet{devinterpcode} developed DevInterp, a toolkit for tracking model development over time. Together, these contributions establish developmental interpretability as a powerful complement to static and circuit-based approaches—highlighting not just what models learn, but when and how they acquire it.
-
-This developmental perspective naturally leads into a broader field of inquiry: learning dynamics—the study of how language models acquire, retain, and organize knowledge over time.
+% This developmental perspective naturally leads into a broader field of inquiry: learning dynamics—the study of how language models acquire, retain, and organize knowledge over time.
 
 \section{Developmental Interpretability}
 While mechanistic interpretability reveals the internal structure of trained models, developmental interpretability shifts focus to how those structures emerge during training. By analyzing checkpoints over time, this approach captures the trajectory of learning—offering insight into when and how linguistic capabilities arise.
