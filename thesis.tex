@@ -27,16 +27,15 @@
 % For more info see `README.md`
 \documentclass[withindex]{cam-thesis}
 
-% Citations using numbers
-\usepackage[numbers]{natbib}
+% Citations using author-year format
+\usepackage{natbib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Thesis meta-information
 %%
 
 %% The title of the thesis:
-\title{Efficient Language Modeling From\\
-A Cognitive and Analytical Lens}
+\title{Toward the Efficient, Scientific and Democratized Development of Small Language Modelss}
 
 %% The full name of the author (e.g.: James Smith):
 \author{Richard Diehl Martinez}
@@ -63,11 +62,15 @@ A Cognitive and Analytical Lens}
 %% Abstract:
 %%
 \abstract{%
-Language models continue to grow in size, yet our understanding of their inner workings and ability to train them efficiently, particularly smaller models, remains limited. Small models offer practical benefits like lower costs and enhanced privacy, motivating the need for improved training methodologies. This thesis addresses the challenge of efficient language modeling through two complementary lenses: cognitive inspiration and analytical investigation. First, drawing parallels with efficient human language acquisition, we explore cognitively-inspired techniques. Chapter 2 investigates curriculum learning strategies based on infant development within data constrained environments. Chapter 3 introduces Syntactic Smoothing, a cognitively-motivated technique that improves the representation of infrequent words by leveraging syntactic information. Secondly, we adopt an analytical perspective to understand training dynamics and bottlenecks in small models. Chapter 4 examines convergence challenges and saturation phenomena by analyzing layer dynamics in the Pythia model suite, linking slower convergence to parameter rank issues. Chapter 5 presents Pico, a lightweight, modular framework comprising pico-train and pico-analyze, designed specifically to facilitate the training and fine-grained analysis of model learning dynamics (weights, gradients, activations) at smaller scales. Ultimately, this work contributes novel methods and tools aimed at making the training of small language models more efficient and understandable.
+
+Language models continue to grow in size, yet our understanding of their inner workings and ability to train them efficiently, particularly smaller models, remains limited. Small (sub-1 billion parameter) models offer practical advantages, including reduced financial and environmental costs, and broader accessibility, motivating the need for more effective training methodologies. This thesis addresses the challenge of developing small language models through two complementary lenses: cognitive inspiration and analytical investigation.
+
+First, drawing parallels with efficient human language acquisition, we explore cognitively inspired techniques for training small models. We investigate curriculum learning strategies informed by human language acquisition in data-constrained settings, and we introduce Syntactic Smoothing, a cognitively motivated method that enhances the representation of infrequent words by leveraging syntactic structure.
+
+Second, we adopt an analytical perspective to study the training dynamics and bottlenecks of small models. By analyzing the layer-wise behavior of the Pythia model suite, we identify convergence challenges and saturation phenomena in small models. This analysis exposes a broader shortcoming in current language model development: the disconnect between training and analysis tools, which hinders a scientific, iterative approach to model improvement. To address this, we introduce Pico, a lightweight, modular development framework for small models that integrates training and fine-grained analysis of model learning dynamics. Comprising pico-train and pico-analyze, Pico enables a more principled, experiment-driven methodology for developing small language models. 
+
+Ultimately, this thesis contributes novel techniques and tools aimed at making the training of small language models both more efficient, scientific and accessible to a wider range of users.
 }
-
-% The second sentence is a little vague (motivating the need for improvied training strategies? )
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

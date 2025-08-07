@@ -622,7 +622,7 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \usepackage{makecell}
 
 % citation for citep
-\usepackage[numbers]{natbib} 
+\usepackage[authoryear]{natbib} 
 
 % better placement of figures - can use H 
 \usepackage{float}
@@ -758,6 +758,8 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 \definecolor{thesisbeige}{HTML}{faedca}
 \definecolor{thesispurple}{HTML}{c1cefe}
 \definecolor{thesisgreen}{HTML}{a0ddff}
+
+\newcommand{\thesishl}[1]{\textbf{\textcolor{thesisorange}{#1}}}
 
 %%
 %% MACROS 

@@ -2,7 +2,7 @@
 
 The field of language modeling has undergone a dramatic transformation in recent years. In 2021, the release of GPT-3, a language model with \textbf{175 billion parameters}, marked a significant milestone for the field of natural language processing (NLP). GPT-3 set a new standard for performance on a wide range of language understanding tasks, in many cases achieving or surpassing human-level capabilities \citep{brown2020gpt3}. At the time, its unprecedented scale drew comparisons to the 86 billion neurons in the adult human brain \citep{azevedo2009neurons} and underscored the pace at which artificial systems were beginning to mirror the complexity of biological systems.
 
-In just four years, the scale of language models have continued to grow exponentially. Although the exact specifications of GPT-4 remain undisclosed, it is widely estimated to contain approximately 1.8 trillion parameters \footnote{As initially reported by \href{https://semianalysis.com/2023/07/10/gpt-4-architecture-infrastructure/}{SemiAnalysis}, GPT-4 is a mixture of experts model that combines 16 models, each with around 110B parameters.}. Similarly, Google's Gemini Ultra model has been reported at around 1.5 trillion parameters. These figures reflect an order-of-magnitude leap in model size compared to GPT-3 and highlight an accelerating trend toward ever-larger architectures at the frontier of AI research.
+Over the past four years, rather than slowing, the scale of language models has continued to grow exponentially. Although the exact specifications of GPT-4 remain undisclosed, it is widely estimated to contain approximately 1.8 trillion parameters \footnote{As initially reported by \href{https://semianalysis.com/2023/07/10/gpt-4-architecture-infrastructure/}{SemiAnalysis}, GPT-4 is a mixture of experts model that combines 16 models, each with around 110B parameters.}. Similarly, Google's Gemini Ultra model has been reported at around 1.5 trillion parameters. These figures reflect an order-of-magnitude leap in model size compared to GPT-3 and highlight an accelerating trend toward ever-larger architectures at the frontier of AI research.
 
 This rapid scaling has delivered tangible gains in capability. Tasks once considered aspirational, such as reasoning over long contexts \citep{lewis2020retrieval}, synthesizing code \citep{chen2021evaluating}, or interpreting multi-step instructions \citep{wei2022chain}, have become increasingly tractable for these large models. Performance gains are evident across standard evaluations including MMLU \citep{hendrycks2021mmlu}, BIG-bench \citep{srivastava2023bigbench}, and HellaSwag \citep{zellers2019hellaswag}, with state-of-the-art models demonstrating consistent improvement since 2021.
 
@@ -82,7 +82,7 @@ This thesis is organized into two parts, reflecting the two research threads:
 
 \begin{itemize}
 
-    \item \textbf{Chapter 2:} \emph{The Evolution of Language Modeling: Foundations, Scale, and Efficiency} offers both an overview of the development and current state of language modeling, and a review of the major strategies for training language models more efficiently. The chapter first introduces foundational concepts in language modeling that are used throughout the thesis, and ends with a discussion of the unique properties of large-scale language models and how these have transformed the field of NLP. The chapter then reviews existing strategies for training language models more efficiently; from architectural innovations, optimization techniques, and data calibration methods. We conclude by drawing connections between machine learning and cognitive science, considering how insights from human language acquisition can inform more principled model development, especially in resource-constrained environments.
+    \item \textbf{Chapter 2:} \emph{Language Modeling: Foundations, Scale, and Efficiency} offers both an overview of the development and current state of language modeling, and a review of the major strategies for training language models more efficiently. The chapter first introduces foundational concepts in language modeling that are used throughout the thesis, and ends with a discussion of the unique properties of large-scale language models and how these have transformed the field of NLP. The chapter then reviews existing strategies for training language models more efficiently; from architectural innovations, optimization techniques, and data calibration methods. We conclude by drawing connections between machine learning and cognitive science, considering how insights from human language acquisition can inform more principled model development, especially in resource-constrained environments.
 
     \item \textbf{Chapter 3:} \emph{Language Learning with Limited Data: Insights from Human Development for Curriculum Design}  
     explores a systematic investigation of curriculum learning strategies inspired by human language acquisition, focusing on their application to small language models. The work is motivated by the striking data efficiency of human language learning compared to current language models.
@@ -117,7 +117,7 @@ This thesis is organized into two parts, reflecting the two research threads:
     \begin{enumerate}
         \item \texttt{pico-train}, a minimalist training library that logs model weights, activations, and gradients at regular intervals, and
         
-        \item \texttt{pico-analyze}, a companion toolkit that computes metrics such as Proportional Effective Rank, CKA, sparsity, and norm dynamics across layers and checkpoints.
+        \item \texttt{pico-analyze}, a companion toolkit that computes metrics such as PER, CKA, sparsity, and norm dynamics across layers and checkpoints.
     \end{enumerate}
 
     Together, these tools enable researchers to systematically explore how architectural or training interventions affect learning dynamics. A typical workflow involves formulating a hypothesis, implementing the corresponding modification in \texttt{pico-train}, and using \texttt{pico-analyze} to evaluate its effects. This creates a feedback loop for iterative, and systematic model development. This chapter presents several case studies to illustrate how \pico supports this process in practice.
@@ -185,7 +185,7 @@ The following papers and software packages form the core content of this thesis.
 
     \item Richard Diehl Martinez, Pietro Lesci, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.findings-emnlp.246/}{Tending Towards Stability: Convergence Challenges in Small Language Models}}. In \emph{Findings of the Association for Computational Linguistics: EMNLP 2024}, pages 4253-4263, Miami, Florida, USA. Association for Computational Linguistics.
 
-    \item Richard Diehl Martinez, David Demitri Africa, Yuval Weiss, Suchir Salhan, Ryan Daniels, Paula Buttery (2025). {\color{thesisblue}\href{https://github.com/pico-lm}{Pico: A Lightweight Framework for Studying Language Model Learning Dynamics}}. In Submission to \emph{2025 Conference on Empirical Methods in Natural Language Processing System Demonstration Track}.
+    \item Richard Diehl Martinez, David Demitri Africa, Yuval Weiss, Suchir Salhan, Ryan Daniels, Paula Buttery (2025). {\color{thesisblue}\href{https://github.com/pico-lm}{Pico: A Modular Framework for Hypothesis-Driven Small Language Model Research}}. In Submission to \emph{2025 Conference on Empirical Methods in Natural Language Processing System Demonstration Track}.
 \end{itemize}
 \end{tcolorbox}
 
@@ -209,8 +209,8 @@ The following papers and software packages form the core content of this thesis.
 I mentored the following projects during my PhD.
 
 \begin{itemize}
-    \item David Demitri Africa, Richard Diehl Martinez, Paula Buttery (2025). {\color{thesisblue}{Examining the Performance Gap: Meta-Learning for Pretraining Small Language Models}}. In Submission to \emph{BlackBox Workshop at the 2025 Conference on Empirical Methods in Natural Language Processing}.
-    \item Yuval Weiss, Richard Diehl Martinez, Andrew Caines, Paula Buttery (2025). {\color{thesisblue}{Investigating ReLoRA: Effects on the Learning Dynamics of Small Language Models}}. In Submission to \emph{BlackBox Workshop at the 2025 Conference on Empirical Methods in Natural Language Processing}.
+    \item David Demitri Africa, Yuval Weiss, Richard Diehl Martinez, Paula Buttery (2025). {\color{thesisblue}{Learning Dynamics of Meta-Learning in Small Model Pretraining}}. In Submission to \emph{BlackBox Workshop at the 2025 Conference on Empirical Methods in Natural Language Processing}.
+    \item Yuval Weiss, David Demitri Africa, Richard Diehl Martinez, Paula Buttery (2025). {\color{thesisblue}{Investigating ReLoRA: Effects on the Learning Dynamics of Small Language Models}}. In Submission to \emph{BlackBox Workshop at the 2025 Conference on Empirical Methods in Natural Language Processing}.
 \end{itemize}
 
 \subsection*{Other Publications}
