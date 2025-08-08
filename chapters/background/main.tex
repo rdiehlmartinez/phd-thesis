@@ -49,6 +49,13 @@ One of the major contributions of early neural language models was the introduct
 
 %Some novel methods have attempted to preproces or represent the input text data in unique ways, such as \cite{kim2016character} and phoneme-level representations \cite{goriely2024babble}.
 
+\subsubsection{Aside: Tokens vs. Words}
+\label{sec:tokens-vs-words}
+
+When discussing language modeling, we often use the terms ``words" and ``tokens" interchangeably, but they represent different concepts. While words are linguistic units with semantic meaning, \thesishl{tokens} are the atomic units that a model actually processes. Early neural language models operated directly on words, but modern approaches use tokenization algorithms to split text into \thesishl{subwords} as a preprocessing step prior to training. Tokenization algorithms usually must also themselves be trained on some set of data, to learn the optimal way to split the text into tokens. One key hyper-parameter researchers set is the \thesishl{vocabulary size}, which is the number of tokens that the model can use.
+
+Common tokenization approaches include \thesishl{Byte Pair Encoding (BPE)} \citep{gage1994bpe, sennrich2016bpe}, which iteratively merges the most frequent character pairs; Unigram \citep{kudo2018unigram}, which starts with a large vocabulary and iteratively removes tokens to maximize the likelihood of the training data; WordPiece \citep{wu2016google}, which uses a likelihood-based merging criterion; and SentencePiece \citep{kudo2018sentencepiece}, which treats text as a sequence of Unicode characters and learns subword units directly. These subword tokenization schemes allow models to handle rare words and out-of-vocabulary terms by decomposing them into smaller, more frequent components. Throughout this thesis, we use ``tokens" to refer to these atomic processing units, whether they correspond to full words, subword pieces, or characters.
+
 \subsection{Contextualization and Attention}
 To address the limitations of static embeddings, \thesishl{attention mechanisms} were introduced, initially to solve the sequence alignment problem in machine translation \citep{bahdanau2015neural,luong2015effective}. Attention allows models to dynamically focus on the most relevant parts of the input sequence when producing each output token. More formally, given a learned \thesishl{query vector} $\mathbf{q}$ for the current word, and sets of learned \thesishl{key vectors} $[\mathbf{k}_0, \ldots, \mathbf{k}_n]$ and \thesishl{value vectors} $[\mathbf{v}_0, \ldots, \mathbf{v}_n]$ for the other words in the sequence, the attention mechanism computes a weighted sum of the values:
 \begin{equation}

@@ -765,6 +765,9 @@ This dissertation does not exceed the prescribed limit of 60\,000 words.
 %% MACROS 
 %%
 
+\newcommand{\climb}{\textbf{\texttt{CLIMB}}\xspace}
+\newcommand{\smoothing}{\textbf{\texttt{Syntactic Smoothing}}\xspace}
+
 % Create Special \myemph emphasis that escapes '_' correctly 
 \makeatletter
 \DeclareRobustCommand*{\escapeus}[1]{%
