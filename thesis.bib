@@ -390,6 +390,13 @@ author = {Biewald, Lukas},
 }
 
 
+@article{groeneveld2023catwalk,
+  title={Catwalk: A unified language model evaluation framework for many datasets},
+  author={Groeneveld, Dirk and Awadalla, Anas and Beltagy, Iz and Bhagia, Akshita and Magnusson, Ian and Peng, Hao and Tafjord, Oyvind and Walsh, Pete and Richardson, Kyle and Dodge, Jesse},
+  journal={arXiv preprint arXiv:2312.10253},
+  year={2023}
+}
+
 % Warstadt 2020 - MSGS
 @inproceedings{warstadt2020msgs,
     title = "Learning Which Features Matter: {R}o{BERT}a Acquires a Preference for Linguistic Generalizations (Eventually)",
@@ -2241,22 +2248,12 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   note = {Accessed: 2025-05-26}
 }
 
-% Bircken, Ulrich 2023 - Towards Monosemanticity: Decomposing Language Models with Dictionary Learning
-@article{bircken2023monosemanticity,
-  title = {Towards Monosemanticity: Decomposing Language Models with Dictionary Learning},
-  author = {Bircken, Ulrich and Bergal, Alex and Gurnee, Kyle and Elhage, Nelson and Nanda, Neel and Olah, Chris and Amodei, Dario},
-  year = {2023},
-  journal = {Anthropic},
-  howpublished = {\url{https://transformer-circuits.pub/2023/monosemanticity/index.html}},
-  note = {Accessed: 2025-05-26}
-}
-
 % Anthropic 2023 - Decomposing Language Models Into Understandable Components
 @misc{anthropic2023components,
-  title = {Decomposing Language Models Into Understandable Components},
+  title = {Towards Monosemanticity: Decomposing Language Models with Dictionary Learning},
   author = {{Anthropic}},
   year = {2023},
-  howpublished = {\url{https://www.anthropic.com/index/decomposing-language-models}},
+  howpublished = {\url{https://transformer-circuits.pub/2023/monosemantic-features}},
   note = {Accessed: 2025-05-26}
 }
 
@@ -2270,25 +2267,33 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   primaryClass={cs.LG}
 }
 
+% Templeton, Adly 2024 - Scaling Monosemanticity
+@article{templeton2024scaling,
+    title={Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet},
+    author={Templeton, Adly and Conerly, Tom and Marcus, Jonathan and Lindsey, Jack and Bricken, Trenton and Chen, Brian and Pearce, Adam and Citro, Craig and Ameisen, Emmanuel and Jones, Andy and Cunningham, Hoagy and Turner, Nicholas L and McDougall, Callum and MacDiarmid, Monte and Freeman, C. Daniel and Sumers, Theodore R. and Rees, Edward and Batson, Joshua and Jermyn, Adam and Carter, Shan and Olah, Chris and Henighan, Tom},
+    year={2024},
+    journal={Transformer Circuits Thread},
+    url={https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html}
+}
+
+
+@article{ameisen2025circuit,
+  author={Ameisen, Emmanuel and Lindsey, Jack and Pearce, Adam and Gurnee, Wes and Turner, Nicholas L. and Chen, Brian and Citro, Craig and Abrahams, David and Carter, Shan and Hosmer, Basil and Marcus, Jonathan and Sklar, Michael and Templeton, Adly and Bricken, Trenton and McDougall, Callum and Cunningham, Hoagy and Henighan, Thomas and Jermyn, Adam and Jones, Andy and Persic, Andrew and Qi, Zhenyi and Ben Thompson, T. and Zimmerman, Sam and Rivoire, Kelley and Conerly, Thomas and Olah, Chris and Batson, Joshua},
+  title={Circuit Tracing: Revealing Computational Graphs in Language Models},
+  journal={Transformer Circuits Thread},
+  year={2025},
+  url={https://transformer-circuits.pub/2025/attribution-graphs/methods.html}
+}
+
 @inproceedings{geva2021memory,
   title     = {Transformers as Memory in Memory Networks},
   author    = {Geva, Mor and Schuster, Tal and Berant, Jonathan and Levy, Omer},
   booktitle = {Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
   year      = {2021},
-  pages     = {6853--6869},
+  pages     = {5484–-5495},
   publisher = {Association for Computational Linguistics},
-  url       = {https://aclanthology.org/2021.emnlp-main.546},
+  url       = {https://aclanthology.org/2021.emnlp-main.446},
   note      = {Often cited as "Feed-Forward Layers as Key-Value Memory"}
-}
-
-@inproceedings{dai2022knowledge,
-  title     = {Knowledge Neurons in Pretrained Transformers},
-  author    = {Dai, Xinyi and Li, Yujia and Hajishirzi, Hannaneh and Downey, Doug and Farhadi, Ali and Zettlemoyer, Luke and Schwing, Alexander},
-  booktitle = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL)},
-  year      = {2022},
-  pages     = {8498--8511},
-  publisher = {Association for Computational Linguistics},
-  url       = {https://aclanthology.org/2022.acl-long.584}
 }
 
 % Javier Ferr 2024 - A Primer on the Inner Workings of Transformer-based Language Models
@@ -2300,17 +2305,23 @@ An Empirical Study of Smoothing Techniques for Language Modeling
   url = {https://arxiv.org/abs/2405.00208}
 }
 
-% Olah, Chris 2020 - Zoom in: An introduction to circuits
-@article{olah2020zoom,
-  title={Zoom in: An introduction to circuits},
-  author={Olah, Chris and Cammarata, Nick and Schubert, Ludwig and Goh, Gabriel and Petrov, Michael and Carter, Shan},
-  journal={Distill},
-  volume={5},
-  number={3},
-  pages={e00024--001},
-  year={2020}
+@article{lindsey2025biology,
+  author={Lindsey, Jack and Gurnee, Wes and Ameisen, Emmanuel and Chen, Brian and Pearce, Adam and Turner, Nicholas L. and Citro, Craig and Abrahams, David and Carter, Shan and Hosmer, Basil and Marcus, Jonathan and Sklar, Michael and Templeton, Adly and Bricken, Trenton and McDougall, Callum and Cunningham, Hoagy and Henighan, Thomas and Jermyn, Adam and Jones, Andy and Persic, Andrew and Qi, Zhenyi and Thompson, T. Ben and Zimmerman, Sam and Rivoire, Kelley and Conerly, Thomas and Olah, Chris and Batson, Joshua},
+  title={On the Biology of a Large Language Model},
+  journal={Transformer Circuits Thread},
+  year={2025},
+  url={https://transformer-circuits.pub/2025/attribution-graphs/biology.html}
 }
 
+% Olah, Chris 2020 - Zoom in: An introduction to circuits
+@article{olah2020zoom,
+  author = {Olah, Chris and Cammarata, Nick and Schubert, Ludwig and Goh, Gabriel and Petrov, Michael and Carter, Shan},
+  title = {Zoom In: An Introduction to Circuits},
+  journal = {Distill},
+  year = {2020},
+  note = {https://distill.pub/2020/circuits/zoom-in},
+  doi = {10.23915/distill.00024.001}
+}
 
 % Tools for Mech Interpretability
 
