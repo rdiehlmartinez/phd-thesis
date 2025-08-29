@@ -6,7 +6,6 @@ One of the most striking capabilities of human learners is their ability to infe
 
 % Consider the sentence: ``the Golden Gate Bridge has been \emph{obnebulated} every morning this week, limiting visibility of the Pacific Ocean.'' Although most readers will not have encountered the word \textit{obnebulated}, we can make two confident inferences: (1) it is a verb, likely in the past participle form (given the ``has been'' auxiliary and the \textit{-ed} suffix), and (2) its meaning relates to fog or visibility. Human learners use this type of syntactic bootstrapping constantly.
 
-
 This ability is notably lacking in current language models. Despite their success on many NLP benchmarks \citep{touvron2023llama, chowdhery2023palm}, pre-trained transformer language models still struggle with rare or unseen words. A key reason is that the vast majority of language models are pre-trained to maximise the log-likelihood of a word, given the surrounding context \citep{devlin2019bert, brown2020gpt3, chowdhery2023palm, touvron2023llama}. As language use is characterised by a Zipfian distribution \citep{zipf1935zipflaw}, language models are exposed to frequent tokens exponentially more often than infrequent ones during pre-training. Consequently, the representations of these frequent tokens are optimised based on exponentially more learning signals than those of low-frequency tokens. It has been shown that maximum likelihood objectives lead to representation degeneration in English language models because infrequent tokens are pushed into a narrow manifold of the representational space \citep{gao2018representation}. 
 
 \begin{figure}[ht!]
@@ -18,7 +17,7 @@ This ability is notably lacking in current language models. Despite their succes
 
 \newpage
 
-This representation degeneration problem is linked to the broader problem of \textbf{anisotropy}: the hidden states of a language model tend to cluster together into a small cone-shaped subspace, rather than over their full representational capacity \citep{arora2016latent, ethayarajh2019contextual, gao2018representation}. \cref{fig:anisotropy_visualization} illustrates this phenomenon. As language model evaluation is based on cumulative evaluation scores that conceal how well a model processes infrequent words, the disparities in the representational space are difficult to assess. This work makes two key contributions:
+This representation degeneration problem is linked to the broader phenomenon of anisotropy: the hidden states of a language model tend to cluster together into a small cone-shaped subspace, rather than over their full representational capacity \citep{arora2016latent, ethayarajh2019contextual, gao2018representation}. \cref{fig:anisotropy_visualization} illustrates this phenomenon. As language model evaluation is based on cumulative evaluation scores that conceal how well a model processes infrequent words, the disparities in the representational space are difficult to assess. This work makes two key contributions:
 
 \begin{enumerate}
     \item First, this chapter introduces \smoothing, a simple but cognitively motivated method for improving the representation of infrequent tokens during language model training.\footnote{The code for this chapter is available at: https://github.com/rdiehlmartinez/syntactic-smoothing.} Inspired by the human tendency to group unknown words with structurally similar known words, I propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent tokens benefit from updates to their syntactic neighbors, allowing them to ``learn by association'', as children often do.
@@ -26,16 +25,13 @@ This representation degeneration problem is linked to the broader problem of \te
      
 \end{enumerate}
 
-
-% NOTE Better motivate 
-
 The remainder of this chapter is organised as follows: \cref{sec:anisotropy-background} goes beyond the background chapter and reviews the relationship between frequency and anisotropy in language models. Building on this background, \cref{sec:freq-bias} introduces the frequency bias metric that I propose to quantify the degree to which a model relies on frequency information over linguistic generalisation. \cref{sec:smoothing-method} introduces the \smoothing method and details its implementation. \cref{sec:results} both presents the results and analysis across synthetic and real-world evaluations and discusses the implications of these findings. Finally, \cref{sec:conclusion} summarises this work and motivates further exploration of how language models internalise linguistic structure over time.
 
 \section{Anistropy}
 \label{sec:anisotropy-background}
 
 
-Through maximum likelihood training, language models implicitly learn to encode token frequency statistics. This training process gives rise to a frequency bias in models that constrains their ability to generalise to infrequent tokens. In this chapter, I will describe how this training process leads to a phenomenon known as \textbf{anisotropy} in language models' representational space. Before doing so, in this section, I describe more concretely how anisotropy is defined and how it is measured.
+Through maximum likelihood training, language models implicitly learn to encode token frequency statistics. This training process gives rise to a frequency bias in models that constrains their ability to generalise to infrequent tokens. In this chapter, I will describe how this training process leads to a phenomenon known as anisotropy in language models' representational space. Before doing so, in this section, I describe more concretely how anisotropy is defined and how it is measured.
 
 % \subsection{Generalization to Infrequent Tokens}
 

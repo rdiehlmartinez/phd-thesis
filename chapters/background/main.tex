@@ -21,14 +21,14 @@ The earliest language models were based on n-gram statistics, where the probabil
 \subsection{Neural Language Models}
 \label{sec:neural-language-models}
 
-A major breakthrough came with the introduction of neural probabilistic language models by \cite{bengio2003neural}, which proposed using \thesishl{feed-forward neural networks (FFNs)} to estimate the probability of word sequences. In this formulation, the model takes as input a fixed-size context of preceding words, represented as dense vectors (see \ref{sec:word-embeddings}), and passes them through one or more fully connected layers with nonlinear activations (see activation functions in \ref{sec:optimization}). Formally, given a vectorised representation of a concatenated sequence of words $\mathbf{x} = [\mathbf{x}_1; \dots; \mathbf{x}_n]$, where each word, $w_i$, is represented as a vector $\mathbf{x}_i$, the input is processed by a feed-forward neural network as:
+A major breakthrough came with the introduction of neural probabilistic language models by \cite{bengio2003neural}, which proposed using \thesishl{feed-forward neural networks (FFNs)} to estimate the probability of word sequences. In this formulation, the model takes as input a fixed-size context of preceding words, represented as dense vectors (see \cref{sec:word-embeddings}), and passes them through one or more fully connected layers with nonlinear activations (see activation functions in \cref{sec:optimization}). Formally, given a vectorised representation of a concatenated sequence of words $\mathbf{x} = [\mathbf{x}_1; \dots; \mathbf{x}_n]$, where each word, $w_i$, is represented as a vector $\mathbf{x}_i$, the input is processed by a feed-forward neural network as:
 \begin{equation}
 \mathbf{h} = \phi(W_1 \mathbf{x} + \mathbf{b}_1),
 \end{equation}
 \begin{equation}
 \mathbf{y} = \text{softmax}(W_2 \mathbf{h} + \mathbf{b}_2),
 \end{equation}
-where $W_1$, $W_2$, $\mathbf{b}_1$, and $\mathbf{b}_2$ are learned parameters, $\phi$ is a non-linear function (see activation functions in \ref{sec:optimization}), softmax is defined as $\text{softmax}(x)_i = \frac{\exp(x_i)}{\sum_{j=1}^n \exp(x_j)}$ and $\mathbf{y}$ is the predicted probability distribution over the vocabulary for the next word. 
+where $W_1$, $W_2$, $\mathbf{b}_1$, and $\mathbf{b}_2$ are learned parameters, $\phi$ is a non-linear function (see activation functions in \cref{sec:optimization}), softmax is defined as $\text{softmax}(x)_i = \frac{\exp(x_i)}{\sum_{j=1}^n \exp(x_j)}$ and $\mathbf{y}$ is the predicted probability distribution over the vocabulary for the next word. 
 
 Subsequent work explored more powerful architectures, such as \thesishl{recurrent neural networks (RNNs)} \citep{mikolov2010recurrent}, which process sequences of words in a sequential, recurrent manner to capture dependencies across arbitrarily long contexts. However, training RNNs is challenging due to the vanishing and exploding gradient problems \citep{bengio1994learning}, leading to the development of gated architectures like Long Short-Term Memory (LSTM) networks \citep{hochreiter1997lstm} and Gated Recurrent Units (GRUs) \citep{cho2014gru}.
 
@@ -45,7 +45,7 @@ Subsequent work explored more powerful architectures, such as \thesishl{recurren
 \subsection{Word Embeddings}
 \label{sec:word-embeddings}
 
-One of the major contributions of early neural language models was the introduction and popularisation of distributed, vectorised word representations, or \thesishl{word embeddings}. Neural language models were used by methods such as Skip-gram, Continuous Bag-of-Words (CBOW) \citep{mikolov2013efficient, mikolov2013distributed} and GloVe \citep{pennington2014glove} to learn dense vector representations that capture syntactic and semantic relationships between words. The output of these `embedding models' are vectorised word representations, i.e. $\mathbf{x}_i$ referenced in \ref{sec:neural-language-models}, that can be used as input to downstream neural models that are trained to perform a particular NLP task. This two-step process of learning embeddings and then using them as input to a downstream model is a form of \thesishl{transfer learning} in NLP; learned embeddings can be used for a variety of downstream tasks, including named entity recognition~\citep{lample2016neural}, sentence classification~\citep{kim2014convolutional}, and machine translation~\citep{qi2018translation}. However, these types of `traditional' word embeddings are static, assigning the same vector to a word regardless of context.
+One of the major contributions of early neural language models was the introduction and popularisation of distributed, vectorised word representations, or \thesishl{word embeddings}. Neural language models were used by methods such as Skip-gram, Continuous Bag-of-Words (CBOW) \citep{mikolov2013efficient, mikolov2013distributed} and GloVe \citep{pennington2014glove} to learn dense vector representations that capture syntactic and semantic relationships between words. The output of these `embedding models' are vectorised word representations, i.e. $\mathbf{x}_i$ referenced in \cref{sec:neural-language-models}, that can be used as input to downstream neural models that are trained to perform a particular NLP task. This two-step process of learning embeddings and then using them as input to a downstream model is a form of \thesishl{transfer learning} in NLP; learned embeddings can be used for a variety of downstream tasks, including named entity recognition~\citep{lample2016neural}, sentence classification~\citep{kim2014convolutional}, and machine translation~\citep{qi2018translation}. However, these types of `traditional' word embeddings are static, assigning the same vector to a word regardless of context.
 
 %Some novel methods have attempted to preproces or represent the input text data in unique ways, such as \cite{kim2016character} and phoneme-level representations \cite{goriely2024babble}.
 
@@ -178,7 +178,7 @@ The rapid progress in language modelling has been marked by influential systems,
 The following section explores critical resources required to train and assess the performance of LLMs.
 
 \subsection{Datasets for Large Language Model Pre-training}
-The performance of LLMs is strongly influenced by the scale, diversity, and quality of their pre-training datasets. Over the past several years, a number of large-scale corpora have been developed to support open and reproducible LLM research. Table~\ref{tab:llm-datasets} summarises some of the most widely used datasets.
+The performance of LLMs is strongly influenced by the scale, diversity, and quality of their pre-training datasets. Over the past several years, a number of large-scale corpora have been developed to support open and reproducible LLM research. \cref{tab:llm-datasets} summarises some of the most widely used datasets.
 
 \begin{table}[ht!]
     \centering
