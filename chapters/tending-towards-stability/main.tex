@@ -9,7 +9,7 @@ In this chapter, I build on the analytical frameworks introduced in Chapter 5 an
 
 Using the Pythia model suite \citep{biderman2023pythia}, which offers consistent training checkpoints across a range of model sizes, I show that larger models exhibit faster and more monotonic convergence in their internal activations. In contrast, smaller models show delayed and more erratic convergence, particularly in deeper layers. I find that these differences correlate with the effective rank of each layer's parameters and gradients. The results suggest that small models not only struggle to converge, but also tend to use a narrower subspace of their available capacity throughout training.\footnote{Code available at: \url{https://github.com/rdiehlmartinez/pretraining-playground}.}
 
-These findings offer a new lens on training inefficiency in small models and help formalize how and why learning breaks down as scale decreases. They also motivate new directions for improving small models, such as targeted interventions that increase effective rank or promote smoother convergence dynamics.
+These findings offer a new lens on training inefficiency in small models and help formalise how and why learning breaks down as scale decreases. They also motivate new directions for improving small models, such as targeted interventions that increase effective rank or promote smoother convergence dynamics.
 
 \paragraph{Contributions.}
 My main contributions are as follows:
