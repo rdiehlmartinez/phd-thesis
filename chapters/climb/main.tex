@@ -13,7 +13,7 @@
 \newtcbox{\verydarkpurplehighlight}{on line, colback=purple!40, boxrule=0.2mm, left=0.5mm, right=0.2mm, top=0.2mm, bottom=0.2mm}
 
 
-While Chapter 2 established how human learning principles can inform language modelling, this chapter puts these ideas into practice through a concrete framework for curriculum learning. I present \climb (Curriculum Learning for Infant-inspired Model Building), a systematic approach to implementing developmentally plausible training protocols for language models.\footnote{All of the code for this chapter is available on GitHub at \url{https://github.com/codebyzeb/climb}.} This work is motivated by three key observations.
+While Chapter 2 established how human learning principles can inform language modelling, this chapter puts these ideas into practice through a concrete framework for curriculum learning. I present \climb (Curriculum Learning for Infant-inspired Model Building), a systematic approach to implementing developmentally plausible training protocols for language models.\footnote{The code for this chapter is available at \url{https://github.com/codebyzeb/climb}.} This work is motivated by three key observations.
 
 First, the current paradigm of language model training that relies on large datasets and computational resources stands in stark contrast to human language acquisition. Children acquire sophisticated language capabilities from only a few million words per year \citep{gilkerson2017mapping}, while state-of-the-art language models require trillions of tokens and extensive computational resources \citep{zhang2021need, zhao2023llmsurvey}. This discrepancy raises fundamental questions about the efficiency of current training approaches.
 
@@ -30,19 +30,18 @@ To address these challenges, I develop \climb within the context of the BabyLM C
 \end{itemize}
 
 
+% TODO: Add connection to the RQ 1 
+This work makes several key contributions:
 
-% TODO: Replace with connection to the RQ 1 
-% This work makes several key contributions:
-
-% \begin{enumerate}
-%     \item We establish a novel framework for categorizing and implementing curriculum learning strategies that simulate human language acquisition, providing a foundation for future research in cognitively inspired language modeling.
+\begin{enumerate}
+    \item We establish a novel framework for categorizing and implementing curriculum learning strategies that simulate human language acquisition, providing a foundation for future research in cognitively inspired language modeling.
     
-%     \item Through extensive experimentation, we evaluate the effectiveness of different curriculum approaches under real-world constraints, offering concrete recommendations for when and how to apply specific curriculum strategies.
+    \item Through extensive experimentation, we evaluate the effectiveness of different curriculum approaches under real-world constraints, offering concrete recommendations for when and how to apply specific curriculum strategies.
     
-%     \item We demonstrate that careful model and hyperparameter selection can yield strong performance even with limited data, with our vanilla models outperforming shared task baselines on grammatical knowledge (BLiMP) and approaching state-of-the-art performance on natural language understanding (SuperGLUE).
+    \item We demonstrate that careful model and hyperparameter selection can yield strong performance even with limited data, with our vanilla models outperforming shared task baselines on grammatical knowledge (BLiMP) and approaching state-of-the-art performance on natural language understanding (SuperGLUE).
     
-%     \item We provide insights into the interaction between different curriculum dimensions, suggesting directions for developing more integrated approaches to curriculum learning in language modeling.
-% \end{enumerate}
+    \item We provide insights into the interaction between different curriculum dimensions, suggesting directions for developing more integrated approaches to curriculum learning in language modeling.
+\end{enumerate}
 
 The remainder of this chapter is organised as follows: Section 2 reviews the theoretical foundations of curriculum learning and its application to language modelling. Section 3 details the methodology, including the \climb framework and experimental setup. Section 4 presents results and analysis, comparing different curriculum strategies and their combinations. Section 5 discusses the implications of my findings and directions for future work. Finally, Section 6 concludes with key insights and recommendations for implementing curriculum learning in language modelling.
 
