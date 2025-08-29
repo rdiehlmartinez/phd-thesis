@@ -20,9 +20,12 @@ This ability is notably lacking in current language models. Despite their succes
 
 This representation degeneration problem is linked to the broader problem of \textbf{anisotropy}: the hidden states of a language model tend to cluster together into a small cone-shaped subspace, rather than over their full representational capacity \citep{arora2016latent, ethayarajh2019contextual, gao2018representation}. \cref{fig:anisotropy_visualization} illustrates this phenomenon. As language model evaluation is based on cumulative evaluation scores that conceal how well a model processes infrequent words, the disparities in the representational space are difficult to assess. This work makes two key contributions:
 
-First, this chapter introduces \smoothing, a simple but cognitively motivated method for improving the representation of infrequent tokens during language model training.\footnote{The code for this chapter is available at: https://github.com/rdiehlmartinez/syntactic-smoothing.} Inspired by the human tendency to group unknown words with structurally similar known words, I propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent tokens benefit from updates to their syntactic neighbors, allowing them to ``learn by association'', as children often do.
+\begin{enumerate}
+    \item First, this chapter introduces \smoothing, a simple but cognitively motivated method for improving the representation of infrequent tokens during language model training.\footnote{The code for this chapter is available at: https://github.com/rdiehlmartinez/syntactic-smoothing.} Inspired by the human tendency to group unknown words with structurally similar known words, I propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent tokens benefit from updates to their syntactic neighbors, allowing them to ``learn by association'', as children often do.
+    \item Next, I quantify the impact of this approach using a new diagnostic measure of \textbf{frequency bias}: a model's tendency to prefer grammatical sentences that contain high-frequency tokens over those with low-frequency ones. I then show that \smoothing reduces both frequency bias and anisotropy, without hurting performance on downstream tasks. These findings suggest that small structural changes rooted in cognitive observations can meaningfully improve the robustness and generalisation of small models.
+     
+\end{enumerate}
 
-Next, I quantify the impact of this approach using a new diagnostic measure of \textbf{frequency bias}: a model's tendency to prefer grammatical sentences that contain high-frequency tokens over those with low-frequency ones. I then show that \smoothing reduces both frequency bias and anisotropy, without hurting performance on downstream tasks. These findings suggest that small structural changes rooted in cognitive observations can meaningfully improve the robustness and generalisation of small models.
 
 % NOTE Better motivate 
 
@@ -31,9 +34,8 @@ The remainder of this chapter is organised as follows: \cref{sec:anisotropy-back
 \section{Anistropy}
 \label{sec:anisotropy-background}
 
-% TODO: Maybe move to the background section 
 
-Through maximum likelihood training, language models implicitly learn to encode token frequency statistics. This training process gives rise to a frequency bias in models that constrains their ability to generalise to infrequent tokens. In this section, I describe the link between token frequency and anisotropy in language models' representational space.
+Through maximum likelihood training, language models implicitly learn to encode token frequency statistics. This training process gives rise to a frequency bias in models that constrains their ability to generalise to infrequent tokens. In this chapter, I will describe how this training process leads to a phenomenon known as \textbf{anisotropy} in language models' representational space. Before doing so, in this section, I describe more concretely how anisotropy is defined and how it is measured.
 
 % \subsection{Generalization to Infrequent Tokens}
 
@@ -153,7 +155,7 @@ where $\tau$ defines the temperature which I set to $\tau=0.025$.
 \subsection{Experimental Setup}
 \label{subsection:experimental_setup}
 
-These experiments focus on smaller language models and datasets due to computational constraints and the particular challenges of generalizing to uncommon instances under resource-constrained training conditions \citep{warstadt2023babylm1,diehlmartinez2023climb}. 
+These experiments focus on smaller language models and datasets due to computational constraints and the particular challenges of generalizing to uncommon instances under resource-constrained training conditions \citep{warstadt2023babylm1}. 
 
 \paragraph{Data} \label{paragraph:data} As in Chapter 3, I use the same dataset published as training data for the BabyLM challenge at the 2023 CoNLL workshop \citep{warstadt2023babylm1}. The dataset is pre-processed in the same way as in the previous chapter. 
 
@@ -218,7 +220,7 @@ The results are summarised in \cref{tbl:full-results}. I find that the method re
 
 I conduct analyses to inspect the learning dynamics of my method and its effect on frequency bias and anisotropy in more detail. 
 
-\paragraph{\smoothing reduces frequency bias.}
+\paragraph{\smoothing reduces a model's frequency bias.}
 I find that all four pre-trained models exhibit strong frequency bias (see \cref{fig:biases}); they are more likely to incorrectly prefer ungrammatical sentences if they contain tokens that occur more frequently during training. This confirms the hypothesis that the evaluation of generalisation capabilities is obfuscated by frequency effects. 
 
 By contrast, the two \smoothing variants successfully reduce the frequency bias. The frequency bias is almost completely removed in the case of the \texttt{Mid} variant, which distributes exactly half of the training signal to syntactically similar tokens. I further observe that the Label Smoothing baselines also reduce bias but to a lesser extent than the corresponding \smoothing models with the same degree of smoothing. 
@@ -246,7 +248,7 @@ As shown in \cref{tbl:full-results}, \newline \smoothing reduces anisotropy over
 \end{figure}
 
 
-Over the course of training, I observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \smoothing models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, I also plot the evolution of the anisotropy across several layers of the baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-combined}. Two observations stand out. The anisotropy of all layers in the \smoothing model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \smoothing model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citeauthor{ethayarajh2019contextual}. Notably, in the final layer—commonly used for sentence representations in downstream tasks—the anisotropy of the \smoothing model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. 
+Over the course of training, I observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \smoothing models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, I also plot the evolution of the anisotropy across several layers of the baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-combined}. Two observations stand out. The anisotropy of all layers in the \smoothing model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \smoothing model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citet{ethayarajh2019contextual}. Notably, in the final layer the anisotropy of the \smoothing model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. This is particularly interesting as the final layer is commonly used for finetuning in downstream tasks and is empirically found to encode more high-level semantic information than the earlier layers \citep{clark2019does}. 
 
 \paragraph{Frequency bias and anisotropy are correlated.}
 
