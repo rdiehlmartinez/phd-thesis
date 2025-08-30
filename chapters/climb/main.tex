@@ -29,19 +29,21 @@ To address these challenges, I develop \climb within the context of the BabyLM C
     \item \textbf{Objective Curriculum:} Evolving learning objectives from broad linguistic categories to specific token prediction, similar to how children first grasp word classes before mastering precise lexical distinctions.
 \end{itemize}
 
-
-% TODO: Add connection to the RQ 1 
-This work makes several key contributions:
+\paragraph{Chapter Contributions} This chapter makes several key contributions:
 
 \begin{enumerate}
-    \item We establish a novel framework for categorizing and implementing curriculum learning strategies that simulate human language acquisition, providing a foundation for future research in cognitively inspired language modeling.
+    \item I establish a novel framework for categorising and implementing curriculum learning strategies that simulate human language acquisition, providing a foundation for future research in cognitively inspired language modeling.
     
     \item Through extensive experimentation, we evaluate the effectiveness of different curriculum approaches under real-world constraints, offering concrete recommendations for when and how to apply specific curriculum strategies.
     
-    \item We demonstrate that careful model and hyperparameter selection can yield strong performance even with limited data, with our vanilla models outperforming shared task baselines on grammatical knowledge (BLiMP) and approaching state-of-the-art performance on natural language understanding (SuperGLUE).
+    \item I demonstrate that careful model and hyperparameter selection can yield strong performance even with limited data, with our vanilla models outperforming shared task baselines on grammatical knowledge (BLiMP) and approaching state-of-the-art performance on natural language understanding (SuperGLUE).
     
-    \item We provide insights into the interaction between different curriculum dimensions, suggesting directions for developing more integrated approaches to curriculum learning in language modeling.
+    \item I provide insights into the interaction between different curriculum dimensions, suggesting directions for developing more integrated approaches to curriculum learning in language modeling.
 \end{enumerate}
+
+\paragraph{Addressing RQ1} This chapter addresses the first research question of this thesis. By translating developmental principles into three structured curricula, I provide a systematic test of whether cognitively inspired curricula training improves the efficiency and effectiveness of small-scale pretraining. In this way, the chapter contributes a concrete operationalisation and test of RQ1. 
+
+\vspace{1em}
 
 The remainder of this chapter is organised as follows: Section 2 reviews the theoretical foundations of curriculum learning and its application to language modelling. Section 3 details the methodology, including the \climb framework and experimental setup. Section 4 presents results and analysis, comparing different curriculum strategies and their combinations. Section 5 discusses the implications of my findings and directions for future work. Finally, Section 6 concludes with key insights and recommendations for implementing curriculum learning in language modelling.
 
@@ -68,6 +70,8 @@ For transcribed speech corpora (with the exception of the British National Corpu
 
 While the preprocessing pipeline ensures consistent text formatting, I also need to capture linguistic structure to support the curriculum learning experiments. In particular, the vocabulary and objective curricula (\cref{subsec:vocab-cl} and \cref{subsec:objective-cl}) rely on syntactic information (i.e., POS tags)to guide the learning process. However, the \textsc{strict-small} track's prohibition on external resources presented a unique challenge for implementing POS tagging, as I could not use supervised taggers. From a cognitive-plausibility standpoint this restriction is logical; human infants must also infer syntactic roles of words indirectly as part of their learning process.
 
+To address this, I developed an unsupervised POS-tagging approach that leverages the \texttt{anchor-features} algorithm \citep{stratos2016unsupervisedpos}, which identifies ``anchor words" strongly associated with specific grammatical categories and uses these to learn a hidden Markov model (HMM). I ran this algorithm on the training dataset, and generated 30 clusters of features that each capture some latent syntactic information. I then manually mapped each cluster to a universal POS tag \citep{petrov2012universalpos}, with several clusters often mapping to the same grammatical category. Notably, the initial HMM clustering approach failed to identify distinct groups for adverbs (ADV) and unknown tokens (X). 
+
 \begin{wrapfigure}{r}{0.45\textwidth}
     \centering
     \small
@@ -90,8 +94,6 @@ While the preprocessing pipeline ensures consistent text formatting, I also need
     \caption{\label{tbl:unsupervised-pos-performance} Performance metrics of the unsupervised POS tagger compared to NLTK's supervised system.}
     \label{fig:unsupervised-pos-performance}
 \end{wrapfigure}
-
-To address this, I developed an unsupervised POS-tagging approach using the \texttt{anchor-features} algorithm \citep{stratos2016unsupervisedpos}, which identifies ``anchor words" strongly associated with specific grammatical categories and uses these to learn a hidden Markov model (HMM). I ran this algorithm on the training dataset, and generated 30 clusters of features that each capture some latent syntactic information. I then manually mapped each cluster to a universal POS tag \citep{petrov2012universalpos}, with several clusters often mapping to the same grammatical category. Notably, the initial HMM clustering approach failed to identify distinct groups for adverbs (ADV) and unknown tokens (X). 
 
 As a means of evaluating how well this unsupervised POS tagger performs, I compare it to the performance of NLTK's supervised POS tagger \citep{bird2009natural}. \cref{fig:unsupervised-pos-performance} summarises the precision, recall, and F1 scores for each POS tag, when using the tags generated by the NLTK tagger as a reference. Overall, the unsupervised tagger showed strong performance on punctuation (F1: 0.952) and conjunctions (F1: 0.895), likely due to their consistent usage patterns. However, it struggled more with particles (F1: 0.584) and adjectives (F1: 0.608), which may have more variable usage patterns or semantic dependencies. These variations highlight the challenges of unsupervised grammatical category learning in low-resource settings.
 
@@ -121,6 +123,8 @@ Large  & 12 & 12 & 768 & 3,072 & 16,384  & 62K      & 75.08      & 63.45      & 
 \caption{\label{tbl:baseline-size-comparison} The vanilla BabyBERTa-style models evaluated on original BLiMP and the BLiMP-like tasks prepared for BabyLM (BLiMP.Supp). Models are grouped by their vocabulary sizes. L denotes the number of Transformer layers and H the number of attention heads per layer. The Hidden dimension (Hidden) represents the size of token representations at each layer, while the Intermediate dimension (Int.) indicates the expanded dimension size in the feed-forward network (typically 4x the hidden dimension).}
 \end{table*}
 
+I investigate three different sizes of a vanilla Pre-Layer Norm RoBERTa model \citep{liu2019roberta} based on the BabyBERTa model \citep{huebner2021babyberta}: `small', `medium', and `large' -- \cref{tbl:baseline-size-comparison} lists the model configurations and presents the results for the different model sizes evaluated by perplexity, on BLiMP \citep{warstadt2020blimp} and on the supplementary BLiMP-like tasks issued by the BabyLM organisers (`Blimp.Supp'). The medium model with a small vocabulary size performed the best overall; however, the small model achieved similar results, and so to save on compute and keep to the restrained intentions of the \textsc{strict-small} track, I used the small model in my curriculum learning experiments.
+
 \begin{wrapfigure}{r}{0.45\textwidth}
     \centering
     \small
@@ -131,7 +135,7 @@ Large  & 12 & 12 & 768 & 3,072 & 16,384  & 62K      & 75.08      & 63.45      & 
          Layer Norm EPS& 1e-5 \\
          Tie Word Embeddings & False \\
          Learning Rate & 0.001 \\
-         Optimizer & AdamW \\
+         Optimiser & AdamW \\
          Scheduler Type & Linear\\
          Max Steps & 400,000 \\
          Warm-up Steps & 100,000\\
@@ -141,8 +145,6 @@ Large  & 12 & 12 & 768 & 3,072 & 16,384  & 62K      & 75.08      & 63.45      & 
     \caption{Hyper-parameter settings which are constant across the vanilla models described in \cref{subsec:baseline}.}
     \label{tbl:baseline_hyperparams}
 \end{wrapfigure}
-
-I investigate three different sizes of a vanilla Pre-Layer Norm RoBERTa model \citep{liu2019roberta} based on the BabyBERTa model \citep{huebner2021babyberta}: `small', `medium', and `large' -- \cref{tbl:baseline-size-comparison} lists the model configurations and presents the results for the different model sizes evaluated by perplexity, on BLiMP \citep{warstadt2020blimp} and on the supplementary BLiMP-like tasks issued by the BabyLM organisers (`Blimp.Supp'). The medium model with a small vocabulary size performed the best overall; however, the small model achieved similar results, and so to save on compute and keep to the restrained intentions of the \textsc{strict-small} track, I used the small model in my curriculum learning experiments.
 
 All models use Byte Pair Encoding (BPE) tokenisation \citep{gage1994bpe} with a vocabulary of 8,192 because it yields better overall performance compared to a larger vocabulary of 16,384. The tokenisers I use in the experiments were trained on the cleaned data that I processed using the steps outlined in \cref{subsec:data}. In pilot experiments, I did not observe the benefits reported by \citet{huebner2021babyberta} from removing the unmasking procedure that is a standard component of the MLM objective \citep{devlin2019bert}, and therefore did not investigate this option further. In \cref{tbl:baseline_hyperparams}, I report all of the hyper-parameters I use throughout my experiments.
 
@@ -199,8 +201,6 @@ The rate at which the vocabulary expands is controlled by a pacing function. I e
 
 This approach represents, to my knowledge, the first systematic attempt at implementing a vocabulary curriculum in language model training, offering a more cognitively plausible alternative to the standard practice of training with a fixed, full vocabulary from the outset.
 
-
-\newpage
 \subsection{Data Curriculum}
 \label{subsec:data-cl}
 
@@ -275,17 +275,20 @@ I explore two strategies for implementing this curriculum:
     \item \darkorangehighlight{\textbf{Multi-task learning} (MT)} I train the model to simultaneously predict both word classes and specific tokens, with separate task heads and optimisers for each objective. This approach allows the model to benefit from both coarse-grained and fine-grained learning signals throughout training.
 \end{enumerate}
 
-The psycholinguistic literature remains divided on how exactly word learning progresses from memorizing specific lexical items to developing generalised representations of word classes \citep{clark2015first}. This framework provides a flexible approach to studying this progression by enabling systematic investigation of how different objective functions affect the acquisition of linguistic knowledge. By varying the timing and combination of learning objectives, I can explore different hypotheses about the relationship between category learning and specific word acquisition in language development.
+The psycholinguistic literature remains divided on how exactly word learning progresses from memorising specific lexical items to developing generalised representations of word classes \citep{clark2015first}. This framework provides a flexible approach to studying this progression by enabling systematic investigation of how different objective functions affect the acquisition of linguistic knowledge. By varying the timing and combination of learning objectives, I can explore different hypotheses about the relationship between category learning and specific word acquisition in language development.
 
 This objective curriculum represents a novel approach to making language model training more cognitively plausible while maintaining the benefits of the MLM objective. By starting with broader linguistic categories and gradually increasing specificity, I aim to create a learning trajectory that better reflects human language acquisition while potentially improving the model's ability to generalise from limited training data.
 
 \subsection{Pacing Functions} 
 
+
 \begin{wrapfigure}{l}{0.50\textwidth}
+    \vspace{-1em}
     \centering
     \includegraphics[width=0.45\textwidth]{chapters/climb/figures/pacing_fns.png}
     \caption{Illustration of the linear and logarithmic pacing functions used in my vocabulary curriculum experiments. The red dotted lines denote the curriculum regime, during which the percentage of unmasked words available to the model grows.}
     \label{fig:pacing_fn}
+    \vspace{-1em}
 \end{wrapfigure}
 
 Once a notion of difficulty is set, a pacing function is needed to govern how quickly the model will progress from training on easier examples to training on harder ones \citep{wu2021when}.
@@ -297,7 +300,7 @@ I experiment with two different pacing functions: linear and logarithmic. Linear
     \includegraphics[width=0.9\textwidth]{chapters/climb/figures/babylm_blimp_diffs_boxplots.png}
     \vspace{1em}  % Add some vertical space between figures
     \includegraphics[width=0.9\textwidth]{chapters/climb/figures/babylm_superglue_diffs_boxplots.png}
-    \caption{Comparison of model performance across BLiMP (top) and SuperGLUE (bottom) tasks. The plots show the differences in performance between the curriculum learning models and baseline models. Types of curriculum learning are indicated in the legend and highlighted with different colors with explanations in the text.}
+    \caption{Comparison of model performance across BLiMP (top) and SuperGLUE (bottom) tasks. The plots show the differences in performance between the curriculum learning models and baseline models. Types of curriculum learning are indicated in the legend and highlighted with different colours with explanations in the text.}
     \label{fig:combined-boxplots}
 \end{figure}
 
@@ -400,7 +403,12 @@ Although perplexity-based ordering intuitively reflects learning difficulty, it 
 \paragraph{Objective curricula, especially multitask setups combining POS tagging with MLM, show clear benefits on syntactic and downstream tasks.} \cref{fig:baseline_obj_cl_blimp_supp} and \cref{fig:baseline_obj_cl_superglue} compare the small BabyBERTa-style vanilla model to the best objective curriculum learning setting -- a multi-task trained model with sequential POS-tag prediction -- on each task in BLiMP Supplement and (Super)GLUE. I find that the curriculum-learning (CL) model outperforms the vanilla model on 5/6 tasks in BLiMP Supplement. While on (Super)GLUE, the CL model outperforms the baseline on 4/10 tasks and obtains comparable performance on another 4/10 tasks. This results illustrate the potential to further explore objective-curricula settings.
 
 
-\begin{figure}[h]
+
+I also experimented with curriculum learning via variation in training objectives. These include sequential curricula (where objectives are swapped at fixed training stages) and multitask learning setups (where multiple objectives are trained jointly).
+
+\paragraph{Multitask learning holds sway over sequentially swapping objective functions for now.}
+
+\begin{figure}[ht!]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
@@ -417,12 +425,9 @@ Although perplexity-based ordering intuitively reflects learning difficulty, it 
     \end{subfigure}
     \caption{Comparison between the vanilla model and the best objective curriculum learning setting on different benchmark tasks.}
     \label{fig:baseline_obj_cl_comparison}
-    \end{figure}
+\end{figure}
 
-I also experimented with curriculum learning via variation in training objectives. These include sequential curricula (where objectives are swapped at fixed training stages) and multitask learning setups (where multiple objectives are trained jointly).
-
-\paragraph{Multitask learning holds sway over sequentially swapping objective functions for now.}
-In the experiments with curricula for the objective function, I compare training on simultaneous tasks, known as multitask learning \citep{caruana1997multitask}, with predefined sequences of objective functions which swap from one to another at set thresholds in the training process. I set up two sequential curricula: one with 2 tasks (predicting the 10 universal POS tags found in the dataset, and MLM) and the other with 3 (like the 2 task curriculum, additionally with noun/verb/other prediction). I compare these against multitasking alternatives. In general the sequential curricula are outperformed by the multitasking ones, though the 3-task sequential curriculum outperforms the BabyBERTa-style vanilla model on SuperGLUE and is second only marginally to the best-performing multitask model (\cref{tbl:result-obj-cl}). The multitask learning model with 10-class universal POS-tag prediction and MLM in place from the outset performs best on BLiMP and SuperGLUE. However, the best model on BLiMP-supplement -- a multitask one -- has an element of sequential task scheduling in that the two POS-tag prediction tasks are lined up one after the other, with a switch from 3-class to 10-class after 6.25\% of training steps. In \cref{fig:baseline_obj_cl_blimp_supp}, I visualise this result for each task in BLiMP-supplement, illustrating that the curriculum learning model improves over the vanilla model in 5/6 tasks.
+In the experiments with curricula for the objective function, I compare training on simultaneous tasks, known as multitask learning \citep{caruana1997multitask}, with predefined sequences of objective functions which swap from one to another at set thresholds in the training process. I set up two sequential curricula: one with 2 tasks (predicting the 10 universal POS tags found in the dataset, and MLM) and the other with 3 (like the 2 task curriculum, additionally with noun/verb/other prediction). I compare these against multitasking alternatives. In general the sequential curricula are outperformed by the multitasking ones, though the 3-task sequential curriculum outperforms the BabyBERTa-style vanilla model on SuperGLUE and is second only marginally to the best-performing multitask model (\cref{tbl:result-obj-cl}). The multitask learning model with 10-class universal POS-tag prediction and MLM in place from the outset performs best on BLiMP and SuperGLUE. However, the best model on BLiMP-supplement -- a multitask one -- has an element of sequential task scheduling in that the two POS-tag prediction tasks are lined up one after the other, with a switch from 3-class to 10-class after 6.25\% of training steps. In \cref{fig:baseline_obj_cl_blimp_supp}, I visualise this result for each task in BLiMP-supplement, illustrating that the curriculum learning model improves over the vanilla model in 5/6 tasks. Notably, as shown in \cref{fig:baseline_obj_cl_superglue}, when evaluated on SuperGLUE, the effect of the sequential task scheduling is not as pronounced; the vanilla model outperforms the curriculum learning model on several tasks.
 
 Altogether, these results suggest that sequential objective function curricula do hold some potential for performance gains if further tuning of the tasks and scheduling can be carried out.
 
@@ -477,18 +482,17 @@ It is apparent that ordering the subcorpora within a training set may be worthwh
 On a more general note, the Baby LM challenge evaluates a language model only on its final downstream performance on a set of tasks -- i.e. at a finite point in time. The challenge does not directly measure whether a given model is learning in a `human-like' fashion. My contribution to the BabyLM challenge is to provide a set of curriculum learning strategies which are motivated by the language learning dynamics of infants and children. Future research could study how to quantitatively evaluate whether the learning trajectory of a model parallels that of a human language learner and how similarities to human language learning results in downstream NLU performance. 
 
 
-\section{Conclusions}
+\section{Conclusion}
 
-This chapter explored how principles from child language acquisition can guide the structure and pacing of language model training. Specifically, I implemented three curriculum learning strategies inspired by human development: gradually increasing vocabulary size (\textbf{vocabulary curriculum}), ordering training data by intuitive or model-based difficulty (\textbf{data curriculum}), and varying the specificity of the objective function over time (\textbf{objective curriculum}).
+This chapter explored how principles from child language acquisition can guide the structure and pacing of language model training. Specifically, I implemented three curriculum learning strategies inspired by human development: gradually increasing vocabulary size (\textbf{vocabulary curriculum}), ordering training data by intuitive or model-based difficulty (\textbf{data curriculum}), and varying the specificity of the objective function over time (\textbf{objective curriculum}). My goal in this chapter was to address RQ1 by providing a concrete test of the hypothesis that language models benefit from learning more like humans do; in this case by following a structured, developmentally inspired trajectory.
 
-Across these experiments, I found that the BabyBERTa-style vanilla models already outperform the BabyLM baselines on BLiMP and MSGS, and perform competitively on SuperGLUE. Curriculum learning approaches offer modest but consistent gains in some areas, particularly when using log pacing functions, source-based data ordering, or multitask objectives. These results suggest that developmental structure in training can yield benefits even in resource-constrained settings.
+The answer to this question is multifaceted. Curriculum learning approaches offer modest but consistent gains in some areas, particularly when using log pacing functions, source-based data ordering, or multitask objectives. These results suggest that developmental structure in training can yield benefits even in resource-constrained settings. However, the benefits are not uniform across all tasks and curricula, indicating that cognitively inspired strategies are not a panacea but rather one ingredient among many in building more efficient small models. At the same time, my experiments revealed that strong, carefully tuned baselines matter as much as (or more than) curriculum interventions: the BabyBERTa-style vanilla models already outperform the BabyLM baselines on BLiMP and MSGS, and perform competitively on SuperGLUE. This underscores the importance of model architecture and hyperparameter choices in small-data settings. Finally, I found that models trained on raw, unfiltered data often outperformed those trained on cleaned data, reinforcing the idea that early exposure to linguistic variation (even when noisy) may support better generalisation, much like children learning from diverse, real-world input.
 
-Notably, models trained on raw, unfiltered data often outperformed those trained on cleaned data, reinforcing the idea that early exposure to linguistic variation (even with noisy data) may help small models generalise better, much like children learning from diverse, real-world input.
+In this chapter, I examined the \emph{macro-level structure} of training, asking whether developmentally inspired pacing and sequencing can improve efficiency. The next chapter builds on this foundation by shifting focus to the \emph{micro-level dynamics} of representation. There, I introduce \smoothing, a method motivated by how children use grammatical context to infer word meaning. Whereas \climb investigated how to structure the learning experience, \smoothing explores how to shape the internal representations that support generalisation from limited exposure. Together, these two chapters provide complementary answers to RQ1 and begin to set the stage for RQ2, where I turn to a more systematic analysis of learning dynamics in small language models.
 
-Beyond specific gains, this chapter establishes a computational framework for implementing curriculum learning strategies aligned with cognitive development. In doing so, it addresses the macro-level question posed at the start of this thesis: \textit{can language models benefit from learning more like humans do, by following a structured, developmentally inspired trajectory?} 
 
-The next chapter builds on this foundation by shifting focus to the micro-level dynamics of representation. There, I introduce \smoothing, a method motivated by how children use grammatical context to infer word meaning. While \climb explored how to structure the learning experience, \smoothing investigates how to shape internal representations to support better generalisation from limited exposure.
 
+% Beyond specific gains, this chapter establishes a computational framework for implementing curriculum learning strategies aligned with cognitive development. In doing so, it addresses the macro-level question posed at the start of this thesis: \textit{can language models benefit from learning more like humans do, by following a structured, developmentally inspired trajectory?} 
 
 % \begin{table*}
 % \centering
