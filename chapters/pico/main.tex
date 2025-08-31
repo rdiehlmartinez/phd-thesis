@@ -11,7 +11,7 @@ Conversely, frameworks built for interpretability, such as TransformerLens \cite
 
 To support scientific research on language models, researchers need infrastructure that both logs advanced training signals (activations and gradients) and also invites easy experimentation and modification of the training process. Crucially, this framework should be lightweight and accessible and prioritise iteration speed over engineering overhead. 
 
-\pico is a modular, extensible framework designed to fill this gap. Built for training and analysing small-to-medium scale models (1M--1B parameters), \pico is engineered to support the scientific methodology demonstrated in the previous chapter: systematic observation, hypothesis generation, controlled experimentation, and iterative refinement. It consists of two components:
+\paragraph{Chapter Contributions} \pico is a modular, extensible framework designed to fill the gap between training and analysis for small language models. Built for training and analysing small-to-medium scale models (1M--1B parameters), \pico is engineered to support the scientific methodology demonstrated in the previous chapter: systematic observation, hypothesis generation, controlled experimentation, and iterative refinement. It consists of two components:
 
 \begin{enumerate}
     \item \texttt{pico-train}, a customisable training library that simplifies training models from scratch while recording rich internal signals (weights, gradients, activations) at regular checkpoints.
@@ -22,7 +22,11 @@ Together, these tools make it possible to perform fine-grained, in-situ analysis
 
 % \pico was built to address a concrete gap identified in the previous chapter: existing suites like Pythia offer rich insights into learning dynamics after training, but lack the flexibility and transparency needed to test interventions during training. The findings from \cref{chapter:tending-towards-stability} (e.g. the correlation between effective rank and convergence speed) generate specific, testable hypotheses that require tools for systematic experimentation. \pico provides these tools, bringing the same level of rigor to the training process as to post-hoc analysis.
 
-The rest of this chapter is structured as follows. I begin by situating \pico within the broader ecosystem of language model training and interpretability frameworks, reviewing both large-scale production platforms and experimental research toolkits. I then describe the key architectural and design decisions behind \texttt{pico-train} and \texttt{pico-analyze}, highlighting how they support training-time experimentation. Finally, I demonstrate \pico's value through case studies that show how it enables researchers to systematically test and refine hypotheses about language model learning dynamics.
+\paragraph{Addressing RQ2} This chapter addresses the second research question of this thesis, by developing a novel framework framework that supports scientific research on language models. This framework makes the process of training and analysing language models more scientific and accessible to a wider range of researchers.
+
+\vspace{1em}
+
+The rest of this chapter is structured as follows. \cref{sec:pico-related} situates \pico within the broader ecosystem of language model training and interpretability frameworks, reviewing both large-scale production platforms and experimental research toolkits. \cref{sec:pico-overview} describes the key architectural and design decisions behind \texttt{pico-train} and \texttt{pico-analyze}, highlighting how they support training-time experimentation. \cref{sec:pico-demo} runs through a basic toy demonstratino of \pico; finally \cref{sec:pico-case-studies} demonstrates \pico's value through two case studies that show how it enables researchers to systematically test and refine hypotheses about language model learning dynamics.
 
 {
 \renewcommand{\arraystretch}{1.25}
@@ -72,7 +76,7 @@ The rest of this chapter is structured as follows. I begin by situating \pico wi
     \bottomrule
     \end{tabular}
 
-    \caption{Comparison of Pico and related frameworks for interpretability and learning dynamics. 
+    \caption{Comparison of \pico and related frameworks for interpretability and learning dynamics. 
     \label{tab:pico_comparison} \newline
     \textbf{Legend:} \cmark = Fully supported; \warnmark = Partial; \xmark = Not supported.}
 \end{table}
@@ -109,6 +113,7 @@ The distinctions between training and analysis frameworks have historically refl
 \cref{tab:pico_comparison} provides a comparative summary of how \pico fits into the current landscape, alongside other commonly used frameworks. While each tool has strengths of its own, \pico is distinct in offering custom training, rich logging, and built-in analysis all in one package.
 
 \section[\picomed]{\picolarge}
+\label{sec:pico-overview}
 
 In this section I provide a concise overview of the two \pico libraries: \texttt{pico-train} and \texttt{pico-analyze}. 
 
@@ -137,7 +142,7 @@ To simplify experimentation, I also release \textbf{\texttt{pretokenized-dolma}}
 
 To prepare the \textbf{\texttt{pretokenized-dolma}} dataset, I begin by downloading the Dolma corpus and selecting a random 30\% subset. The text is then tokenised using the open-sourced \textbf{\texttt{allenai/OLMo-7B-0724-hf}} tokenizer and split into fixed-length sequences of 2049 tokens (2048 + 1 for next-token prediction). I ensure consistency across shards by chunking token streams without overlap, dropping any remainder shorter than the full sequence length.
 
-After tokenisation and chunking, I shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. To facilitate scalable loading and training, I further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. I release all of the scripts used for preprocessing data in a GitHub repository. The resulting dataset is saved as Parquet files and uploaded to a Hugging Face organisation\footnote{\url{https://huggingface.co/pico-lm}} I created under \href{https://huggingface.co/datasets/pico-lm/pretokenized-dolma}{\textcolor{blue}{\textbf{\texttt{pico-lm/pretokenized-dolma}}}}.
+After tokenisation and chunking, I shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. To facilitate scalable loading and training, I further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. I release all of the scripts used for preprocessing data in a GitHub repository. The resulting dataset is saved as Parquet files and uploaded to a Hugging Face organisation\footnote{\url{https://huggingface.co/pico-lm}} under \href{https://huggingface.co/datasets/pico-lm/pretokenized-dolma}{\textcolor{blue}{\textbf{\texttt{pico-lm/pretokenized-dolma}}}}.
 
 The design philosophy for the dataset is the same as for \texttt{pico-train}: minimalism, modularity, and transparency, that enable users to easily modify all aspects of the training pipeline. 
 
@@ -167,7 +172,7 @@ At its core, \texttt{pico-analyze} follows a simple abstraction: it applies metr
 This two-step abstraction is designed for extensibility: new metrics and component types can be easily defined, allowing researchers to tailor analyses to specific hypotheses about language model learning. Note that I provide a detailed explanation of all of the metrics in \cref{chapter:analysis-background}.
 
 \section{Usage Demonstration} 
-\label{sec:usage-demonstration}
+\label{sec:pico-demo}
 
 To illustrate how \pico enables rigorous, hypothesis-driven research in practice, this section walks through a minimal end-to-end workflow. Rather than simply showing how to run code, this demonstration highlights how researchers can configure, train, and analyse small models to test specific learning dynamics hypotheses. \pico forms a closed scientific loop of observation, intervention, and refinement.
 
@@ -185,35 +190,25 @@ Setting up the \texttt{pico-train} codebase requires running the following comma
     \end{codelisting}
 \end{center}
 
-I provide a simple \verb|setup.sh| script that uses Poetry \citep{poetry} to install dependencies and configure the environment. Training a model requires only a configuration file. \texttt{pico-train} uses flexible dataclasses with sensible defaults that can be easily customised for each run. I report all of the defaults in \cref{tab:default_configs}. For demonstration purposes, I include a sample configuration file in \texttt{pico-train} that can be found under \href{https://github.com/pico-lm/pico-train/blob/main/configs/demo.yaml}{\textcolor{blue}{\texttt{configs/demo.yaml}}}.\footnote{\url{https://github.com/pico-lm/pico-train/blob/main/configs/demo.yaml}} The toy model trained by this configuration is a tiny 11M parameter model, trained for only 100 steps. Here I show an abridged version of this configuration:
+I provide a simple \verb|setup.sh| script that uses Poetry \citep{poetry} to install dependencies and configure the environment. Training a model requires only a configuration file. \texttt{pico-train} uses flexible dataclasses with sensible defaults that can be easily customised for each run. I report all of the defaults in \cref{tab:default_configs}. For demonstration purposes, I include a sample configuration file in \texttt{pico-train} that can be found under \href{https://github.com/pico-lm/pico-train/blob/main/configs/demo.yaml}{\textcolor{blue}{\texttt{configs/demo.yaml}}}\footnote{\url{https://github.com/pico-lm/pico-train/blob/main/configs/demo.yaml}}. The toy model trained by this configuration is a tiny 11M parameter model, trained for only 100 steps. Here I show an abridged version of this configuration:
 
 
 \begin{center}
     \begin{configlisting}
-        data:
-            # dataset and dataloading configurations
-
+        data: # dataset and dataloading configurations
         checkpointing:
             run_name: "pico-decoder-demo-run"
             save_to_hf: true
             hf_checkpoint_id:
                 repo_id: "pico-lm/demo"
-        
-        model:
-            # model and model loading configurations
-
-        evaluation:
-            # evaluation configurations
-
-        monitoring:
-            # monitoring and monitoring loading configurations
+        model: # model and model loading configurations
+        evaluation: # evaluation configurations
+        monitoring: # monitoring configurations
             save_to_wandb: true
             wandb:
                 project: "pico-demo"
                 entity: "pico-lm"
-            
-        training:
-            # training configurations
+        training: # training configurations
     \end{configlisting}
 \end{center}
 % \begin{figure}[h!] 
@@ -233,7 +228,7 @@ Using this demo configuration file, users can launch a training run as follows:
     \end{codelisting}
 \end{center}
 
-Training will start immediately, automatically saving learning dynamics checkpoints both locally and on Hugging Face. In \cref{tab:default_configs} I report the default configuration settings used in \texttt{pico-train}; users should refer to this table when configuring their own runs.
+Training will start immediately, automatically saving learning dynamics checkpoints both locally and on Hugging Face. In \cref{tab:default_configs}, I report the default configuration settings used in \texttt{pico-train}; users should refer to this table when configuring their own runs.
 
 \begin{table*}[h!]
     \centering
@@ -300,7 +295,7 @@ Training will start immediately, automatically saving learning dynamics checkpoi
 
 Once training is complete, users can inspect various aspects of the model's learning dynamics using \texttt{pico-analyze}. The setup process mirrors that of \texttt{pico-train}, making it simple to switch between training and analysis within the same workflow. \texttt{pico-analyze} works directly on the structured checkpoints saved by \texttt{pico-train}, computing metrics on model weights, gradients, and activations to provide insights into how the model evolves during training. To streamline experimentation, it uses a YAML-based configuration system that lets users specify which layers, metrics, and training steps to analyse. I include a complete sample configuration at \href{https://github.com/pico-lm/pico-analyze/blob/main/configs/demo.yaml}{\textcolor{blue}{\texttt{configs/demo.yaml}}}\footnote{\url{https://github.com/pico-lm/pico-analyze/blob/main/configs/demo.yaml}} within the \texttt{pico-analyze} repository.
 
-To illustrate how this works in practice, one part of the demonstration configuration uses Centered Kernel Alignment (CKA) to test how much the model's internal representations change over training. As discussed in \cref{chapter:analysis-background}, Centered Kernel Alignment (CKA) is a well-established metric for comparing the similarity of activations between layers, checkpoints, or even different models. In this demonstration, I use CKA to track the convergence of the OV circuit at the first and last layers of the model. In general, I would expect the CKA score to begin at a value close to 0 and increase over time as the representations converge to their final state. However, since this toy example only trains for 100 steps, I hypothesise that there should be little representational change, and the CKA score should remain relatively high. This illustrates how users of Pico can turn a vague question such as “are the representations of my model changing?” into a quantitative hypothesis.
+To illustrate how this works in practice, one part of the demonstration configuration uses Centered Kernel Alignment (CKA) to test how much the model's internal representations change over training. As discussed in \cref{chapter:analysis-background}, Centered Kernel Alignment (CKA) is a well-established metric for comparing the similarity of activations between layers, checkpoints, or even different models. In this demonstration, I use CKA to track the convergence of the OV circuit at the first and last layers of the model. In general, I would expect the CKA score to begin at a value close to 0 and increase over time as the representations converge to their final state. However, since this toy example only trains for 100 steps, I hypothesise that there should be little representational change, and the CKA score should remain relatively high. This illustrates how users of \pico can turn a vague question such as “are the representations of my model changing?” into a quantitative hypothesis.
 
 Below is an abridged YAML configuration that specifies this CKA analysis:
 
@@ -387,10 +382,12 @@ By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provid
 \end{table*}
 
 \section{Case Studies}
+\label{sec:pico-case-studies}
 
 I illustrate how \pico enables systematic, hypothesis-driven experimentation through two case studies: (1) meta-learning pre-training, (2) low-rank adapter pre-training. In each of these examples, I demonstrate demonstrate the cycle of implementation, analysis, and hypothesis refinement.
 
 \subsection{Meta-Learning Pre-Training}
+\label{subsec:pico-meta-learning}
 
 Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to adapt quickly by alternating between short bursts of task-specific learning and a global update that improves generalisation. This setup encourages models to find initialisation points that adapt well to new tasks. While MAML is typically used for fine-tuning, I follow prior work \citep{bansal2020smlmt, li2021semisupervised} in applying it during pretraining.%, using synthetic token classification tasks.
 
@@ -412,9 +409,10 @@ Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to ada
 
 
 \paragraph{New Hypothesis and Next Steps}
-These results support the hypothesis that MAML's learning dynamics involve cycles of compression and recovery. This raises concrete follow-up questions: could adjusting the inner-loop learning rate reduce excessive compression? Would alternative meta-learning schedules or task mixes stabilise the representational space more effectively? Using Pico's modular training and built-in logging, these variants can be tested with minimal friction. By comparing learning dynamics and outcomes across runs, researchers can refine their design choices in a reproducible, hypothesis-driven loop.% — illustrating Pico’s role as a practical sandbox for systematic small LM research.
+These results support the hypothesis that MAML's learning dynamics involve cycles of compression and recovery. This raises concrete follow-up questions: could adjusting the inner-loop learning rate reduce excessive compression? Would alternative meta-learning schedules or task mixes stabilise the representational space more effectively? Using \pico's modular training and built-in logging, these variants can be tested with minimal friction. By comparing learning dynamics and outcomes across runs, researchers can refine their design choices in a reproducible, hypothesis-driven loop.% — illustrating Pico’s role as a practical sandbox for systematic small LM research.
 
 \subsection{Low-Rank Adapter Pre-Training}
+\label{subsec:pico-low-rank-adapter}
 
 ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning technique that freezes pretrained weights and injects trainable low-rank matrices, into the pretraining loop. In theory, this could provide a sample-efficient way to train large models by constraining updates to a low-rank subspace. %However, its impact on pretraining stability remains poorly understood.
 
@@ -436,8 +434,8 @@ ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning te
 \paragraph{New Hypothesis and Next Steps}
 This pattern suggests that repeated low-rank resets may amplify gradient instability, undermining ReLoRA's intended efficiency gains. Several next steps follow naturally: for example, adding layerwise condition number regularisation, adjusting the rank dynamically, or modifying the reset schedule to reduce instability. Because \texttt{pico-train} and \texttt{pico-analyze} modularise core components and log detailed in-situ signals, researchers can test these changes quickly, track their effects on gradient stability, and iterate systematically. This demonstrates \pico's value as a scientific sandbox for implementing, analysing, and refining design choices in the small LM regime.
 
-
 \section{Pico Model Suite}
+\label{sec:pico-model-suite}
 
 In addition to releasing the \texttt{pico-train} and \texttt{pico-analyze} tools, I also train a suite of \textbf{\texttt{pico-decoder}} models at various scales using \texttt{pico-train}, all of which are open-sourced on the Hugging Face organisation.\footnote{\url{https://huggingface.co/pico-lm}} These models range from 11M to 570M parameters, with plans to extend up to 1B, and serve both as evaluations of the training pipeline and as testbeds for research on scaling laws and interpretability. I provide a comparison of these models in \cref{tab:pico-decoder-configs}.
 
@@ -501,6 +499,7 @@ Each model is trained for 125,000 steps (covering 250B tokens) on the open-sourc
 \end{table*}
 
 \section{Conclusion}
+\label{sec:pico-conclusion}
 
 % We introduce \pico, a modular framework for training and analyzing small to medium-scale language models. \texttt{pico-train} provides a minimal yet flexible environment for training language models that emphasises transparency and checkpointing for learning dynamics research. \texttt{pico-analyze} then uses these checkpoints to facilitate a broad set of learning dynamics analyses including model convergence patterns, sparsity, and rank dynamics.
 
@@ -508,7 +507,7 @@ Each model is trained for 125,000 steps (covering 250B tokens) on the open-sourc
 
 % By bridging training and analysis in a lightweight, extensible framework, \pico lowers the barrier for studying language model learning dynamics. Future work will expand the model suite and integrate advanced interpretability tools, further enhancing its utility for rigorous and reproducible research.
 
-In this chapter, I introduced \pico, a modular framework designed to transform language model development from empirical guesswork into a more rigorous, hypothesis-driven scientific process. By integrating transparent, checkpoint-rich training (\texttt{pico-train}) with systematic, reproducible analysis (\texttt{pico-analyze}), \pico bridges the gap between building models and understanding how they learn.
+In this chapter, I introduced \pico, a modular framework designed to transform language model development from empirical guesswork into a more rigorous, hypothesis-driven scientific process. By integrating transparent, checkpoint-rich training (\texttt{pico-train}) with systematic, reproducible analysis (\texttt{pico-analyze}), \pico bridges the gap between building models and understanding how they learn. In doing so, this chapter directly advances \textbf{RQ2}: \pico operationalises and makes accessible a novel scientific workflow for small LMs.
 
 Unlike traditional frameworks that treat training and interpretability as separate, \pico combines them in a single, lightweight toolkit. This enables researchers to observe learning dynamics as they unfold, formulate concrete hypotheses about model behaviour, and test interventions in situ. The case studies and demonstration workflow show how this integrated loop makes language model research more principled and accessible.
 

@@ -11,7 +11,7 @@ Using the Pythia model suite \citep{biderman2023pythia}, which offers consistent
 
 These findings offer a new lens on training inefficiency in small models and help formalise how and why learning breaks down as scale decreases. They also motivate new directions for improving small models, such as targeted interventions that increase effective rank or promote smoother convergence dynamics.
 
-\paragraph{Contributions.}
+\paragraph{Chapter Contributions}
 My main contributions are as follows:
 \begin{enumerate}
     \item I perform a detailed convergence analysis of attention and MLP layer activations across models ranging from 70M to 2.8B parameters. I show that larger models converge faster and more smoothly to their final representations.
@@ -23,7 +23,11 @@ My main contributions are as follows:
     \item I highlight that small models underutilise their representational space during training, leading to slower convergence and increased instability in deeper layers.
 \end{enumerate}
 
-In the following sections, I define my methodology, describe the empirical setup, and present results that reveal systematic differences in how large and small models learn.
+\paragraph{Addressing RQ2} This chapter addresses the second research question of this thesis. By developing metrics for quantifying the convergence dynamics of small language models, I provide a quantitative framework for analysing how small models learn. These tools can be used to understand how small models learn, and to explain why they often struggle to converge to a stable representation.
+
+\vspace{1em}
+
+The remainder of the chapter proceeds as follows. I formalise the analytical framework, centred on activation convergence (CKA) and Proportional Effective Rank (PER), in \cref{sec:methodology}. I then describe the empirical setup for my analysis, based on the Pythia suite and the Pile, in \cref{sec:experimental_setup}. The results in \cref{sec:tending-towards-stability-results} examine convergence dynamics (\cref{subsec:convergence-dynamics}), parameter rank behaviour (\cref{subsec:parameter-rank-dynamics}), and their correlation (\cref{subsec:correlation-cka-per}), highlighting consistent differences between small and large models.
 
 \section{Methodology and Analytical Framing}
 \label{sec:methodology}
@@ -156,7 +160,7 @@ By design, each sequence can pack multiple documents and tokens can attend acros
 The Pythia model suite is composed of 16 models: transformers of \integer{8} different sizes trained on the Pile as-is and deduplicated.
 All model sizes were trained using a cosine learning rate schedule with warm-up, the same data order, and a batch size of \integer{1024} sequences, resulting in exactly \q{143}{\thousand} optimisation steps.
 Checkpoints are available at initialisation (step \integer{0}), and after every \q{1}{\thousand} iterations (steps \q{1}{\thousand}--\q{143}{\thousand}) resulting in \integer{144} checkpoints evenly spaced throughout training. 
-Additionally, log-spaced checkpoints are available early in training (steps $\{2^i\}_{i=0}^{9}$). In \cref{tab:model_hparams} I report more details about the architecture and training hyper-parameters of the models in the suite.
+Additionally, log-spaced checkpoints are available early in training (steps $\{2^i\}_{i=0}^{9}$). In \cref{tab:model_hparams}, I report more details about the architecture and training hyper-parameters of the models in the suite.
 
 \begin{table}[!t]
     \centering
@@ -169,6 +173,7 @@ Additionally, log-spaced checkpoints are available early in training (steps $\{2
 % =======
 % RESULTS
 % =======
+\clearpage
 \section{Results}
 \label{sec:tending-towards-stability-results}
 
@@ -178,11 +183,12 @@ Additionally, log-spaced checkpoints are available early in training (steps $\{2
     \includegraphics[width=0.54\columnwidth]{chapters/tending-towards-stability/figures/cka_main_plot.pdf}
     \caption{$\cka$ similarity (current vs.\ last checkpoint) of $\attention$ and $\mlp$ activations for Pythia \sixmil and \twobil. Distribution across layers: \integer{10}, \integer{25}, \integer{50}, \integer{75}, and \integer{90} percentiles per checkpoint.}
     \label{fig:cka_main_plot}
+    \vspace{-1em}
 \end{wrapfigure}
 
 The analysis reveals systematic differences in the learning dynamics of transformer layers across model scales. I study these dynamics through two complementary lenses: the convergence behaviour of layer activations and the proportional effective rank ($\per$) of layer parameters and their gradients. Together, these measures provide insight into how layers develop and utilise capacity over time during training.
 
-Before presenting the detailed analyses, I briefly describe the structure of the main figures. \cref{fig:main-results} summarizes my core findings across three axes: (1) the convergence of activations as measured by $\cka$ similarity to final checkpoint activations (first column), (2) the proportional effective rank ($\per$) of layers' parameters (second column), and (3) the $\per$ of the corresponding parameter gradients (third column). Each row shows statistics for a different operation—$\attention$ (top) and $\mlp$ (bottom)—and each line represents the mean value across layers for five Pythia models ranging from 70M to 2.8B parameters.
+Before presenting the detailed analyses, I briefly describe the structure of the main figures. \cref{fig:main-results} summarises my core findings across three axes: (1) the convergence of activations as measured by $\cka$ similarity to final checkpoint activations (first column), (2) the proportional effective rank ($\per$) of layers' parameters (second column), and (3) the $\per$ of the corresponding parameter gradients (third column). Each row shows statistics for a different operation—$\attention$ (top) and $\mlp$ (bottom)—and each line represents the mean value across layers for five Pythia models ranging from 70M to 2.8B parameters.
 
 
 \begin{figure*}[h!]
@@ -194,16 +200,12 @@ Before presenting the detailed analyses, I briefly describe the structure of the
 \end{figure*}
 
 
-
 In addition to these averaged results, \cref{fig:cka_main_plot} displays the inter-quartile range of $\cka$ similarity values averaged across layers for the smallest and largest models, and \cref{fig:cka-layer-wise-lines}, \cref{fig:per_weight-layer-wise-lines}, and \cref{fig:per_grad-layer-wise-lines} provide a layer-wise breakdown of convergence and rank dynamics (for both weights and gradients), respectively. These figures allow us to distinguish aggregate trends from layer-specific behaviours and to track how each layer's representational capacity evolves during training.
-
 
 \subsection{Convergence Dynamics}
 \label{subsec:convergence-dynamics}
 
 Two key findings emerge from the analysis of convergence dynamics: (1) larger models converge faster and more monotonically to their final state than smaller models, and (2) earlier layers converge faster than later layers, regardless of the model size. One important caveat to note is that when discussing convergence to a final state, I mean that the layer's activations at a given checkpoint are similar to their state at the point where I end training. This is not meant to imply that if I were to continue training a given model, the activations would remain at the same state. 
-
-\clearpage
 
 \begin{result}[Activations of larger models converge faster and more monotonically to their final state than those of smaller models] 
 \label{result:cka}
@@ -315,7 +317,9 @@ I observe a strong correlation for the $\attention$ layers across model sizes. F
 % ===========
 \section{Conclusion}
 
-My findings reveal consistent and interpretable distinctions in learning dynamics across model scales. Larger models exhibit faster and more monotonic convergence in their layer activations, and make fuller use of their representational capacity; this is evidenced by higher and more stable proportional effective ranks ($\per$) of both weights and gradients. In contrast, smaller models display delayed convergence, greater instability, and under-utilisation of available capacity. These patterns suggest that part of the capability gap between small and large models may stem not from optimisation failure per se, but from inefficient or truncated learning trajectories. Importantly, these insights offer actionable hypotheses: for instance, that inducing higher-rank updates or penalising smaller effective ranks might help smaller models converge more like their larger counterparts. 
+My findings reveal consistent and interpretable distinctions in learning dynamics across model scales. Larger models exhibit faster and more monotonic convergence in their layer activations, and make fuller use of their representational capacity; this is evidenced by higher and more stable proportional effective ranks ($\per$) of both weights and gradients. In contrast, smaller models display delayed convergence, greater instability, and under-utilisation of available capacity. These patterns suggest that part of the capability gap between small and large models may stem not from optimisation failure per se, but from inefficient or truncated learning trajectories. 
+
+Taken together, these findings provide a focused answer to \textbf{RQ2}: we can quantify how small models learn --- where they stabilise late, where capacity collapses, and how rank usage tracks convergence. Importantly, these insights offer actionable hypotheses: for instance, that inducing higher-rank updates or penalising smaller effective ranks might help smaller models converge more like their larger counterparts. 
 
 However, testing such hypotheses directly, for instance by intervening on training dynamics and re-evaluating learning behaviour, is difficult in practice. Ideally, I would now like to modify the Pythia models (for example, to encourage higher effective rank early in training) and retrain them to see whether convergence patterns improve. Yet retraining Pythia is non-trivial. There are several practical limitations:
 
@@ -351,7 +355,7 @@ To effectively support intervention-based research on language model training dy
     
     \item \textbf{Reproducible Training and Evaluation}: Provide ready-to-use scripts and configuration files for full training and evaluation pipelines. Baselines should be reproducible with minimal tuning.
     
-    \item \textbf{Streamable and Standardized Data}: Support tokenized datasets in streaming formats with built-in preprocessing, packing, and filtering. Avoid proprietary dataset formats or brittle pipelines.
+    \item \textbf{Streamable and Standardised Data}: Support tokenised datasets in streaming formats with built-in preprocessing, packing, and filtering. Avoid proprietary dataset formats or brittle pipelines.
     
     \item \textbf{Intermediate Checkpointing}: Include well-timed checkpoints (e.g., log-spaced or per epoch) to track learning dynamics. Checkpoints should be saved in consistent formats and compatible with analysis tools.
     
@@ -359,10 +363,10 @@ To effectively support intervention-based research on language model training dy
     
     \item \textbf{Flexible Model Configuration}: Allow for easy experimentation with model size, layer depth, attention mechanisms, and other architectural choices through config files or flags.
 
-    \item \textbf{Automatically Plug-in With Existing Third-Party Tools}: Allow for easy integration with existing third-party tools (HuggingFace, Wandb, etc.) for analysis and visualization.
+    \item \textbf{Automatically Plug-in With Existing Third-Party Tools}: Allow for easy integration with existing third-party tools (HuggingFace, Wandb, etc.) for analysis and visualisation.
 
     
-    \item \textbf{Lightweight Hardware Requirements}: Be optimized for small and mid-sized models to enable training and analysis on affordable GPU setups, supporting high-velocity prototyping.
+    \item \textbf{Lightweight Hardware Requirements}: Be optimised for small and mid-sized models to enable training and analysis on affordable GPU setups, supporting high-velocity prototyping.
 \end{itemize}
 \end{tcolorbox}
 

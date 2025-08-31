@@ -12,7 +12,7 @@ This ability is notably lacking in current language models. Despite their succes
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/anisotropy_visualization.pdf}
-    \caption{Artistic visualization of the representational space of a language model, showing the clustering of tokens into a narrow manifold. The model is trained with a maximum likelihood objective, and the representations of the tokens are clustered together into a narrow manifold.}
+    \caption{Artistic visualisation of the representational space of a language model, showing the clustering of tokens into a narrow manifold. The model is trained with a maximum likelihood objective, and the representations of the tokens are clustered together into a narrow manifold.}
     \label{fig:anisotropy_visualization}
 \end{figure}
 
@@ -33,7 +33,7 @@ This representation degeneration problem is linked to the broader phenomenon of 
 
 \vspace{1em}
 
-The remainder of this chapter is organised as follows: \cref{sec:anisotropy-background} goes beyond the background chapter and reviews the relationship between frequency and anisotropy in language models. Building on this background, \cref{sec:freq-bias} introduces the frequency bias metric that I propose to quantify the degree to which a model relies on frequency information over linguistic generalisation. \cref{sec:smoothing-method} introduces the \smoothing method and details its implementation. \cref{sec:results} both presents the results and analysis across synthetic and real-world evaluations and discusses the implications of these findings. Finally, \cref{sec:conclusion} summarises this work and motivates further exploration of how language models internalise linguistic structure over time.
+The remainder of this chapter is organised as follows: \cref{sec:anisotropy-background} goes beyond the background chapter and reviews the relationship between frequency and anisotropy in language models. Building on this background, \cref{sec:freq-bias} introduces the frequency bias metric that I propose to quantify the degree to which a model relies on frequency information over linguistic generalisation. \cref{sec:smoothing-method} introduces the \smoothing method and details its implementation. \cref{sec:anisotropy-results} both presents the results and analysis across synthetic and real-world evaluations and discusses the implications of these findings. Finally, \cref{sec:anisotropy-conclusion} summarises this work and motivates further exploration of how language models internalise linguistic structure over time.
 
 \section{Anistropy}
 \label{sec:anisotropy-background}
@@ -133,7 +133,8 @@ I provide the POS distributions and similarity distributions for the example tok
     \vspace{-1em}
 \end{figure}
 
-\subsection{Smoothing the Backpropagation Signal}\label{section:smoothing}
+\subsection{Smoothing the Backpropagation Signal}
+\label{section:smoothing}
 
 Modern pre-training objectives implement likelihood maximisation using a cross-entropy loss between the label of the correct word and predicted probabilities from a forward pass of the model. \smoothing makes a small adjustment. Instead of a one-hot encoding, the target vector $t$ becomes a distribution across the entire vocabulary with some of the signal on the correct label $j$ and the rest of the signal distributed across all other tokens $i$ according to the syntactic similarity metric used:
 
@@ -164,7 +165,7 @@ These experiments focus on smaller language models and datasets due to computati
 
 \paragraph{Data} \label{paragraph:data} As in Chapter 3, I use the same dataset published as training data for the BabyLM challenge at the 2023 CoNLL workshop \citep{warstadt2023babylm1}. The dataset is pre-processed in the same way as in the previous chapter. 
 
-\paragraph{Model} Similarly, the model used for these experiments is the same as the one in Chapter 3: a small 8-layer encoder-style RoBERTa model with pre-layer normalization \cite{huebner2021babyberta}; hyper-parameters, choise of tokeniser (BPE tokeniser) and vocabulary size are all the same. 
+\paragraph{Model} Similarly, the model used for these experiments is the same as the one in Chapter 3: a small 8-layer encoder-style RoBERTa model with pre-layer normalisation \cite{huebner2021babyberta}; hyper-parameters, choise of tokeniser (BPE tokeniser) and vocabulary size are all the same. 
 
 \paragraph{Evaluation} I evaluate the BLiMP frequency bias of the models, as defined in \cref{sec:freq-bias}, on the evaluation set of BLiMP. To compute anisotropy I use the formulation defined in \cref{eq:empirical-isotropy}; I sample 1,000 pairs of random word tokens with their surrounding context from the training set, and compute the cosine similarity of their hidden representation at each of the 8 layers of the RoBERTa model. To obtain a model's final anisotropy value, I average the anisotropy scores across the 8 layers. Additionally, I fine-tune and evaluate each model on two downstream sentence-level tasks, COLA \citep{warstadt2019cola} and SST-2 \citep{socher2013sst}, as well as two language inference tasks, MNLI \citep{williams2018mnli} and QNLI \citep{rajpurkar2016squad, wang2018glue}.
 
@@ -182,7 +183,7 @@ I introduce three types of baselines:
 \paragraph{Models} I train all models with \smoothing using the same two $\alpha$ values as the label smoothing baselines to facilitate comparison. I also run variants using the linear pacing function presented in \cref{section:smoothing} which linearly decreases the smoothing from an initial value of $\alpha$ to zero across training. For these variants, I use the same two values of smoothing, as well as an additional high value of $\alpha=0.8$ giving a total of five \smoothing variants. I do not include unpaced \smoothing with a high value of $\alpha$ as initial experiments found that distributing such a high proportion of the learning signal away from the correct token leads to high perplexity and poor downstream performance.
 
 \section{Results}
-\label{sec:results}
+\label{sec:anisotropy-results}
 
 \begin{table*}[ht!]
     \centering
@@ -233,7 +234,7 @@ By contrast, the two \smoothing variants successfully reduce the frequency bias.
 
 \paragraph{\smoothing reduces anisotropy.}
 
-As shown in \cref{tbl:full-results}, \newline \smoothing reduces anisotropy over both the base model and label smoothing baselines.\footnote{Note that I do not compute the anisotropy for the three open-source pre-trained models (OPT, RoBERTa, T5) because these models use different architectural configurations than the models I train (e.g., larger hidden dimensions).} Label smoothing reduces anisotropy, but not to the same extent as the \smoothing models. To better understand how anisotropy develops in a model, I compute the model's anisotropy scores at eight checkpoints during training, as shown in \cref{fig:anisotropy-learing-dynamics}. I find that a greater degree of smoothing leads to a greater reduction in anisotropy for the \smoothing variants (it is less clear if this is the case for label smoothing), supporting the hypothesis that syntactic initialization helps promote better representation learning across the model's vocabulary. I also find that the pacing method leads to lower anisotropy than the flat method, with \texttt{SyS}-P (High) achieving the lowest anisotropy throughout.
+As shown in \cref{tbl:full-results}, \newline \smoothing reduces anisotropy over both the base model and label smoothing baselines.\footnote{Note that I do not compute the anisotropy for the three open-source pre-trained models (OPT, RoBERTa, T5) because these models use different architectural configurations than the models I train (e.g., larger hidden dimensions).} Label smoothing reduces anisotropy, but not to the same extent as the \smoothing models. To better understand how anisotropy develops in a model, I compute the model's anisotropy scores at eight checkpoints during training, as shown in \cref{fig:anisotropy-learing-dynamics}. I find that a greater degree of smoothing leads to a greater reduction in anisotropy for the \smoothing variants (it is less clear if this is the case for label smoothing), supporting the hypothesis that syntactic initialisation helps promote better representation learning across the model's vocabulary. I also find that the pacing method leads to lower anisotropy than the flat method, with \texttt{SyS}-P (High) achieving the lowest anisotropy throughout.
 
 \begin{figure}[ht!]
     \centering
@@ -317,7 +318,7 @@ Results for bias~($\downarrow$), anisotropy~($\downarrow$), and BLiMP~($\uparrow
 Summarised in \cref{tbl:jsd-similarity-metric-results}, I note that the effect of using a Jensen Shannon-based definition of the similarity metric yields a similar (albeit slightly smaller) decrease in frequency bias and anisotropy, as compared to the standard cosine-based definition of the similarity metric.   
 
 \section{Conclusion}
-\label{sec:conclusion}
+\label{sec:anisotropy-conclusion}
 
 This chapter has addressed a core limitation of current language models: their difficulty in generalising to rare or novel words due to an overreliance on frequency statistics. While human learners can infer grammatical roles and meanings from structural context, a process often referred to as syntactic bootstrapping, most language models lack this inductive bias. As a result, they tend to prioritise high-frequency tokens, leading to frequency bias and degraded representations of infrequent words.
 
