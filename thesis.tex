@@ -56,18 +56,17 @@
 
 %% PDF meta-info:
 \subjectline{Computer Science}
-\keywords{Language Modeling, Small Language Models, Efficient Language Modeling}
+\keywords{Language Modelling, Small Language Models, Efficient Language Modelling}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Abstract:
 %%
 \abstract{%
-
 Language models continue to grow in size, yet our understanding of their inner workings and ability to train them efficiently, particularly smaller models, remains limited. Small (sub-1 billion parameter) models offer practical advantages, including reduced financial and environmental costs, and broader accessibility, motivating the need for more effective training methodologies. This thesis addresses the challenge of developing small language models through two complementary lenses: cognitive inspiration and analytical investigation.
 
-First, drawing parallels with efficient human language acquisition, we explore cognitively inspired techniques for training small models. We investigate curriculum learning strategies informed by human language acquisition in data-constrained settings within a framework called \climb, and we introduce \smoothing, a cognitively motivated method that enhances the representation of infrequent words by leveraging syntactic structure.
+First, drawing parallels with efficient human language acquisition, I explore cognitively inspired techniques for training small models. I investigate curriculum learning strategies informed by human language acquisition in data-constrained settings within a framework called \climb, and I introduce \smoothing, a cognitively motivated method that enhances the representation of infrequent words by leveraging syntactic structure.
 
-Second, we adopt an analytical perspective to study the training dynamics and bottlenecks of small models. By analyzing the layer-wise behavior of the Pythia model suite, we identify convergence challenges and saturation phenomena in small models. This analysis exposes a broader shortcoming in current language model development: the disconnect between training and analysis tools, which hinders a scientific, iterative approach to model improvement. To address this, we introduce \pico, a open-source, lightweight, modular development framework for small models that integrates training and fine-grained analysis of model learning dynamics. Comprising pico-train and pico-analyze, Pico enables a principled, experiment-driven methodology for developing small language models. 
+Second, I adopt an analytical perspective to study the training dynamics and bottlenecks of small models. By analysing the layer-wise behaviour of the Pythia model suite, I identify convergence challenges and saturation phenomena in small models. This analysis exposes a broader shortcoming in current language model development: the disconnect between training and analysis tools, which hinders a scientific, iterative approach to model improvement. To address this, I introduce \pico, a open-source, lightweight, modular development framework for small models that integrates training and fine-grained analysis of model learning dynamics. Comprising pico-train and pico-analyze, \pico enables a principled, experiment-driven methodology for developing small language models. 
 
 Ultimately, this thesis contributes novel techniques and tools aimed at making the training of small language models both more efficient, scientific and accessible to a wider range of users.
 }
