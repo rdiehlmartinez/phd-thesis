@@ -5,7 +5,7 @@
 
 % Small language models offer a more sustainable and democratized alternative, enabling training on proprietary or domain-specific data, improving privacy, and reducing deployment costs \citep{huang2022large, bender2021dangers}. Yet despite their advantages, small models often lag significantly behind their larger counterparts—not only in final performance, but in the learning process itself. Empirical studies have observed that small models tend to degrade in performance late in pretraining, a phenomenon known as saturation \citep{godey2024small}. While this behaviour is often attributed to limited representational capacity, the precise learning dynamics that give rise to these failures remain poorly understood.
 
-In this chapter, I build on the analytical frameworks introduced in Chapter 5 and provide a detailed investigation into the convergence behaviour of language models across scales. Specifically, I focus on how internal representations, especially the outputs of attention and feedforward layers, evolve during training. I use tools like Centred Kernel Alignment (CKA) and a new metric I term Proportional Effective Rank (PER) to examine how quickly and smoothly different layers in a model converge to their final state, and how this varies with model size.
+In this chapter, I build on the analytical frameworks introduced in Chapter 5 and provide a detailed investigation into the convergence behaviour of language models across scales. Specifically, I focus on how internal representations, especially the outputs of attention and feedforward layers, evolve during training. I use tools like CKA and a new metric I term Proportional Effective Rank (PER) to examine how quickly and smoothly different layers in a model converge to their final state, and how this varies with model size.
 
 Using the Pythia model suite \citep{biderman2023pythia}, which offers consistent training checkpoints across a range of model sizes, I show that larger models exhibit faster and more monotonic convergence in their internal activations. In contrast, smaller models show delayed and more erratic convergence, particularly in deeper layers. I find that these differences correlate with the effective rank of each layer's parameters and gradients. The results suggest that small models not only struggle to converge, but also tend to use a narrower subspace of their available capacity throughout training.\footnote{Code available at: \url{https://github.com/rdiehlmartinez/pretraining-playground}.}
 
@@ -16,7 +16,7 @@ My main contributions are as follows:
 \begin{enumerate}
     \item I perform a detailed convergence analysis of attention and MLP layer activations across models ranging from 70M to 2.8B parameters. I show that larger models converge faster and more smoothly to their final representations.
 
-    \item I introduce the metric of Proportional Effective Rank (PER) to compare how efficiently models use their parameter space, adjusting for differences in model size.
+    \item I introduce the PER metric to compare how efficiently models use their parameter space, adjusting for differences in model size.
 
     \item I find that layers with higher PER values (in both weights and gradients) tend to converge earlier, revealing a strong correlation between representational richness and learning stability.
 
@@ -27,14 +27,14 @@ My main contributions are as follows:
 
 \vspace{1em}
 
-The remainder of the chapter proceeds as follows. I formalise the analytical framework, centred on activation convergence (CKA) and Proportional Effective Rank (PER), in \cref{sec:methodology}. I then describe the empirical setup for my analysis, based on the Pythia suite and the Pile, in \cref{sec:experimental_setup}. The results in \cref{sec:tending-towards-stability-results} examine convergence dynamics (\cref{subsec:convergence-dynamics}), parameter rank behaviour (\cref{subsec:parameter-rank-dynamics}), and their correlation (\cref{subsec:correlation-cka-per}), highlighting consistent differences between small and large models.
+The remainder of the chapter proceeds as follows. I formalise the analytical framework, centred on activation convergence (CKA) and rank analysis (PER), in \cref{sec:methodology}. I then describe the empirical setup for my analysis, based on the Pythia suite and the Pile, in \cref{sec:experimental_setup}. The results in \cref{sec:tending-towards-stability-results} examine convergence dynamics (\cref{subsec:convergence-dynamics}), parameter rank behaviour (\cref{subsec:parameter-rank-dynamics}), and their correlation (\cref{subsec:correlation-cka-per}), highlighting consistent differences between small and large models.
 
 \section{Methodology and Analytical Framing}
 \label{sec:methodology}
 
-To better understand training inefficiencies in small language models (LMs), I examine how internal representations evolve during pretraining across model sizes. The analysis focuses on the \textit{residual stream}, which I introduce in Chapter 5. The residual stream tracks a model's internal representation of the input sequence as it is processed through the network. I use this framework to study the activation dynamics and parameter behaviour of a model over the course of training.
+To better understand training inefficiencies in small language models, I examine how internal representations evolve during pretraining across model sizes. The analysis focuses on the \textit{residual stream}, which I introduce in Chapter 5. The residual stream tracks a model's internal representation of the input sequence as it is processed through the network. I use this framework to study the activation dynamics and parameter behaviour of a model over the course of training.
 
-This section outlines the analytical tools I use and how they allow us to quantify differences in convergence patterns across layers and model scales.
+This section goes beyond Chapter 5 and formalises the analytical tools I use and how they allow us to quantify differences in convergence patterns across layers and model scales.
 
 \paragraph{Residual Stream and Layer Updates.}
 Each layer in a transformer updates the model's residual stream by composing two subcomponents: multi-head self-attention ($\attention$) and a feedforward network ($\mlp$). These updates can be expressed as:
@@ -58,7 +58,7 @@ where $\actcenter$ denotes mean-centred activations and $\|\cdot\|_F$ is the Fro
 While CKA and related metrics (e.g., SVCCA) have been widely used to study representational similarity \citep{wu2020similarity, phang2021finetuned, brown2023understanding}, I adapt this tool to a new setting: analysing the temporal dynamics of activation convergence across model sizes, rather than comparing across models or tasks.
 
 \paragraph{Parameter Structure via Proportional Effective Rank.}
-I further analyze the expressivity of each layer by computing the \textit{effective rank} of its write parameters; that is, the projection matrices that update the intermediate representations in the residual stream. The effective rank of a matrix $\vtheta \in \mathbb{R}^{d \times h}$ is defined as the entropy of its normalised singular values \citep{roy2007effectiverank}:
+I further analyse the expressivity of each layer by computing the \textit{effective rank} of its write parameters; that is, the projection matrices that update the intermediate representations in the residual stream. The effective rank of a matrix $\vtheta \in \mathbb{R}^{d \times h}$ is defined as the entropy of its normalised singular values \citep{roy2007effectiverank}:
 \begin{align}
     \er(\vtheta) = \exp\left(-\sum_{k=1}^K \frac{\sigma_k}{\|\sigma\|_1} \log \frac{\sigma_k}{\|\sigma\|_1}\right)
 \end{align}
@@ -141,15 +141,14 @@ These tools allow us to answer the following questions: Do different-sized model
 % ==================
 \section{Experimental Setup}\label{sec:experimental_setup}
 
-I use the Pythia model suite \citep{biderman2023pythia}, composed of \integer{8} transformers of different sizes trained for \q{143}{\thousand} steps on the deduplicated\footnote{There exists a non-deduplicated (or standard) version of the Pile dataset used to train a first version of the Pythia suite.} version of the Pile dataset \citep{gao2020pile}.
-Intermediate checkpoints are available every \q{1}{\thousand} steps and at log-spaced intervals early in training.
-To comply with my computational budget, I consider models up to \q{2.8}{\billion} parameters (i.e., \sevenmil, \sixmil, \fourmil, \onebil, and \twobil) evaluated at the following steps: \integer{0}, all log-spaced steps $\{1, 2, 4, \smalldots, 512\}$, \q{1}{\thousand}, \q{3}{\thousand}, and then every \q{10}{\thousand} steps up to \q{143}{\thousand}.
+I use the Pythia model suite \citep{biderman2023pythia}, composed of \integer{8} Transformers of different sizes trained for \q{143}{\thousand} steps on the deduplicated\footnote{There exists a non-deduplicated (or standard) version of the Pile dataset used to train a first version of the Pythia suite.} version of the Pile dataset \citep{gao2020pile}.
+Intermediate checkpoints are available every \q{1}{\thousand} steps and at log-spaced intervals early in training. I consider models up to \q{2.8}{\billion} parameters (i.e., \sevenmil, \sixmil, \fourmil, \onebil, and \twobil) evaluated at the following steps: \integer{0}, all log-spaced steps $\{1, 2, 4, \smalldots, 512\}$, \q{1}{\thousand}, \q{3}{\thousand}, and then every \q{10}{\thousand} steps up to \q{143}{\thousand}.
 I evaluate each checkpoint on the last batch of the training set and collect its activations.
 
 I use the publicly available Pythia model suite \citep{biderman2023pythia}, which was trained on the Pile \citep{gao2020pile}. Both the preprocessed training data and intermediate checkpoints are publicly available.\footnote{\href{https://github.com/EleutherAI/pythia}{\myemph{github.com/EleutherAI/pythia}} (Apache License 2.0).} 
 
 \paragraph{Data.}
-The Pile is a \q{300}{\billion}-token curated open-source collection of English documents, spanning a wide range of domains (e.g. books, academic publications, Wikipedia).\footnote{\href{https://github.com/EleutherAI/the-pile}{\myemph{github.com/EleutherAI/the-pile}} (MIT License).}  
+The Pile is a \q{300}{\billion}-token curated open-source collection of English documents, spanning a wide range of domains (e.g., books, academic publications, Wikipedia).\footnote{\href{https://github.com/EleutherAI/the-pile}{\myemph{github.com/EleutherAI/the-pile}} (MIT License).}  
 The deduplicated version of the dataset is obtained by applying a near-deduplication method based on \myemph{MinHashLSH} and has \q{207}{\billion} tokens.
 Thus, models trained on this version of the dataset are trained for circa \float[1]{1.5} epochs to keep an equal token count relative to the non-deduplicated versions.
 The dataset is shuffled, tokenised, and \enquote{packed} into sequences of \integer{2049} tokens with no end-of-document token.\footnote{\href{https://github.com/EleutherAI/pythia/issues/123}{\myemph{github.com/EleutherAI/pythia/issues/123}}.}
@@ -157,7 +156,7 @@ Noticeably, the packing process implies that the second half-epoch of deduplicat
 By design, each sequence can pack multiple documents and tokens can attend across document boundaries.
 
 \paragraph{Models.}
-The Pythia model suite is composed of 16 models: transformers of \integer{8} different sizes trained on the Pile as-is and deduplicated.
+The Pythia model suite is composed of 16 models: Transformers of \integer{8} different sizes trained on the Pile as-is and deduplicated.
 All model sizes were trained using a cosine learning rate schedule with warm-up, the same data order, and a batch size of \integer{1024} sequences, resulting in exactly \q{143}{\thousand} optimisation steps.
 Checkpoints are available at initialisation (step \integer{0}), and after every \q{1}{\thousand} iterations (steps \q{1}{\thousand}--\q{143}{\thousand}) resulting in \integer{144} checkpoints evenly spaced throughout training. 
 Additionally, log-spaced checkpoints are available early in training (steps $\{2^i\}_{i=0}^{9}$). In \cref{tab:model_hparams}, I report more details about the architecture and training hyper-parameters of the models in the suite.
@@ -186,9 +185,9 @@ Additionally, log-spaced checkpoints are available early in training (steps $\{2
     \vspace{-1em}
 \end{wrapfigure}
 
-The analysis reveals systematic differences in the learning dynamics of transformer layers across model scales. I study these dynamics through two complementary lenses: the convergence behaviour of layer activations and the proportional effective rank ($\per$) of layer parameters and their gradients. Together, these measures provide insight into how layers develop and utilise capacity over time during training.
+The analysis reveals systematic differences in the learning dynamics of transformer layers across model scales. I study these dynamics through two complementary lenses: the convergence behaviour of layer activations and the $\per$ of layer parameters and their gradients. Together, these measures provide insight into how layers develop and utilise capacity over time during training.
 
-Before presenting the detailed analyses, I briefly describe the structure of the main figures. \cref{fig:main-results} summarises my core findings across three axes: (1) the convergence of activations as measured by $\cka$ similarity to final checkpoint activations (first column), (2) the proportional effective rank ($\per$) of layers' parameters (second column), and (3) the $\per$ of the corresponding parameter gradients (third column). Each row shows statistics for a different operation—$\attention$ (top) and $\mlp$ (bottom)—and each line represents the mean value across layers for five Pythia models ranging from 70M to 2.8B parameters.
+Before presenting the detailed analyses, I briefly describe the structure of the main figures. \cref{fig:main-results} summarises my core findings across three axes: (1) the convergence of activations as measured by $\cka$ similarity to final checkpoint activations (first column), (2) the $\per$ of layers' parameters (second column), and (3) the $\per$ of the corresponding parameter gradients (third column). Each row shows statistics for a different operation ($\attention$ (top) and $\mlp$ (bottom)) and each line represents the mean value across layers for five Pythia models ranging from 70M to 2.8B parameters.
 
 
 \begin{figure*}[h!]
@@ -212,7 +211,7 @@ Two key findings emerge from the analysis of convergence dynamics: (1) larger mo
     
 As shown in the first column of \cref{fig:main-results}, $\cka$ similarity between a layer's activations at a given checkpoint and its final state rises more quickly in larger models. For instance, by 20\% of training, the $\cka$ score in \twobil reaches $\sim$0.8 for $\mlp$ and $\sim$0.7 for $\attention$, compared to values around 0.5 in \sevenmil and \sixmil. This trend reflects more rapid and stable convergence. \cref{fig:cka_main_plot} adds further evidence: across checkpoints, the interquartile range (25th to 75th percentiles) of $\cka$ similarity across layers is both narrower and higher in larger models, confirming convergence is more uniform layer-wise.
 
-\cref{fig:cka-layer-wise-lines} provides a more granular, layer-wise view: in \twobil, many layers, particularly the earlier layers, achieve high similarity early in training, whereas in smaller models convergence is delayed and less monotonic. In smaller models, such as the \sevenmil model, some layers (e.g. 4, 5 and 6) actually not only do not converge early, but rather diverge from their final state for a period of training before becoming similar to their final state. As the size of the model increases, the number of layers that diverge from their final state for any period of training decreases.
+\cref{fig:cka-layer-wise-lines} provides a more granular, layer-wise view: in \twobil, many layers, particularly the earlier layers, achieve high similarity early in training, whereas in smaller models convergence is delayed and less monotonic. In smaller models, such as the \sevenmil model, some layers (e.g., 4, 5 and 6) actually not only do not converge early, but rather diverge from their final state for a period of training before becoming similar to their final state. As the size of the model increases, the number of layers that diverge from their final state for any period of training decreases.
 
 \end{result}
 

@@ -22,7 +22,7 @@ Together, these tools make it possible to perform fine-grained, in-situ analysis
 
 % \pico was built to address a concrete gap identified in the previous chapter: existing suites like Pythia offer rich insights into learning dynamics after training, but lack the flexibility and transparency needed to test interventions during training. The findings from \cref{chapter:tending-towards-stability} (e.g. the correlation between effective rank and convergence speed) generate specific, testable hypotheses that require tools for systematic experimentation. \pico provides these tools, bringing the same level of rigor to the training process as to post-hoc analysis.
 
-\paragraph{Addressing RQ2} This chapter addresses the second research question of this thesis, by developing a novel framework framework that supports scientific research on language models. This framework makes the process of training and analysing language models more scientific and accessible to a wider range of researchers.
+\paragraph{Addressing RQ2} This chapter addresses the second research question of this thesis, by developing a novel framework that supports scientific research on language models. This framework makes the process of training and analysing language models more scientific and accessible to a wider range of researchers.
 
 \vspace{1em}
 
@@ -46,7 +46,7 @@ The rest of this chapter is structured as follows. \cref{sec:pico-related} situa
     \midrule
     \textbf{\pico} & 
     \cmark \newline Modular \newline PyTorch &
-    \cmark \newline Optimizer, \newline weights \& data &
+    \cmark \newline Optimiser, \newline weights \& data &
     \cmark \newline Activations \& \newline gradients &
     \cmark \newline \texttt{pico-analyze} \newline metrics &
     \cmark \newline Academic \newline GPU-scale \\
@@ -92,7 +92,7 @@ To understand the niche \pico fills, I situate it relative to two major categori
 
 
 \paragraph{Training Frameworks}
-Large-scale systems like Megatron-LM \citep{narayanan2021megatron}, DeepSpeed \citep{rasley2020deepspeed}, and MosaicML \citep{mosaic2023mpt} are highly optimised for training massive models. They handle distributed computation and mixed-precision arithmetic efficiently, but their training pipelines are complex and often opaque. Modifying or instrumenting them to inspect model internals (let alone run repeated training interventions) can require significant effort. These frameworks are indispensable for production-scale pretraining, but ill-suited for small-scale, experiment-driven research.
+Large-scale systems like Megatron-LM \citep{narayanan2021megatron}, DeepSpeed \citep{rasley2020deepspeed}, and MosaicML \citep{mosaic2023mpt} are highly optimised for training massive models. They handle distributed computation and mixed-precision arithmetic efficiently, but their training pipelines are complex and often opaque. Modifying or instrumenting them to inspect model internals (let alone run repeated training interventions) can require significant effort. These frameworks are indispensable for production-scale pre-training, but ill-suited for small-scale, experiment-driven research.
 
 In contrast, lightweight training frameworks such as NanoGPT \citep{karpathy2023nanogpt}, SmolLM2 \citep{allal2025smollm2}, TinyLlama \citep{zhang2024tinyllama}, and TinyStories \citep{eldan2023tinystories} emphasise simplicity and fast iteration. Their codebases are accessible and easy to modify, making them ideal for prototyping new ideas. However, they tend to treat training as a black box. Logging activations or inspecting weight evolution generally requires manual modification, and internal state tracking is minimal or absent. These frameworks make it easy to run experiments, but hard to measure what is happening inside.
 
@@ -101,14 +101,14 @@ In contrast, lightweight training frameworks such as NanoGPT \citep{karpathy2023
 \paragraph{Analysis Frameworks}
 Where training frameworks help build models, analysis frameworks help interpret them. Recent progress in mechanistic interpretability has produced tools like TransformerLens \citep{nanda2022transformerlens}, ROME \citep{meng2022locating}, and ACDC \citep{conmy2023towards}, which allow detailed inspection of trained transformer circuits. These tools are useful for understanding among other things how attention heads specialise or how knowledge is stored and retrieved. But they are mostly post-hoc: they assume a trained model and operate over static checkpoints.
 
-Model suites such as Pythia \citep{biderman2023pythia} and OLMo \citep{groeneveld2024olmo} provided researchers a set of pretrained models and training checkpoints to study. Rather than having to train a model from scratch, researchers can use these models to analyse the learning dynamics of a model that has already been trained, using consistent checkpoints and data. However, these frameworks are not designed to retrain models from scratch.
+Model suites such as Pythia \citep{biderman2023pythia} and OLMo \citep{groeneveld2024olmo} provided researchers a set of pre-trained models and training checkpoints to study. Rather than having to train a model from scratch, researchers can use these models to analyse the learning dynamics of a model that has already been trained, using consistent checkpoints and data. However, these frameworks are not designed to retrain models from scratch.
 
 Complementing the frameworks above are tools like DevInterp \citep{devinterpcode}, which begin to trace how models develop during training by analysing intermediate checkpoints. This shift toward developmental interpretability has revealed that models undergo discrete representational shifts and acquire capabilities in phases \citep{hoogland2023towards, hoogland2025losslandscape}. However, all of these frameworks remain downstream of the training process; they depend on external training pipelines and cannot modify or influence the training process itself.
 
 % Here again, \pico closes a key loop. By integrating training and analysis into the same workflow, it enables fine-grained, in-situ investigation of representational dynamics. Rather than relying on occasional checkpoints saved by another framework, \pico makes detailed logging a native part of the training loop. This allows researchers to monitor changes in capacity usage, representation similarity, or sparsity metrics in real time, and to test hypotheses by intervening directly in training.
 
 \paragraph{Toward Integrated Research Infrastructure}
-The distinctions between training and analysis frameworks have historically reflected different goals—efficiency vs. interpretability, scale vs. visibility. But to understand how language models learn, especially at small and intermediate scales, these goals need to be brought together. \pico is an attempt to unify them into a single research workflow, one that enables controlled experimentation, rapid iteration, and structured analysis without sacrificing clarity or flexibility.
+The distinctions between training and analysis frameworks have historically reflected different goals --- efficiency vs. interpretability, scale vs. visibility. But to understand how language models learn, especially at small and intermediate scales, these goals need to be brought together. \pico is an attempt to unify them into a single research workflow, one that enables controlled experimentation, rapid iteration, and structured analysis without sacrificing clarity or flexibility.
 
 \cref{tab:pico_comparison} provides a comparative summary of how \pico fits into the current landscape, alongside other commonly used frameworks. While each tool has strengths of its own, \pico is distinct in offering custom training, rich logging, and built-in analysis all in one package.
 
@@ -136,19 +136,20 @@ A distinguishing feature of \texttt{pico-train} is its systematic checkpointing 
 \vspace{-0.2em}
 All checkpoints are automatically uploaded and version-controlled on Hugging Face, ensuring that researchers can revisit any point in training to analyse how the model evolved over time. These structured checkpoints integrate seamlessly with \texttt{pico-analyze}, enabling learning dynamics research with minimal setup.
 
-\subsection{Pretokenized Dataset: \texttt{pretokenized-dolma}}
+\subsection{Pre-tokenized Dataset: \texttt{pretokenized-dolma}}
 
 To simplify experimentation, I also release \textbf{\texttt{pretokenized-dolma}}: a pre-tokenized, pre-chunked, and pre-shuffled version of Dolma \citep{soldaini2024dolma}, a large, open-source English dataset. This dataset removes preprocessing overhead, ensures consistency across runs, and supports streaming to reduce storage needs. Using it is optional; users can substitute their own data if they prefer. 
 
-To prepare the \textbf{\texttt{pretokenized-dolma}} dataset, I begin by downloading the Dolma corpus and selecting a random 30\% subset. The text is then tokenised using the open-sourced \textbf{\texttt{allenai/OLMo-7B-0724-hf}} tokenizer and split into fixed-length sequences of 2049 tokens (2048 + 1 for next-token prediction). I ensure consistency across shards by chunking token streams without overlap, dropping any remainder shorter than the full sequence length.
+To prepare the \textbf{\texttt{pretokenized-dolma}} dataset, I begin by downloading the Dolma corpus and selecting a random 30\% subset. The text is then tokenised using the open-sourced \textbf{\texttt{allenai/OLMo-7B-0724-hf}} tokeniser and split into fixed-length sequences of 2049 tokens (2048 + 1 for next-token prediction). I ensure consistency across shards by chunking token streams without overlap, dropping any remainder shorter than the full sequence length.
 
-After tokenisation and chunking, I shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. To facilitate scalable loading and training, I further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. I release all of the scripts used for preprocessing data in a GitHub repository. The resulting dataset is saved as Parquet files and uploaded to a Hugging Face organisation\footnote{\url{https://huggingface.co/pico-lm}} under \href{https://huggingface.co/datasets/pico-lm/pretokenized-dolma}{\textcolor{blue}{\textbf{\texttt{pico-lm/pretokenized-dolma}}}}.
+After tokenisation and chunking, I shuffle the dataset and sample a fixed number of sequences per shard, generating 100 shards in total. To facilitate scalable loading and training, I further fine-shard the dataset into 10,000 pieces using a secondary script. These final shards are compact (78MB each), randomly shuffled, pre-tokenized, and ready for streaming via the Hugging Face datasets API. This preprocessing ensures that all models see data in a consistent order, which is critical for learning dynamics analysis. The resulting dataset is saved as Parquet files and uploaded to a Hugging Face organisation\footnote{\url{https://huggingface.co/pico-lm}} under \href{https://huggingface.co/datasets/pico-lm/pretokenized-dolma}{\textcolor{blue}{\textbf{\texttt{pico-lm/pretokenized-dolma}}}}.
 
+%I release all of the scripts used for preprocessing data in a GitHub repository.
 The design philosophy for the dataset is the same as for \texttt{pico-train}: minimalism, modularity, and transparency, that enable users to easily modify all aspects of the training pipeline. 
 
 \subsection{\texttt{pico-analyze}: A General-Purpose Framework for Studying Learning Dynamics}
 
-\texttt{pico-analyze} is a companion tool to \texttt{pico-train} designed to make analysing learning dynamics seamless and reproducible. It directly integrates with the checkpoints saved by \texttt{pico-train}, including model weights, optimizer states, activations, and gradients, allowing researchers to systematically compute the learning dynamics of trained models.
+\texttt{pico-analyze} is a companion tool to \texttt{pico-train} designed to make analysing learning dynamics seamless and reproducible. It directly integrates with the checkpoints saved by \texttt{pico-train}, including model weights, optimiser states, activations, and gradients, allowing researchers to systematically compute the learning dynamics of trained models.
 
 At its core, \texttt{pico-analyze} follows a simple abstraction: it applies metrics to components. Metrics provide quantitative insights into various aspects of model behaviour, while components define the specific model elements being analysed. This design allows for flexible and fine-grained analysis of training dynamics. 
 
@@ -156,7 +157,7 @@ At its core, \texttt{pico-analyze} follows a simple abstraction: it applies metr
 \begin{itemize}
     \item \textbf{Sparsity Measures}: \textit{Gini coefficient} \citep{hurley2009gini} and \textit{Hoyer metric} \citep{hoyer2004sparsity} gauge how concentrated the values of a tensor are around zero.
 
-    \item \textbf{Rank-Based Metrics}: \textit{Proportional Effective Rank} (defined in Chapter 6) captures a matrix's “effective dimensionality”, while \textit{Condition Number} evaluates its numerical stability.
+    \item \textbf{Rank-Based Metrics}: \textit{PER} (defined in Chapter 6) captures a matrix's “effective dimensionality”, while \textit{Condition Number} evaluates its numerical stability.
 
     \item \textbf{Representation Similarity}: \textit{CKA} \citep{kornblith2019cka} and \textit{PWCCA} \citep{morcos2018pwcca} compare activation patterns across layers or checkpoints, revealing how internal representations evolve.
     
@@ -252,7 +253,7 @@ Training will start immediately, automatically saving learning dynamics checkpoi
             & Positional Emb. Theta & 10,000.0 \\
         \hline
         \multirow{7}{*}{\textbf{Training}}  
-            & Optimizer & AdamW \\
+            & Optimiser & AdamW \\
             & Learning Rate & $3 \times 10^{-4}$ \\
             & LR Scheduler & Linear w/ Warmup \\
             & Warmup Steps & 2,500 \\
@@ -295,7 +296,7 @@ Training will start immediately, automatically saving learning dynamics checkpoi
 
 Once training is complete, users can inspect various aspects of the model's learning dynamics using \texttt{pico-analyze}. The setup process mirrors that of \texttt{pico-train}, making it simple to switch between training and analysis within the same workflow. \texttt{pico-analyze} works directly on the structured checkpoints saved by \texttt{pico-train}, computing metrics on model weights, gradients, and activations to provide insights into how the model evolves during training. To streamline experimentation, it uses a YAML-based configuration system that lets users specify which layers, metrics, and training steps to analyse. I include a complete sample configuration at \href{https://github.com/pico-lm/pico-analyze/blob/main/configs/demo.yaml}{\textcolor{blue}{\texttt{configs/demo.yaml}}}\footnote{\url{https://github.com/pico-lm/pico-analyze/blob/main/configs/demo.yaml}} within the \texttt{pico-analyze} repository.
 
-To illustrate how this works in practice, one part of the demonstration configuration uses Centered Kernel Alignment (CKA) to test how much the model's internal representations change over training. As discussed in \cref{chapter:analysis-background}, Centered Kernel Alignment (CKA) is a well-established metric for comparing the similarity of activations between layers, checkpoints, or even different models. In this demonstration, I use CKA to track the convergence of the OV circuit at the first and last layers of the model. In general, I would expect the CKA score to begin at a value close to 0 and increase over time as the representations converge to their final state. However, since this toy example only trains for 100 steps, I hypothesise that there should be little representational change, and the CKA score should remain relatively high. This illustrates how users of \pico can turn a vague question such as “are the representations of my model changing?” into a quantitative hypothesis.
+To illustrate how this works in practice, one part of the demonstration configuration uses CKA to test how much the model's internal representations change over training. As discussed in \cref{chapter:analysis-background}, CKA is a well-established metric for comparing the similarity of activations between layers, checkpoints, or even different models. In this demonstration, I use CKA to track the convergence of the OV circuit at the first and last layers of the model. In general, I would expect the CKA score to begin at a value close to 0 and increase over time as the representations converge to their final state. However, since this toy example only trains for 100 steps, I hypothesise that there should be little representational change, and the CKA score should remain relatively high. This illustrates how users of \pico can turn a vague question such as “are the representations of my model changing?” into a quantitative hypothesis.
 
 Below is an abridged YAML configuration that specifies this CKA analysis:
 
@@ -355,7 +356,7 @@ By integrating seamlessly with \texttt{pico-train}, \texttt{pico-analyze} provid
         \textbf{CKA \newline (Centered Kernel \newline Alignment)} \citep{kornblith2019cka} &  
         Measures similarity between activations at different checkpoints using kernel methods to track representation evolution. & Activations & \textbf{Similarity} \\
         \hline
-        \textbf{PWCCA \newline (Projection-Weighted \newline CCA)} \cite{morcos2018pwcca} & 
+        \textbf{PWCCA \newline (Projection-Weighted \newline CCA)} \citep{morcos2018pwcca} & 
         Measures activation similarity across training, emphasising important components via projections. & Activations & \textbf{Similarity} \\
         \hline
         \hline
@@ -389,7 +390,7 @@ I illustrate how \pico enables systematic, hypothesis-driven experimentation thr
 \subsection{Meta-Learning Pre-Training}
 \label{subsec:pico-meta-learning}
 
-Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to adapt quickly by alternating between short bursts of task-specific learning and a global update that improves generalisation. This setup encourages models to find initialisation points that adapt well to new tasks. While MAML is typically used for fine-tuning, I follow prior work \citep{bansal2020smlmt, li2021semisupervised} in applying it during pretraining.%, using synthetic token classification tasks.
+Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to adapt quickly by alternating between short bursts of task-specific learning and a global update that improves generalisation. This setup encourages models to find initialisation points that adapt well to new tasks. While MAML is typically used for fine-tuning, I follow prior work \citep{bansal2020smlmt, li2021semisupervised} in applying it during pre-training.%, using synthetic token classification tasks.
 
 
 \paragraph{Implementation} I implemented MAML in \texttt{pico-train} by adding a lightweight inner loop that updates a classification head on masked token tasks, followed by a meta-update to the full model. \texttt{pico-train} automatically handles distributed GPU synchronisation, requiring no changes to \pico's core training logic.
@@ -398,14 +399,14 @@ Model-Agnostic Meta-Learning (\citealp[MAML]{finn2017maml}) trains models to ada
     \centering
     \includegraphics[width=0.6\textwidth]{chapters/pico/figures/maml-example.pdf}
     \caption{Training dynamics under MAML.
-    \textbf{Top to bottom:} Training loss and proportional effective rank (PER) of weights and gradients.
+    \textbf{Top to bottom:} Training loss and PER of weights and gradients.
     Sharp drops in PER align with spikes in loss. Shaded regions correspond to different observed phases in training. 
     }
     \label{fig:maml_example}
 \end{figure}
 
 
-\paragraph{Analysis} I evaluate MAML on Paloma perplexity and observe consistent 4-15\% gains over standard pretraining. To better understand this improvement, I analyse the proportional effective rank (PER) (defined in Chapter 6) of both weights and gradients over time. PER captures the dimensionality of a tensor's signal. In meta-learning, one concern is that inner-loop updates may overly constrain model updates to a low-dimensional subspace, potentially limiting generalisation. As shown in \cref{fig:maml_example}, I observe synchronised troughs in PER and spikes in both loss and perplexity. This suggests that inner-loop updates temporarily compress the model's capacity into a low-rank subspace before the outer-loop update restores variance and expressivity.
+\paragraph{Analysis} I evaluate MAML on Paloma perplexity and observe consistent 4-15\% gains over standard pre-training. To better understand this improvement, I analyse the PER (defined in Chapter 6) of both weights and gradients over time. PER captures the dimensionality of a tensor's signal. In meta-learning, one concern is that inner-loop updates may overly constrain model updates to a low-dimensional subspace, potentially limiting generalisation. As shown in \cref{fig:maml_example}, I observe synchronised troughs in PER and spikes in both loss and perplexity. This suggests that inner-loop updates temporarily compress the model's capacity into a low-rank subspace before the outer-loop update restores variance and expressivity.
 
 
 \paragraph{New Hypothesis and Next Steps}
@@ -414,7 +415,7 @@ These results support the hypothesis that MAML's learning dynamics involve cycle
 \subsection{Low-Rank Adapter Pre-Training}
 \label{subsec:pico-low-rank-adapter}
 
-ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning technique that freezes pretrained weights and injects trainable low-rank matrices, into the pretraining loop. In theory, this could provide a sample-efficient way to train large models by constraining updates to a low-rank subspace. %However, its impact on pretraining stability remains poorly understood.
+ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning technique that freezes pre-trained weights and injects trainable low-rank matrices, into the pre-training loop. In theory, this could provide a sample-efficient way to train large models by constraining updates to a low-rank subspace. %However, its impact on pretraining stability remains poorly understood.
 
 \paragraph{Implementation} I incorporate ReLoRA into \texttt{pico-train} by adding a lightweight wrapper around attention and MLP weight matrices, and by modifying the learning rate schedule to handle periodic resets. I evaluated the model on BLiMP \citep{warstadt2020blimp}, which I configured via a single config entry. % and required minimal code modification. 
 
@@ -427,7 +428,7 @@ ReLoRA \citep{lialin2023relora} adapts LoRA \citep{hu2021lora}, a fine-tuning te
     \label{fig:relora_example}
 \end{figure}
 
-\paragraph{Analysis} I find that ReLoRA surprisingly underperforms standard pretraining on BLiMP (see \cref{fig:relora_example}, top) \citep{warstadt2020blimp}. To investigate this, I analyse the condition numbers of the gradient updates across layers and training checkpoints. This metric reflects how sensitive gradient-based updates are to numerical instability, a relevant concern for methods like ReLoRA that repeatedly project updates into a low-rank subspace. As shown in \cref{fig:relora_example} (bottom), ReLoRA gradients are substantially more ill-conditioned and exhibit high inter-layer variance. 
+\paragraph{Analysis} I find that ReLoRA surprisingly underperforms standard pre-training on BLiMP (see \cref{fig:relora_example}, top) \citep{warstadt2020blimp}. To investigate this, I analyse the condition numbers of the gradient updates across layers and training checkpoints. This metric reflects how sensitive gradient-based updates are to numerical instability, a relevant concern for methods like ReLoRA that repeatedly project updates into a low-rank subspace. As shown in \cref{fig:relora_example} (bottom), ReLoRA gradients are substantially more ill-conditioned and exhibit high inter-layer variance. 
 
 % If the optimization geometry becomes poorly conditioned, learning can become more erratic.
 
