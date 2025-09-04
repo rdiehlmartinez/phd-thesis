@@ -103,7 +103,7 @@ Where training frameworks help build models, analysis frameworks help interpret 
 
 Model suites such as Pythia \citep{biderman2023pythia} and OLMo \citep{groeneveld2024olmo} provided researchers a set of pre-trained models and training checkpoints to study. Rather than having to train a model from scratch, researchers can use these models to analyse the learning dynamics of a model that has already been trained, using consistent checkpoints and data. However, these frameworks are not designed to retrain models from scratch.
 
-Complementing the frameworks above are tools like DevInterp \citep{devinterpcode}, which begin to trace how models develop during training by analysing intermediate checkpoints. This shift toward developmental interpretability has revealed that models undergo discrete representational shifts and acquire capabilities in phases \citep{hoogland2023towards, hoogland2025losslandscape}. However, all of these frameworks remain downstream of the training process; they depend on external training pipelines and cannot modify or influence the training process itself.
+Complementing the frameworks above are tools like DevInterp \citep{devinterpcode}, which begin to trace how models develop during training by analysing intermediate checkpoints. This shift toward developmental interpretability has revealed that models undergo discrete representational shifts and acquire capabilities in phases \citep{hoogland2023towards, hoogland2024losslandscape}. However, all of these frameworks remain downstream of the training process; they depend on external training pipelines and cannot modify or influence the training process itself.
 
 % Here again, \pico closes a key loop. By integrating training and analysis into the same workflow, it enables fine-grained, in-situ investigation of representational dynamics. Rather than relying on occasional checkpoints saved by another framework, \pico makes detailed logging a native part of the training loop. This allows researchers to monitor changes in capacity usage, representation similarity, or sparsity metrics in real time, and to test hypotheses by intervening directly in training.
 
@@ -267,7 +267,7 @@ Training will start immediately, automatically saving learning dynamics checkpoi
         \multirow{3}{*}{\textbf{Data}}  
             & Dataset Name & \texttt{pretokenized-dolma} \\
             & Batch Size & 1,024 \\
-            & Tokenizer & \texttt{allenai/OLMo-7B-0724-hf} \\
+            & Tokeniser & \texttt{allenai/OLMo-7B-0724-hf} \\
         \hline
         \multirow{6}{*}{\textbf{Checkpointing}}  
             & Auto Resume & True \\
