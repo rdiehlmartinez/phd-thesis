@@ -319,7 +319,7 @@ This aim is for the data composition to somewhat reflect the developmental traje
 
 Outside of the BabyLM Challenge, research projects have demonstrated that training on developmentally-plausible data can be beneficial to more efficiently training small language models. For instance, TinyStories~\citep{eldan2023tinystories} demonstrates that small models can learn coherent text generation from just 1.3 million synthetic stories written in a limited vocabulary. Similarly, BabyBERTa~\citep{huebner2021babyberta}, trained on only 5 million words of child-directed speech, achieves strong grammatical competence with a tiny model footprint. These results emphasise that the structure, and content of training data can be as important as the amount of data. 
 
-The BabyLM Challenge not only consolidates these ideas, but also serves as a testbed for cognitively-inspired training paradigms, including curriculum learning.
+The BabyLM Challenge not only consolidates these ideas, but also serves as a testbed for cognitively inspired training paradigms, including curriculum learning.
 
 \section{Human-Centered Language Modelling}
 
@@ -386,7 +386,7 @@ I argue that advancing syntactic generalisation in models, especially those cons
 
 \subsection*{From Cognitive Theory to Computational Practice}
 
-Integrating principles from human learning into language modelling marks a significant shift in the field of language model development. Rather than focusing solely on architectural innovations or computational efficiency, I emphasise drawing from cognitive and developmental theories to design learning protocols that take inspiration from human language acquisition. By aligning our training approaches with human learning principles, researchers may uncover not only more efficient models, but also models that offer deeper interpretability and insight into the nature of language learning itself.
+Integrating principles from human learning into language modelling marks a significant shift in the field of language model development. Rather than focusing solely on architectural innovations or computational efficiency, I emphasise drawing from cognitive and developmental theories to design learning protocols that take inspiration from human language acquisition. By aligning our training approaches with human learning principles, researchers may uncover not only more efficient models, but also models that offer deeper interpretability and insight into the nature of language learning itself. This perspective should not be read as an attempt to reproduce the biological mechanisms of human language acquisition, but rather as a pragmatic strategy: since we know an efficient system for language learning exists, it is sensible to borrow and test the aspects we do understand as hypotheses for improving small model training.
 
 This thesis explores two complementary approaches to human-inspired language modelling. First, in Chapter 3, I introduce Curriculum Learning for Infant-inspired Model Building (\climb), a framework developed for the BabyLM Challenge. \climb explores three cognitively inspired curriculum learning strategies: vocabulary progression, data difficulty ordering, and graduated learning objectives. Through this work, I aim to evaluate the effectiveness of curriculum learning under real-world data constraints, testing whether models can learn language more like humans do by following a developmentally plausible learning trajectory.
 
