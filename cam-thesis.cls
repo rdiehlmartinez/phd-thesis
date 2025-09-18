@@ -478,16 +478,14 @@ for the degree of Doctor of Philosophy%
 \else
 \chapter*{Declaration}
 \thispagestyle{empty}
-This dissertation is the result of my own work and includes nothing which is the outcome
-of work done in collaboration except as declared in the Preface and specified in the text.
-It is not substantially the same as any that I have submitted, or am concurrently
-submitting, for a degree or diploma or other qualification at the University of Cambridge
-or any other University or similar institution except as declared in the Preface and
-specified in the text. I further state that no substantial part of my dissertation has
-already been submitted, or is being concurrently submitted, for any such degree, diploma
-or other qualification at the University of Cambridge or any other University or similar
-institution except as declared in the Preface and specified in the text.
-This dissertation does not exceed the prescribed limit of 60\,000 words.
+This thesis is the result of my own work and includes nothing which is the
+outcome of work done in collaboration except as declared in the preface
+and specified in the text. It is not substantially the same as any work that
+has already been submitted, or is being concurrently submitted, for any
+degree, diploma or other qualification at the University of Cambridge or any
+other University or similar institution except as declared in the preface and
+specified in the text. It does not exceed the prescribed word limit for the
+relevant Degree Committee.
 
 % Leaving some space for the signature:
 \vspace{15mm}
