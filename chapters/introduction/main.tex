@@ -23,7 +23,7 @@ This insight extends beyond academic interest. While frontier models dominate pu
 
 % We should also probably define what we mean by small models.
 
-The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Small language models, \textit{which I define as models with fewer than 1 Billion (1B) parameters}, offer a promising counterbalance. While the distinction between small and large models is relative to the scale being compared, the 1B parameter threshold provides a practical cutoff: a model with 1B parameters requires approximately 8GB of memory (assuming 32-bit precision) and can therefore be managed on a single GPU or deployed on-device with the hardware available as of 2025. Models of this scale offer several key benefits over their large counterparts:
+The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Small language models, \textit{which I define as models with fewer than 1 Billion (1B) parameters}, offer a promising counterbalance. While the distinction between small and large models is relative to the scale being compared, the 1B parameter threshold provides a practical cutoff: a model with 1B parameters requires approximately 4GB of memory (assuming 32-bit precision) and can therefore be managed on a single GPU or deployed on-device with the hardware available as of 2025. Models of this scale offer several key benefits over their large counterparts:
 
 \paragraph{Large models introduce significant societal risks.} As enumerated by the Stanford Center for Research on Foundation Models \citep{bommasani2021foundation}, these include the potential for generating disinformation and misinformation at scale, and amplifying biases and discrimination present in training data. The wide-spread adoption of these models across industries also raises concerns about the creation of single points of failure: a widely deployed model that is compromised could have cascading negative effects across all downstream applications. Relatedly, the authors highlight that these risks are not just technical but also social, as they can entrench power in the hands of a few organisations and make it harder to adapt models to specific or local needs.
 
@@ -139,7 +139,7 @@ This thesis makes the following contributions to the study of small language mod
 
 \end{itemize}
 
-\textbf{2. A quantitative framework for analyzing learning dynamics in small models}
+\textbf{2. A quantitative framework for analysing learning dynamics in small models}
 
 \begin{itemize}
     \item Introduces a set of metrics for quantifying both how effectively layers in a language model use their representational capacity over time and how well a model converges to a stable representation (Chapter 6).

@@ -70,17 +70,15 @@ In practice, this definition of isotropy is analytically infeasible to solve. In
 \label{eq:empirical-isotropy}
     I(v(\cdot)) \coloneq \mathbb{E}_{i\ne j}\big(1-\cos(v(w_i), v(w_j))\big)
 \end{equation}
-Here, $w_i$ and $w_j$ are two tokens sampled from the vocabulary, and $\cos$ is defined as taking the cosine similarity of the two word representations for $w_i$ and $w_j$. Intuitively, this empirical measure captures how similar word representations are to each other on average --- higher isotropy means more diverse, spread-out representations, while lower isotropy indicates clustered, similar representations.
+Here, $w_i$ and $w_j$ are two tokens sampled from the vocabulary, and $\cos$ is defined as taking the cosine similarity of the two word representations for $w_i$ and $w_j$. Intuitively, this empirical measure captures how similar word representations are to each other on average: higher isotropy indicates more diverse, spread-out representations, while lower isotropy indicates clustered, similar representations.
 
-\vspace{1em}
+% \vspace{1em}
 
 %Despite its prevalence, the impact of anisotropy on a model's language understanding abilities remains unclear. Some studies suggest that reducing anisotropy improves performance on non-contextual benchmarks, sentence comparison tasks, and multilingual benchmarks \citep{bis2021too, su2021whitening, rajaee2022isotropy}. Conversely, other research indicates that higher anisotropy might enhance semantic clustering tasks and that reducing anisotropy does not uniformly improve performance on common NLU tasks \citep{ait2023anisotropy, ding2022isotropy}. Furthermore, the relationship between anisotropy and maximum likelihood training has been questioned. Some researchers argue that isotropy exists in local manifolds of contextual word representations \citep{cai2020isotropy}, while others contend that anisotropy arises from the learning dynamics of the query and key attention matrices in transformer models \citep{godey2024anisotropy}.
 
 % \subsection{Reducing Anisotropy}
 
 % Existing methods to reduce anisotropy broadly fall into three categories. The first group of approaches transforms the hidden states of language models to remove semantically uninformative directions and to preserve the dimensions of maximal isotropy \citep{arora2016simple, mu2018all, raunak2019effective, su2021whitening,bis2021too}. This intervention style is based on the assumption that the top singular dimensions of pre-trained word representations encode frequency statistics rather than semantic or lexical information \citep{mu2018all}. The second category of methods introduces novel training objectives and regularization terms that reduce the effects of anisotropy \citep{gong2018frage, gao2018representation, wang2019improving}. This type of approach places an inductive bias on representations that push the embeddings of frequent and infrequent words to occupy a similar semantic space. The third set of approaches explores different training paradigms to directly minimise anisotropy, such as using normalizing flow models \citep{li2020sentence} or manipulating the gradients used in maximum likelihood models \citep{yu2022rare}.
-
-\vspace{1em}
 
 While frequency bias and anisotropy are prevalent in language modelling, quantifying their effects and understanding their impact on generalisation, particularly for infrequent words, remains an open area of research. This chapter introduces a novel method for improving the representation of infrequent tokens by integrating linguistic information. Moreover, I hypothesise that adjusting the learning process to better represent infrequent tokens will also reduce anisotropy, as these two phenomena are interconnected.
 
@@ -135,7 +133,7 @@ I provide the POS distributions and similarity distributions for the example tok
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/distributions.png}
+    \includegraphics[width=0.8\linewidth]{chapters/syntatic-smoothing/figures/distributions.jpg}
     \caption{Part-of-speech distributions and similarity distributions for the subword tokens ``blind'' and ``the''. Similarities are computed as cosine-similarities against every other token in the vocabulary and sorted.}
     \label{fig:distributions}
     \vspace{-1em}
@@ -190,7 +188,7 @@ I introduce three types of baselines:
 \end{enumerate}
 
 
-\paragraph{Models} I train all models with \smoothing using the same two $\alpha$ values as the label smoothing baselines to facilitate comparison. I also run variants using the linear pacing function presented in \cref{section:smoothing} which linearly decreases the smoothing from an initial value of $\alpha$ to zero across training. For these variants, I use the same two values of smoothing, as well as an additional high value of $\alpha=0.8$ giving a total of five \smoothing variants. I do not include unpaced \smoothing with a high value of $\alpha$ as initial experiments found that distributing such a high proportion of the learning signal away from the correct token leads to high perplexity and poor downstream performance.
+\paragraph{Models} I train all models with \smoothing using the same two $\alpha$ values as the label smoothing baselines to facilitate comparison. I also run variants using the linear pacing function presented in \cref{section:smoothing} which linearly decreases the smoothing from an initial value of $\alpha$ to zero across training. For these variants, I use the same two values of smoothing (0.2 and 0.5), as well as an additional high value of $\alpha=0.8$ giving a total of five \smoothing variants. I do not include unpaced \smoothing with a high value of $\alpha$ as initial experiments found that distributing such a high proportion of the learning signal away from the correct token leads to high perplexity and poor downstream performance.
 
 \section{Results}
 \label{sec:anisotropy-results}
@@ -223,7 +221,7 @@ I introduce three types of baselines:
     \caption{\label{tbl:full-results} I report bias~($\downarrow$), anisotropy~($\downarrow$), BLiMP~($\uparrow$) score, and accuracy or correlation scores ($\uparrow$) on two downstream sentence-level tasks -- COLA and SST-2 -- and two downstream language inference tasks -- MNLI and QNLI -- for the MLM baseline, two label smoothing (LS) baselines, and five \smoothing variants. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
 \end{table*}
 
-The results are summarised in \cref{tbl:full-results}. I find that the method reduces frequency bias while retaining strong language modelling capabilities. At the same time, I observe that the models with the lowest frequency bias also demonstrate the lowest anisotropy. I then extend the analysis beyond the specific phenomenon of frequency bias and anisotropy by examining the impact of \smoothing on the linguistic generalisation capabilities of the model and its downstream performance after fine-tuning. Finally, I find that an alternative syntactic scoring metric leads to similar results as the cosine-based definition.
+The results are summarised in \cref{tbl:full-results}. I find that the method reduces frequency bias while retaining strong language modelling capabilities. At the same time, I observe that the models with the lowest frequency bias in each category of smoothing technique (i.e., paced and unpaced) also display the lowest anisotropy. I then extend the analysis beyond the specific phenomenon of frequency bias and anisotropy by examining the impact of \smoothing on the linguistic generalisation capabilities of the model and its downstream performance after fine-tuning. Finally, I find that an alternative syntactic scoring metric leads to similar results as the cosine-based definition.
 
 \subsection{Anisotropy and Frequency Bias}
 
@@ -268,33 +266,39 @@ As shown in \cref{tbl:full-results}, all models with \smoothing reduce anisotrop
 
 Over the course of training, I observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \smoothing models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, I also plot the evolution of the anisotropy across several layers of the baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-combined}. Two observations stand out. The anisotropy of all layers in the \smoothing model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \smoothing model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citet{ethayarajh2019contextual}. Notably, in the final layer the anisotropy of the \smoothing model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. This is particularly interesting as the final layer is commonly used for fine-tuning in downstream tasks and is empirically found to encode more high-level semantic information than the earlier layers \citep{clark2019does}. 
 
-\paragraph{Frequency bias and anisotropy are correlated.}
+\paragraph{Syntactic smoothing changes the learning dynamics of frequency bias and anisotropy.}
 
-For each model, I compute the model's frequency bias and anisotropy at multiple training stages. I plot the learning dynamics of anisotropy and frequency bias in \cref{fig:bias-anisotropy-correlation}, only including the points after 50\% of training has been completed to avoid the noisy first dip observed in the anisotropy dynamics above. I find a positive Pearson correlation of 0.73 and a polynomial goodness-of-fit $R^2$ score of 0.63 between these two metrics.
+For each model, I compute the model's frequency bias and anisotropy at multiple training stages. I plot the learning dynamics of anisotropy and frequency bias in \cref{fig:bias-anisotropy-correlation}, only including the points after 50\% of training has been completed to avoid the noisy first dip observed in the anisotropy dynamics above. For the baseline model, we observe that as training process, anisotropy decreases, with frequency bias remaining relatively stable. Meanwhile, for the unpaced \smoothing models, we observe that already by 50\% of training, the \smoothing models have much lower anisotropy and frequency bias than the baseline model. Over the course of the remaining training steps, anisotropy and frequency bias do not change significantly. Meanwhile, for the paced \smoothing models, we observe that the anisotropy begins at a similarly low level as the unpaced \smoothing models, however as training progresses, the frequency bias increases noticably. This suggests that the use of pacing gradually re-introduces frequency bias towards the end of training, as the degree of smoothing is linearly reduced to zero. We leave a deeper exploration of the learning dynamics of the \smoothing models to future work.
 
-It is also evident that the pacing approach re-introduces frequency bias towards the end of training, as the degree of smoothing is linearly reduced to zero. It is noteworthy that the final anisotropy and bias are lower than the baseline model, and completing training without any smoothing may be beneficial for downstream tasks, as explored in the next section.
+% I find a positive Pearson correlation of 0.73 and a polynomial goodness-of-fit $R^2$ score of 0.63 between these two metrics.
 
-\paragraph{Frequency Bias Disproportionately Affects Content Words}
+%It is also evident that the pacing approach re-introduces frequency bias towards the end of training, as the degree of smoothing is linearly reduced to zero. It is noteworthy that the final anisotropy and bias are lower than the baseline model, and completing training without any smoothing may be beneficial for downstream tasks, as explored in the next section.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.70\linewidth]{chapters/syntatic-smoothing/figures/bias-vs-anisotropy.png}
+    \caption{Pairs of anisotropy, and frequency bias for the baseline RoBERTa model, the two label smoothing baselines and the \smoothing models. The arrows indicate increasing training progress (starting after 50\% of training has completed).}
+    \label{fig:bias-anisotropy-correlation}
+\end{figure}
+
+\vspace{-1em}
+\paragraph{Frequency Bias Disproportionately Affects Content Words.}
 \label{sec:word-class-versus-word-frequency}
-
-
-To better understand the linguistic categories most impacted by frequency bias, I analyse the relationship between token frequency and syntactic class. Specifically, I compare the POS tag distributions of the top 100 most frequent tokens and the bottom 100 least frequent tokens in the training data. 
 
 \begin{wrapfigure}{r}{0.5\textwidth}
     \centering
+    \vspace{-1.5em}
     \includegraphics[width=0.49\textwidth]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.pdf}
     \caption{Distribution across POS tags of the top \& bottom 100 most frequent tokens.}
     \label{fig:top-100-pos-dist}
 \end{wrapfigure}
 
+To better understand the linguistic categories most impacted by frequency bias, I analyse the relationship between token frequency and syntactic class. Specifically, I compare the POS tag distributions of the top 100 most frequent tokens and the bottom 100 least frequent tokens in the training data. 
+
+\pagebreak
+
 I find that content words, especially nouns, are over-represented in the low-frequency tail of the distribution, while function words dominate the high-frequency tokens. \cref{fig:top-100-pos-dist} illustrates this disparity. This suggests that frequency bias in language models may disproportionately hinder the learning of specialised vocabulary, particularly rare nouns and content-bearing expressions. It also reinforces the importance of a smoothing strategy that supports lexical generalisation by leveraging syntactic structure.
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.75\linewidth]{chapters/syntatic-smoothing/figures/bias-vs-anisotropy.png}
-    \caption{Pairs of anisotropy, and frequency bias for the baseline RoBERTa model, the two label smoothing baselines and the \smoothing models. The arrows indicate increasing training progress (starting after 50\% of training has completed).}
-    \label{fig:bias-anisotropy-correlation}
-\end{figure}
 
 \subsection{Effects of Smoothing on Downstream Tasks}
 While the method primarily aims to enhance the representation of infrequent tokens, I sought to investigate the potential for improvement in standard evaluation measures, given the limited number of affected test instances. Nonetheless, I observe that all the \smoothing models, as well as the label smoothing models, achieve better BLIMP scores than the baseline model (see \cref{tbl:full-results}). These results suggest that methods that smooth label distributions, whether through a syntactic prior or a simpler uniform smoothing approach, enhance the representation of all tokens, including the more frequent ones.
@@ -316,11 +320,11 @@ where KL$(M_i, M_j)$ is the Kullback-Leibler divergence between the POS distribu
 \midrule
 Base Model & 9.8 & 51.3 & 71.4  \\
 \midrule
-\texttt{SyS} (Mid) \hspace{0.42cm} [JS]  & 3.6 & 34.7 & 71.3 \\
 \texttt{SyS} (Low) \hspace{0.38cm} [JS]  & 4.1 & 34.6 & 73.3  \\
-\texttt{SyS}-P (High) \hspace{0.05cm} [JS] & 6.6 & 36.7  & 72.5  \\ 
-\texttt{SyS}-P (Mid) \hspace{0.15cm} [JS] & 8.4 & 39.1 &  73.0 \\ 
+\texttt{SyS} (Mid) \hspace{0.42cm} [JS]  & 3.6 & 34.7 & 71.3 \\
 \texttt{SyS}-P (Low) \hspace{0.12cm} [JS] & 5.0 &  34.5 & 72.9 \\ 
+\texttt{SyS}-P (Mid) \hspace{0.15cm} [JS] & 8.4 & 39.1 &  73.0 \\ 
+\texttt{SyS}-P (High) \hspace{0.05cm} [JS] & 6.6 & 36.7  & 72.5  \\ 
 \bottomrule
 \end{tabular}
 \caption{\label{tbl:jsd-similarity-metric-results}
