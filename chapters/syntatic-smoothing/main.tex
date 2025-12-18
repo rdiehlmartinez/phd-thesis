@@ -1,6 +1,8 @@
 \chapter{Learning Words Like Humans Do: Syntactic Smoothing for Language Model Training}
 \label{chapter:syntactic-smoothing}
 
+% Note: \posval and \negval color commands are defined in Chapter 3 (CLIMB)
+
 While Chapter 3 explored curriculum learning as a way to structure the input space and learning trajectory of a model, I now turn to a complementary question: \emph{how can internal representations themselves be shaped to better support generalisation --- particularly for uncommon tokens?} Just as children benefit from structured exposure to language, they also rely heavily on syntactic cues to make sense of unfamiliar words. This chapter investigates how language models might likewise leverage structural signals to improve lexical generalisation.
 
 One of the most striking capabilities of human learners is their ability to infer the meaning of unknown words from syntactic and semantic context; recall the example of the made-up word `zambled' from Chapter 2.
@@ -175,7 +177,7 @@ In this section, I describe the experimental setup for the \smoothing experiment
 
 \paragraph{Model} Similarly, the model used for these experiments is the same as the one in Chapter 3: a small 8-layer encoder-style RoBERTa model with pre-layer normalisation \citep{huebner2021babyberta}; hyper-parameters, choice of tokeniser (BPE tokeniser) and vocabulary size are all the same. 
 
-\paragraph{Evaluation} I evaluate the BLiMP frequency bias of the models, as defined in \cref{sec:freq-bias}, on the evaluation set of BLiMP. To compute anisotropy I use the formulation defined in \cref{eq:empirical-isotropy}; I sample 1,000 pairs of random word tokens with their surrounding context from the training set, and compute the cosine similarity of their hidden representation at each of the 8 layers of the RoBERTa model. To obtain a model's final anisotropy value, I average the anisotropy scores across the 8 layers. Additionally, I fine-tune and evaluate each model on two downstream sentence-level tasks, COLA \citep{warstadt2019cola} and SST-2 \citep{socher2013sst}, as well as two language inference tasks, MNLI \citep{williams2018mnli} and QNLI \citep{rajpurkar2016squad, wang2018glue}.
+\paragraph{Evaluation} I evaluate the BLiMP frequency bias of the models, as defined in \cref{sec:freq-bias}, on the evaluation set of BLiMP. To compute anisotropy I use the formulation defined in \cref{eq:empirical-isotropy}; I sample 1,000 pairs of random word tokens with their surrounding context from the training set, and compute the cosine similarity of their hidden representation at each of the 8 layers of the RoBERTa model. To obtain a model's final anisotropy value, I average the anisotropy scores across the 8 layers. Additionally, I fine-tune and evaluate each model on all 10 tasks of the GLUE benchmark \citep{wang2018glue}, reporting the average performance and standard deviation across tasks to capture variance in downstream generalisation.
 
 
 \paragraph{Baselines}
@@ -193,32 +195,29 @@ I introduce three types of baselines:
 \section{Results}
 \label{sec:anisotropy-results}
 
+\paragraph{Reporting Relative Differences.} Following the same approach as Chapter~\ref{chapter:CLIMB}, I report results as mean relative differences from the base model, rather than absolute scores. For each benchmark (BLiMP, GLUE), I compute the difference between each model's score and the baseline score on every subtask, then calculate the mean ($\mu$) and standard deviation ($\sigma$) of these differences. Results are reported as $\mu \pm \sigma$, where \posval{green} values indicate improvements and \negval{red} values indicate decreases. 
+
 \begin{table*}[ht!]
     \centering
     \small
-    \setlength{\tabcolsep}{4pt}  % Reduce column spacing
-    \begin{tabular}{ll||cc|ccccc}
+    \setlength{\tabcolsep}{5pt}
+    \begin{tabular}{ll||cc|rr}
     \toprule
-    \textbf{Model}  & $\alpha$ & \textbf{Bias}  & \textbf{Anisostropy} & \textbf{BLiMP} & \textbf{COLA} & \textbf{SST-2} & \textbf{MNLI} & \textbf{QNLI}  \\
+    \textbf{Model}  & $\alpha$ & \textbf{Bias}$\downarrow$  & \textbf{Anisotropy}$\downarrow$ & $\Delta$\textbf{BLiMP} & $\Delta$\textbf{GLUE}\\
     \midrule
-    OPT   & - & 10.6 & - & 63.2 & 64.6 & 81.9 & 57.6 & 61.5\\
-    RoBERTa & - & 13.7 & - & 69.8 & 70.8 & 87.0 & 73.2 & 77.0\\
-    T5      & - & 6.2 & - & 58.3 & 61.2 & 78.1 & 48.0 &  62.0\\
+    \multirow{2}{*}{\makecell[l]{\texttt{Label}\\\texttt{Smoothing}}} & Low & 5.5 & 40.2\tiny{$\pm$1.4} & $\posval{+1.8}$\tiny{$\posval{\pm 3.1}$} & $0.0$\tiny{$\pm$1.2} \\
+    & Mid & 2.7  & 40.3\tiny{$\pm$2.0} & $\posval{+1.6}$\tiny{$\posval{\pm 3.7}$} & $\posval{+0.1}$\tiny{$\posval{\pm 0.7}$} \\
     \midrule
+    \multirow{5}{*}{\makecell{\texttt{Syntactic}\\\texttt{Smoothing}}}& Low  & 2.9 & 39.7\tiny{$\pm$2.1} & $\posval{+1.7}$\tiny{$\posval{\pm 4.9}$} & $\negval{-0.1}$\tiny{$\negval{\pm 0.8}$} \\
+    & Mid  & \textbf{-0.2} & 33.8\tiny{$\pm$1.3} & $\posval{+0.7}$\tiny{$\posval{\pm 4.9}$} & $\negval{-0.9}$\tiny{$\negval{\pm 1.8}$} \\
+    & P. Low & 7.4 & 39.9\tiny{$\pm$2.0} & $\posval{+0.5}$\tiny{$\posval{\pm 3.2}$} & $0.0$\tiny{$\pm$1.2} \\ 
+    & P. Mid & 5.7 & 34.5\tiny{$\pm$1.4} & $\posval{+0.9}$\tiny{$\posval{\pm 2.8}$} & $\negval{-0.3}$\tiny{$\negval{\pm 0.8}$}\\ 
+    & P. High & 5.2 & \textbf{31.0}\tiny{$\pm$2.4} & $\posval{+0.8}$\tiny{$\posval{\pm 3.3}$} & $\negval{-0.5}$\tiny{$\negval{\pm 1.2}$} \\ 
     \midrule
-    Base Model & -&9.8 & 51.3 & 71.4 & 71.4 & 82.9 & 69.6 & 79.7 \\
-    \midrule
-    \multirow{2}{*}{\makecell[l]{\texttt{Label}\\\texttt{Smoothing}}} &Low & 5.5 & 40.2 & 73.2 & 70.7 & 84.0 & \textbf{70.1} & 80.0 \\
-    &Mid & 2.7  & 40.3 & 73.0 & 71.5 & 82.2 & 69.0 & 79.4 \\
-    \midrule
-    \multirow{5}{*}{\makecell{\texttt{Syntactic}\\\texttt{Smoothing}}}&Low  & 2.9 & 39.7 & \textbf{73.2} & 70.7 & 84.9 & 69.7 & 79.2 \\
-    &Mid  & \textbf{-0.2} & 33.8 & 72.1 & \textbf{71.9} & 83.5 & 67.2 & 79.4 \\
-    &P. Low & 7.4 & 39.9 & 71.9 & 70.5 & \textbf{85.2} & 70.0 & \textbf{80.4}\\ 
-    &P. Mid& 5.7 & 34.5 & 72.3 & 71.8 & 84.0 & 68.2 & 78.9\\ 
-    &P. High & 5.2 & \textbf{31.0} & 72.2 & 70.5 & 83.7 & 67.7 & 79.1 \\ 
+    \multicolumn{2}{l||}{Base Model (Baseline)} & 9.8 & 51.3\tiny{$\pm$1.2} & 71.4 & 69.6 \\
     \bottomrule
     \end{tabular}
-    \caption{\label{tbl:full-results} I report bias~($\downarrow$), anisotropy~($\downarrow$), BLiMP~($\uparrow$) score, and accuracy or correlation scores ($\uparrow$) on two downstream sentence-level tasks -- COLA and SST-2 -- and two downstream language inference tasks -- MNLI and QNLI -- for the MLM baseline, two label smoothing (LS) baselines, and five \smoothing variants. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
+    \caption{\label{tbl:full-results} I report bias~($\downarrow$), anisotropy~($\downarrow$), and relative differences in BLiMP and GLUE performance compared to the base model. Anisotropy variability ($\pm$) is estimated by recomputing the metric 10 times with different random samples and reporting the standard deviation. Results for BLiMP and GLUE are reported as mean relative difference ($\pm$ std) across subtasks; \posval{green} indicates improvement, \negval{red} indicates decrease. The bottom row shows absolute scores for the base model. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
 \end{table*}
 
 The results are summarised in \cref{tbl:full-results}. I find that the method reduces frequency bias while retaining strong language modelling capabilities. At the same time, I observe that the models with the lowest frequency bias in each category of smoothing technique (i.e., paced and unpaced) also display the lowest anisotropy. I then extend the analysis beyond the specific phenomenon of frequency bias and anisotropy by examining the impact of \smoothing on the linguistic generalisation capabilities of the model and its downstream performance after fine-tuning. Finally, I find that an alternative syntactic scoring metric leads to similar results as the cosine-based definition.
@@ -301,9 +300,9 @@ I find that content words, especially nouns, are over-represented in the low-fre
 
 
 \subsection{Effects of Smoothing on Downstream Tasks}
-While the method primarily aims to enhance the representation of infrequent tokens, I sought to investigate the potential for improvement in standard evaluation measures, given the limited number of affected test instances. Nonetheless, I observe that all the \smoothing models, as well as the label smoothing models, achieve better BLIMP scores than the baseline model (see \cref{tbl:full-results}). These results suggest that methods that smooth label distributions, whether through a syntactic prior or a simpler uniform smoothing approach, enhance the representation of all tokens, including the more frequent ones.
+While the method primarily aims to enhance the representation of infrequent tokens, I sought to investigate the potential for improvement in standard evaluation measures, given the limited number of affected test instances. Nonetheless, I observe that nearly all the \smoothing models, as well as the label smoothing models, show positive mean improvements on BLiMP relative to the baseline (see \cref{tbl:full-results}). These results suggest that methods that smooth label distributions, whether through a syntactic prior or a simpler uniform smoothing approach, can enhance the representation of all tokens, including the more frequent ones --- though the high standard deviations indicate that these gains vary considerably across linguistic subtasks.
 
-I had concerns that softening the frequency bias with the smoothing methododology might lead to degraded performance in downstream tasks for which frequency can be a strong proxy. As a control condition, I fine-tune the model on two sentence-level tasks (COLA, SST-2) and two language inference tasks (MNLI and QNLI), both of which are part of the GLUE \citep{wang2018glue} benchmark. I find that none of the \smoothing objectives result in substantial performance degradation on these NLU tasks (see the last four columns of \cref{tbl:full-results}), and in fact note that for some tasks, such as SST-2, the \smoothing models yield uniform increases in performance. While not comparable apples-to-apples, I report NLU performance for the open-source baselines in \cref{tbl:full-results} as a point of reference. 
+I had concerns that softening the frequency bias with the smoothing methodology might lead to degraded performance in downstream tasks for which frequency can be a strong proxy. As a control condition, I fine-tune the model on all 10 GLUE \citep{wang2018glue} tasks and report relative differences from the baseline. I find that none of the \smoothing objectives result in substantial performance degradation on these NLU tasks (see \cref{tbl:full-results}); the negative mean differences are small ($< 1$ percentage point) relative to their standard deviations, indicating that any observed effects are within the noise of the evaluation. 
 
 \subsection{Alternative Measures of Syntactic Similarity}
 
@@ -314,24 +313,24 @@ where KL$(M_i, M_j)$ is the Kullback-Leibler divergence between the POS distribu
 \begin{table}[ht!]
 \centering
 \small
-\begin{tabular}{l||cc|ccccc}
+\begin{tabular}{l||cc|rr}
 \toprule
-\textbf{Model}  &  \textbf{Bias}  & \textbf{Anisotropy} & \textbf{BLiMP} \\
+\textbf{Model}  &  \textbf{Bias}$\downarrow$  & \textbf{Anisotropy}$\downarrow$ & $\Delta$\textbf{BLiMP} & $\Delta$\textbf{GLUE} \\
 \midrule
-Base Model & 9.8 & 51.3 & 71.4  \\
+\texttt{SyS} (Low) \hspace{0.38cm} [JS]  & 4.1 & 34.6\tiny{$\pm$1.9} & $\mathbf{\posval{+1.9}}$\tiny{$\posval{\pm 4.2}$} & $\mathbf{\posval{+1.0}}$\tiny{$\posval{\pm 2.6}$} \\
+\texttt{SyS} (Mid) \hspace{0.42cm} [JS]  & 3.6 & 34.7\tiny{$\pm$1.2} & $\negval{-0.1}$\tiny{$\negval{\pm 6.4}$} & $\negval{-1.2}$\tiny{$\negval{\pm 1.7}$} \\
+\texttt{SyS}-P (Low) \hspace{0.12cm} [JS] & 5.0 &  \textbf{34.5}\tiny{$\pm$1.9} & $\posval{+1.5}$\tiny{$\posval{\pm 3.0}$} & $0.0$\tiny{$\pm$0.8} \\ 
+\texttt{SyS}-P (Mid) \hspace{0.15cm} [JS] & 8.4 & 39.1\tiny{$\pm$2.1} & $\posval{+1.5}$\tiny{$\posval{\pm 3.2}$} & $\negval{-0.3}$\tiny{$\negval{\pm 1.4}$} \\ 
+\texttt{SyS}-P (High) \hspace{0.05cm} [JS] & 6.6 & 36.7\tiny{$\pm$2.1} & $\posval{+1.1}$\tiny{$\posval{\pm 2.8}$} & $\negval{-0.4}$\tiny{$\negval{\pm 0.6}$} \\ 
 \midrule
-\texttt{SyS} (Low) \hspace{0.38cm} [JS]  & 4.1 & 34.6 & 73.3  \\
-\texttt{SyS} (Mid) \hspace{0.42cm} [JS]  & 3.6 & 34.7 & 71.3 \\
-\texttt{SyS}-P (Low) \hspace{0.12cm} [JS] & 5.0 &  34.5 & 72.9 \\ 
-\texttt{SyS}-P (Mid) \hspace{0.15cm} [JS] & 8.4 & 39.1 &  73.0 \\ 
-\texttt{SyS}-P (High) \hspace{0.05cm} [JS] & 6.6 & 36.7  & 72.5  \\ 
+Base Model (Baseline) & 9.8 & 51.3\tiny{$\pm$1.2} & 71.4 & 69.6 \\
 \bottomrule
 \end{tabular}
 \caption{\label{tbl:jsd-similarity-metric-results}
-Results for bias~($\downarrow$), anisotropy~($\downarrow$), and BLiMP~($\uparrow$) score for \smoothing (\texttt{SyS}) models that use a Jensen Shannon-based [JS] definition of the similarity metric.}
+Results for bias~($\downarrow$), anisotropy~($\downarrow$), and relative differences in BLiMP and GLUE performance for \smoothing (\texttt{SyS}) models using Jensen Shannon-based [JS] similarity. Anisotropy variability ($\pm$) is estimated by recomputing the metric 10 times with different random samples. Results for BLiMP and GLUE are reported as mean relative difference ($\pm$ std) across subtasks; \posval{green} indicates improvement, \negval{red} indicates decrease. The bottom row shows absolute scores for the base model.}
 \end{table}
 
-Summarised in \cref{tbl:jsd-similarity-metric-results}, I note that the effect of using a Jensen Shannon-based definition of the similarity metric yields a similar (albeit slightly smaller) decrease in frequency bias and anisotropy, as compared to the standard cosine-based definition of the similarity metric.   
+Summarised in \cref{tbl:jsd-similarity-metric-results}, I note that the effect of using a Jensen Shannon-based definition of the similarity metric yields a similar (albeit slightly smaller) decrease in frequency bias and anisotropy, as compared to the standard cosine-based definition of the similarity metric. Notably, the \texttt{SyS} (Low) [JS] variant is the only configuration to show consistent positive improvements on both BLiMP ($+1.9 \pm 4.2$) and GLUE ($+1.0 \pm 2.6$) relative to the baseline, though with considerable variance across subtasks.   
 
 \section{Conclusion}
 \label{sec:anisotropy-conclusion}
