@@ -224,22 +224,22 @@ The results are summarised in \cref{tbl:full-results}. I find that the method re
 
 \subsection{Anisotropy and Frequency Bias}
 
+I conduct analyses to inspect the learning dynamics of my method and its effect on frequency bias and anisotropy in more detail. 
+
+\paragraph{\smoothing reduces and can even eliminate frequency bias.}
+
 \begin{wrapfigure}{r}{0.5\textwidth}
     \vspace{-1em}
     \centering
     \includegraphics[width=0.5\textwidth]{chapters/syntatic-smoothing/figures/biases.png}
     \caption{Frequency bias for the three open source models, the base model, the two label smoothing (LS) baselines and the two \smoothing (\texttt{SyS}) models.}
     \label{fig:biases}
-    \vspace{-2em}
+    % \vspace{-1em}
 \end{wrapfigure}
 
-I conduct analyses to inspect the learning dynamics of my method and its effect on frequency bias and anisotropy in more detail. 
-
-\paragraph{\smoothing reduces and can even eliminate frequency bias.}
 I find that all four pre-trained models exhibit strong frequency bias (see \cref{fig:biases}); they are more likely to incorrectly prefer ungrammatical sentences if they contain tokens that occur more frequently during training. This confirms the hypothesis that the evaluation of generalisation capabilities is obfuscated by frequency effects. 
 
 By contrast, the two \smoothing variants successfully reduce the frequency bias. The frequency bias is almost completely removed in the case of the \texttt{Mid} variant, which distributes exactly half of the training signal to syntactically similar tokens. I further observe that the Label Smoothing baselines also reduce bias but to a lesser extent than the corresponding \smoothing models with the same degree of smoothing. 
-
 
 \paragraph{\smoothing reduces anisotropy.}
 
@@ -284,6 +284,8 @@ For each model, I compute the model's frequency bias and anisotropy at multiple 
 \paragraph{Frequency Bias Disproportionately Affects Content Words.}
 \label{sec:word-class-versus-word-frequency}
 
+To better understand the linguistic categories most impacted by frequency bias, I analyse the relationship between token frequency and syntactic class. Specifically, I compare the POS tag distributions of the top 100 most frequent tokens and the bottom 100 least frequent tokens in the training data. 
+
 \begin{wrapfigure}{r}{0.5\textwidth}
     \centering
     \vspace{-1.5em}
@@ -292,9 +294,7 @@ For each model, I compute the model's frequency bias and anisotropy at multiple 
     \label{fig:top-100-pos-dist}
 \end{wrapfigure}
 
-To better understand the linguistic categories most impacted by frequency bias, I analyse the relationship between token frequency and syntactic class. Specifically, I compare the POS tag distributions of the top 100 most frequent tokens and the bottom 100 least frequent tokens in the training data. 
-
-\pagebreak
+% \pagebreak
 
 I find that content words, especially nouns, are over-represented in the low-frequency tail of the distribution, while function words dominate the high-frequency tokens. \cref{fig:top-100-pos-dist} illustrates this disparity. This suggests that frequency bias in language models may disproportionately hinder the learning of specialised vocabulary, particularly rare nouns and content-bearing expressions. It also reinforces the importance of a smoothing strategy that supports lexical generalisation by leveraging syntactic structure.
 
