@@ -89,7 +89,7 @@ enforcing a unidirectional, left-to-right dependency. Autoregressive models lear
 \subsection{Training and Optimisation}
 \label{sec:optimization}
 
-In practice, training language models involves several interconnected components. Central to the training process is the choice of optimisation algorithm. Models are typicaly trained using \thesishl{gradient descent}, which iteratively updates model parameters to minimise a loss function. For a model with parameters $\theta$ and loss function $\mathcal{L}(\theta)$, the update rule is:
+In practice, training language models involves several interconnected components. Central to the training process is the choice of optimisation algorithm. Models are typicaly trained using \thesishl{gradient descent}, which iteratively updates model parameters to minimise a loss function. For a model with parameters $\theta$ and loss function $\mathcal{L}(\theta)$, the update rule at timestep $i+1$ is:
 \begin{equation}
     \theta_{i+1} = \theta_i - \alpha \nabla_{\theta_i} \mathcal{L}(\theta_i)
 \end{equation}
