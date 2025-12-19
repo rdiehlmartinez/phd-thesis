@@ -27,7 +27,7 @@ The rapid scaling of language models has brought about remarkable capabilities, 
 
 % The rapid scaling of language models has brought remarkable capabilities, but also surfaced significant challenges \citep{bommasani2021foundation}. Small language models—\textit{which I define as models with fewer than 1 billion (1B) parameters}—offer a promising counterbalance. A model with 1B parameters requires approximately 4GB of memory (assuming 32-bit precision) and can be managed on a single GPU or deployed on-device with hardware available as of 2025. Models at this scale offer several advantages over their larger counterparts.
 
-\paragraph{Reduced societal and environmental risks.} Large models raise concerns about disinformation, bias amplification, and the concentration of power in few organisations \citep{bommasani2021foundation}. They also carry substantial environmental costs; studies have quantified orders-of-magnitude differences in carbon emissions between large and small models \citep{strubell2019energy, schwartz2020greenai}. Recent work has shown that inducing sparsity through pruning yields significant efficiency gains \citep{zhou2021hulk}.
+\paragraph{Reduced societal and environmental risks.} Large models raise concerns about disinformation, bias amplification, and the concentration of power in few organisations \citep{bommasani2021foundation}. They also carry substantial environmental costs; studies have quantified orders-of-magnitude differences in carbon emissions between large and small models \citep{strubell2019energy, schwartz2020greenai}. %Recent work has shown that inducing sparsity through pruning yields significant efficiency gains \citep{zhou2021hulk}.
 
 \paragraph{Privacy preservation.} Research has shown that larger models are more prone to memorising and leaking sensitive training data \citep{carlini2021extracting, carlini2022quantifying}, with recent work establishing scaling laws for memorisation \citep{biderman2023emergent}. Smaller models, with less capacity to memorise, offer a more privacy-preserving alternative.
 
@@ -95,7 +95,9 @@ This thesis is organised into two parts, reflecting the two research threads:
 
 \begin{itemize}
 
-    \item \textbf{Chapter 2:} \emph{Language Modelling: Foundations, Scale, and Efficiency} offers both an overview of the development and current state of language modelling, and a review of the major strategies for training language models more efficiently. The chapter first introduces foundational concepts in language modelling that are used throughout the thesis. I then review existing strategies for training language models more efficiently; from architectural innovations, optimisation techniques, and data calibration methods. I conclude by drawing connections between machine learning and cognitive science, considering how insights from human language acquisition can inform more principled model development, especially in resource-constrained environments.
+    \item \textbf{Chapter 2:} \emph{Language Modelling: Foundations, Scale, and Efficiency} offers both an overview of the development and current state of language modelling, and a review of the major strategies for training language models more efficiently. The chapter introduces foundational concepts in language modelling that are used throughout the thesis. I also draw connections between machine learning and cognitive science, considering how insights from human language acquisition can inform more principled model development, especially in resource-constrained environments.
+
+    % I then review existing strategies for training language models more efficiently; from architectural innovations, optimisation techniques, and data calibration methods.
 
     \item \textbf{Chapter 3:} \emph{Curriculum Learning for Infant-inspired Model Building: A Framework for Human-like Language Acquisition}  
     explores a systematic investigation of curriculum learning strategies inspired by human language acquisition, focusing on their application to small language models. The work is motivated by the striking data efficiency of human language learning compared to current language models.
@@ -113,9 +115,11 @@ This thesis is organised into two parts, reflecting the two research threads:
 \subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 5--7)}
 
 \begin{itemize}
-    \item \textbf{Chapter 5:} \emph{Analysing Language Models: Foundations, Methods, and Tools} introduces the analytical foundations for studying the learning dynamics of language models. I present a range of complementary approaches for analysing these dynamics, including memorisation and data influence methods, representational convergence and similarity metrics, and capacity usage via sparsity, norm evolution, and rank-based analysis. These tools can be used to reveal how internal structures in language models develop, and how the learning trajectories of smaller models diverge from their larger counterparts.
+    \item \textbf{Chapter 5:} \emph{Analysing Language Models: Foundations, Methods, and Tools} introduces the analytical foundations for studying the learning dynamics of language models. I present a range of complementary approaches for analysing these dynamics, including representational convergence and similarity metrics, and capacity usage via sparsity, norm evolution, and rank-based analysis. These tools can be used to reveal how internal structures in language models develop, and how the learning trajectories of smaller models diverge from their larger counterparts. The chapter also situates this analysis within the broader mechanistic interpretability literature. This background chapter lays the groundwork for the next two chapters, which apply these tools to understand and intervene in the learning dynamics of small language models.
 
-    The chapter also situates this analysis within the broader interpretability literature, like attention pattern analysis, probing methods, and mechanistic interpretability. This background chapter lays the groundwork for the next two chapters, which apply these tools to understand and intervene in the learning dynamics of small language models.
+    % memorisation and data influence methods, r
+
+    \newpage
 
     \item \textbf{Chapter 6:} \emph{Tending Towards Stability: Convergence Challenges in Small Language Models} examines why small language models often exhibit unstable or delayed convergence during training. I use the Pythia model suite to compare learning dynamics across model sizes, focusing on how internal layer activations evolve and how efficiently models use their representational capacity.
 
@@ -136,6 +140,8 @@ This thesis is organised into two parts, reflecting the two research threads:
     Together, these tools enable researchers to systematically explore how architectural or training interventions affect learning dynamics. A typical workflow involves formulating a hypothesis, implementing the corresponding modification in \texttt{pico-train}, and using \texttt{pico-analyze} to evaluate its effects. This creates a feedback loop for iterative, and systematic model development. This chapter presents several case studies to illustrate how \pico supports this process in practice.
 
 \end{itemize}
+
+\newpage
 
 \section*{Contributions}
 
