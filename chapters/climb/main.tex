@@ -23,9 +23,9 @@ First, the current paradigm of language model training that relies on large data
 
 Second, conventional language model training differs from human learning in its structure: models operate on a predetermined static vocabulary and optimise a fixed objective on randomly shuffled data. In contrast, human language acquisition follows a carefully orchestrated progression: from babbling to simple utterances, and eventually to complex syntax and abstract meaning. This developmental trajectory suggests that structured learning protocols might enable more efficient model training.
 
-Third, while curriculum learning has shown promise in various machine learning domains \citep{bengio2009curriculum}, its application to language modelling remains fragmented. Previous work has explored individual aspects such as vocabulary progression, data sequencing, or objective simplification but lacks a unified framework for implementing and evaluating these strategies, particularly in resource-constrained settings.
+Third, while curriculum learning has shown promise in various machine learning domains \citep{bengio2009curriculum}, its application to language modelling remains fragmented. Previous work has explored individual aspects such as data sequencing, or objective simplification but lacks a unified framework for implementing and evaluating these strategies, particularly in resource-constrained settings.
 
-The idea that structured, developmental training might benefit learning has a long history in connectionist research. \citet{elman1993learning} demonstrated that simple recurrent networks trained on artificially constructed languages could only succeed when they began with limited working memory that gradually matured. This finding suggests that developmental constraints might be necessary for mastering complex domains like language. However, \citet{rohde1999language} subsequently challenged this finding, showing that when languages were made more realistic by including syntactic constraints, starting with simplified inputs actually hindered rather than helped acquisition. This early debate foreshadowed the mixed results observed in modern curriculum learning research and raises important questions about whether structured curricula genuinely benefit neural networks. In modern Transformer-based language models, curriculum learning has proven difficult to implement effectively. Recent comprehensive studies have found that curricula offer only marginal benefits on standard benchmarks, with randomly ordered samples often performing comparably \citep{wu2021when, surkov2022datacurricula}. In the specific context of language model pre-training, \citet{campos2021curriculum} found no compelling evidence that linguistically motivated curricula improve training outcomes. These findings underscore a central tension in the field: while the cognitive motivation for curriculum learning remains compelling, translating these principles into practical machine learning benefits is non-trivial.
+The idea that structured, developmental training might benefit learning has a long history in connectionist research. \citet{elman1993learning} demonstrated that simple recurrent networks trained on artificially constructed languages could only succeed when they began with limited working memory that gradually matured. This finding suggests that developmental constraints might be necessary for mastering complex domains like language. However, \citet{rohde1999language} subsequently challenged this finding, showing that when languages were made more realistic by including syntactic constraints, starting with simplified inputs actually hindered rather than helped acquisition. This early debate foreshadowed the mixed results observed in modern curriculum learning research and raises important questions about whether structured curricula genuinely benefit neural networks. Recent comprehensive studies have found that curricula offer only marginal benefits on standard benchmarks, with randomly ordered samples often performing comparably \citep{wu2021when, surkov2022datacurricula}. In the specific context of language model pre-training, \citet{campos2021curriculum} found no compelling evidence that linguistically motivated curricula improve training outcomes. These findings underscore a central tension in the field: while the cognitive motivation for curriculum learning remains compelling, translating these principles into practical machine learning benefits is non-trivial.
 
 To explore this tension systematically, I develop \climb within the context of the BabyLM Challenge \citep{warstadt2023babylm1}, which provides an ideal testbed for exploring cognitively plausible training protocols under strict data constraints (10 million words). This framework systematically implements three curriculum dimensions:
 
@@ -38,11 +38,12 @@ To explore this tension systematically, I develop \climb within the context of t
 \paragraph{Chapter Contributions} This chapter makes several key contributions:
 
 \begin{enumerate}
-    \item I establish a novel framework (\climb) for categorising and implementing curriculum learning strategies that simulate human language acquisition, providing reusable infrastructure for future research in cognitively inspired language modelling.
+    \item I establish a novel framework (\climb) for categorising and implementing curriculum learning strategies that simulate human language acquisition. Importantly, this framework provides a reusable codebase that can be used to test other cognitively-motivated training strategies in the future.
     
-    \item Through extensive experimentation across three curriculum dimensions and multiple configurations, I provide a comprehensive evaluation of curriculum learning approaches in resource-constrained settings --- documenting both what works and, importantly, what does not.
+    \item Through extensive experimentation across three curriculum dimensions and multiple configurations, I provide a comprehensive evaluation of curriculum learning approaches in resource-constrained settings and document the limitations of these approaches.
     
-    \item I present an honest assessment of negative results: while the curricula are well-motivated by developmental psychology, they do not reliably outperform a well-tuned baseline, highlighting the gap between intuitive cognitive analogies and practical machine learning benefits.
+    % \item I report negative results transparently: the developmentally-motivated curricula, though theoretically compelling, fail to reliably improve upon baseline performance. This finding underscores that intuitive cognitive parallels do not straightforwardly translate to practical benefits.
+
 \end{enumerate}
 
 \paragraph{Addressing RQ1} This chapter addresses the first research question of this thesis. By translating developmental principles into three structured curricula and systematically evaluating them, I provide a rigorous test of whether cognitively inspired training protocols improve the efficiency of small-scale pre-training. The largely negative results reported here offer a cautionary perspective on \textbf{RQ1}: while the motivation for drawing on human learning remains compelling, simple operationalisations of developmental principles may not transfer straightforwardly to neural language models. 
@@ -117,7 +118,7 @@ As a means of evaluating how well this unsupervised POS tagger performs, I compa
 \setlength{\tabcolsep}{4pt}  % Reduce column spacing
 \begin{tabular}{l | rrrrr | rrrr}
 \toprule
-Model  & L & H & Hidden & Int. & Vocab & Steps & BLiMP & BLiMP. Supp & Perplexity \\
+Model  & L & H & Hidden & Int. & Vocab & Steps & BLiMP$\uparrow$ & BLiMP.S$\uparrow$ & Perplexity$\downarrow$ \\
 \midrule
 Small  & 8 & 8 & 256 & 2,048   & 8,192   & 250K      & 75.43      & 61.14       & 9.46    \\
 Medium & 10 & 10 & 500 & 2,000 & 8,192  & 156K      & 76.45      & 63.28        & 9.05  \\
@@ -128,7 +129,7 @@ Medium & 10 & 10 & 500 & 2,000  & 16,384 & 94K      & 76.09      & 60.03        
 Large  & 12 & 12 & 768 & 3,072 & 16,384  & 62K      & 75.08      & 63.45      & 14.22     \\
 \bottomrule
 \end{tabular}
-\caption{\label{tbl:baseline-size-comparison} The vanilla BabyBERTa-style models evaluated on original BLiMP and the BLiMP-like tasks prepared for BabyLM (BLiMP.Supp). Models are grouped by their vocabulary sizes. L denotes the number of Transformer layers and H the number of attention heads per layer. The Hidden dimension (Hidden) represents the size of token representations at each layer, while the Intermediate dimension (Int.) indicates the expanded dimension size in the feed-forward network (typically 4x the hidden dimension).}
+\caption{\label{tbl:baseline-size-comparison} The vanilla BabyBERTa-style models evaluated on original BLiMP and the supplemental BLiMP-like tasks prepared for BabyLM (BLiMP.S=BLiMP Supplement). Models are grouped by their vocabulary sizes. L denotes the number of Transformer layers and H the number of attention heads per layer. The Hidden dimension (Hidden) represents the size of token representations at each layer, while the Intermediate dimension (Int.) indicates the expanded dimension size in the feed-forward network (typically 4x the hidden dimension).}
 \end{table*}
 
 I investigate three different sizes of a vanilla Pre-Layer Norm RoBERTa model \citep{liu2019roberta} based on the BabyBERTa model \citep{huebner2021babyberta}: `small', `medium', and `large'. \cref{tbl:baseline-size-comparison} lists the model configurations and presents the results for the different model sizes evaluated by perplexity, on BLiMP \citep{warstadt2020blimp} and on the supplementary BLiMP-like tasks issued by the BabyLM organisers (`Blimp.Supp'). The medium model with a small vocabulary size performs the best overall; however, the small model achieves similar results. Therfore, to save on compute and keep to the restrained intentions of the \textsc{strict-small} track, I used the small model in the subsequent curriculum learning experiments.
@@ -502,87 +503,12 @@ Across all three curriculum dimensions and their combinations, the pattern is co
 \label{sec:climb-conclusion}
 This chapter presented a comprehensive investigation of curriculum learning strategies for language model pre-training, motivated by principles from child language acquisition. I implemented and evaluated three curriculum dimensions (\textbf{vocabulary}, \textbf{data}, and \textbf{objective} curricula) across a variety of configurations, with the goal of testing whether developmentally inspired training protocols could improve learning efficiency in resource-constrained settings.
 
-\paragraph{A negative but informative result.} The central finding of this chapter is negative: \textbf{none of the curriculum learning strategies reliably outperform a well-tuned vanilla baseline}. Across all configurations and benchmarks, the observed differences are small relative to their variance, and no approach shows consistent benefits across evaluation tasks. This null result stands in contrast to the intuitive appeal of curriculum learning and the promising findings reported in some prior work on other domains.
+The central finding of this chapter is negative: \textbf{none of the curriculum learning strategies reliably outperform a well-tuned vanilla baseline}. Across all configurations and benchmarks, the observed differences are small relative to their variance, and no approach shows consistent benefits across evaluation tasks. This null result stands in contrast to the intuitive appeal of curriculum learning and the promising findings reported in some prior work on other domains.
 
-\paragraph{Why might curricula fail in this setting?} Several factors may explain these negative results, and my findings agree with broader patterns observed in the literature. First, \citet{wu2021when} show that curriculum learning provides benefits primarily under specific conditions: limited training time budgets or the presence of noisy data. The BabyLM setting, while data-constrained, may not satisfy these conditions since training is run to convergence and the data has been carefully curated and cleaned. Second, as \citet{surkov2022datacurricula} note, the difficulty metrics commonly used in NLP (such as sentence length, perplexity, or source ordering) may simply not capture the relevant notion of complexity for language model learning. Third, the gap between human and machine learning may be more fundamental than surface-level analogies suggest; as \citet{campos2021curriculum} argues, modern language models may be sufficiently robust to learn from randomly ordered data, reducing any potential benefit from structured curricula.
+Several factors may explain these negative results, and my findings agree with broader patterns observed in the literature. First, \citet{wu2021when} show that curriculum learning provides benefits primarily under specific conditions such as limited training time budgets or the presence of noisy data. The BabyLM setting, while data-constrained, may not satisfy these conditions since training is run to convergence and the data has been carefully curated and cleaned. Second, as \citet{surkov2022datacurricula} note, the choice of hyper-parameters is often more important than the choice of curriculum. Third, the analogy between human and machine learning may be too simplistic. As \citet{campos2021curriculum} argues, modern language models may be sufficiently robust to learn from randomly ordered data, reducing any potential benefit from structured curricula.
 
-\paragraph{The value of comprehensive negative results.} Despite the null findings, this systematic exploration serves an important scientific purpose. Not every hypothesis will be confirmed, and documenting what does \emph{not} work is as valuable as documenting what does. It prevents redundant effort and helps calibrate expectations for future research. The \climb framework itself remains a useful contribution: the modular implementation of vocabulary, data, and objective curricula provides infrastructure for testing alternative difficulty metrics, pacing functions, or curriculum combinations that future work may identify. Moreover, the strong performance of the vanilla baseline underscores an important practical lesson: in low-resource settings, careful hyper-parameter tuning and model selection may matter more than sophisticated training protocols.
+Despite the null findings, this systematic exploration serves an important scientific purpose. Not every hypothesis will be confirmed, and documenting what does \emph{not} work is as valuable as documenting what does. It prevents redundant effort and helps calibrate expectations for future research. The \climb framework itself remains a useful contribution: the modular implementation of vocabulary, data, and objective curricula provides infrastructure for testing alternative difficulty metrics, pacing functions, or curriculum combinations that future work may identify. Moreover, the strong performance of the vanilla baseline underscores the finding that in low-resource settings, careful hyper-parameter tuning and model selection may matter more than sophisticated training protocols.
 
-\paragraph{Implications for RQ1.} With respect to \textbf{RQ1}, whether cognitively inspired training can improve language model efficiency, this chapter provides a cautionary answer. While the motivation for curriculum learning from human development remains compelling in principle, translating these insights into practical benefits for neural language models is non-trivial. The gap between human and machine learning may be too large for simple analogies (such as presenting easy examples before hard ones) to transfer directly. This suggests that addressing RQ1 may require either more sophisticated implementations of developmental principles or fundamentally different approaches to incorporating cognitive insights into model training.
+This chapter provides a nuanced, but largely negative answer to \textbf{RQ1}. While the motivation for curriculum learning from human development remains compelling in principle, translating these insights into practical benefits for neural language models is non-trivial. The gap between human and machine learning may be too large for simple analogies (such as presenting easy examples before hard ones) to transfer directly. This suggests that addressing RQ1 may require either more sophisticated implementations of developmental principles or fundamentally different approaches to incorporating cognitive insights into model training.
 
 In this chapter, I examined the \emph{macro-level structure} of training, by investigating whether developmentally inspired pacing and sequencing can improve efficiency. The next chapter builds on this foundation by shifting focus to the \emph{micro-level dynamics} of representation. There, I introduce \smoothing, a method motivated by how children use grammatical context to infer word meaning. While \climb investigated how to structure the learning experience, \smoothing explores how to shape the internal representations that support generalisation from limited exposure. Together, these two chapters provide complementary perspectives on \textbf{RQ1} and begin to set the stage for \textbf{RQ2}, where I turn to a more systematic analysis of learning dynamics in small language models.
-
-% \section{Conclusion}
-% \label{sec:climb-conclusion}
-
-% This chapter presented a comprehensive investigation of curriculum learning strategies for language model pre-training, motivated by principles from child language acquisition. I implemented and evaluated three curriculum dimensions (\textbf{vocabulary}, \textbf{data}, and \textbf{objective} curricula) across a systematic grid of configurations, with the goal of testing whether developmentally inspired training protocols could improve learning efficiency in resource-constrained settings.
-
-% \paragraph{A negative but informative result.} The central finding of this chapter is negative: \textbf{none of the curriculum learning strategies reliably outperform a well-tuned vanilla baseline}. Across all configurations and benchmarks, the observed differences are small relative to their variance, and no approach shows consistent benefits across evaluation tasks. This null result stands in contrast to the intuitive appeal of curriculum learning and the promising findings reported in some prior work on other domains.
-
-% \paragraph{Why might curricula fail in this setting?} Several factors may explain these negative results, and my findings resonate with broader patterns observed in the literature. First, \citet{wu2021when} show that curriculum learning provides benefits primarily under specific conditions: limited training time budgets or the presence of noisy data. The BabyLM setting, while data-constrained, may not satisfy these conditions seeing as the training is run to convergence, and the data, while diverse, has been carefully curated. Second, as \citet{surkov2022datacurricula} note, the difficulty metrics commonly used in NLP (such as sentence length, perplexity, or source ordering) may simply not capture the relevant notion of complexity for language model learning. Third, the gap between human and machine learning may be more fundamental than surface-level analogies suggest; as \citet{campos2021curriculum} argues, modern language models may be sufficiently robust to learn from randomly ordered data, reducing any potential benefit from structured curricula.
-
-% \paragraph{The value of comprehensive negative results.} Despite the null findings, this systematic exploration serves an important scientific purpose. Not every hypothesis will be confirmed, and documenting what does \emph{not} work is as valuable as documenting what does --- it prevents redundant effort and helps calibrate expectations for future research. The \climb framework itself remains a useful contribution: the modular implementation of vocabulary, data, and objective curricula provides infrastructure for testing alternative difficulty metrics, pacing functions, or curriculum combinations that future work may identify. Moreover, the strong performance of the vanilla baseline underscores an important practical lesson: in low-resource settings, careful hyper-parameter tuning and model selection may matter more than sophisticated training protocols.
-
-% \paragraph{Implications for RQ1.} With respect to \textbf{RQ1} --- whether cognitively inspired training can improve language model efficiency --- this chapter provides a cautionary answer. While the motivation for curriculum learning from human development remains compelling in principle, translating these insights into practical benefits for neural language models is non-trivial. The gap between human and machine learning may be too large for simple analogies (e.g., ``easy before hard'') to transfer directly. This suggests that addressing RQ1 may require either more sophisticated operationalisations of developmental principles or fundamentally different approaches to incorporating cognitive insights into model training.
-
-% In this chapter, I examined the \emph{macro-level structure} of training, asking whether developmentally inspired pacing and sequencing can improve efficiency. The next chapter builds on this foundation by shifting focus to the \emph{micro-level dynamics} of representation. There, I introduce \smoothing, a method motivated by how children use grammatical context to infer word meaning. Whereas \climb investigated how to structure the learning experience, \smoothing explores how to shape the internal representations that support generalisation from limited exposure. Together, these two chapters provide complementary perspectives on \textbf{RQ1} and begin to set the stage for \textbf{RQ2}, where I turn to a more systematic analysis of learning dynamics in small language models.
-
-
-% Beyond specific gains, this chapter establishes a computational framework for implementing curriculum learning strategies aligned with cognitive development. In doing so, it addresses the macro-level question posed at the start of this thesis: \textit{can language models benefit from learning more like humans do, by following a structured, developmentally inspired trajectory?} 
-
-% \begin{table*}
-% \centering
-% \small
-% \begin{tabular}{llrrrrr}
-% \toprule
-% Type              & Model    & PPX   & BLiMP & BLiMP.Supp & (Super)GLUE & MSGS Ambig \\
-% \midrule
-% Official Baseline & OPT-125m         & --    &   63.16 & 55.08 & 63.38 & 69.22 \\
-%                   & RoBERTa-base      & --  &   
-%                 69.84 & 50.52 & 71.42 & 70.25 \\
-%                   & T5-base         & --    &   58.27 & 47.55  & 60.93 & 68.55 \\
-% \midrule
-% Vanilla Models    &CLIMB-base (medium)   & 9.01   & 75.66 & 66.13 & 70.75 & 67.62 \\
-%                   & CLIMB-base-small & 9.21  & 75.48 & 65.34 & 70.47 & 68.30 \\
-%                   & CLIMB-raw (medium)   &  8.47   & 77.97 & 66.16 & 70.63 & 69.44 \\
-%                   & CLIMB-small-raw  & 8.64  & 76.42 & 64.60 & 69.46 & 70.65 \\
-%                 & \emph{large-100M}      & 4.35      &   81.03 & 75.56 & 72.93 & 74.17 \\
-% \midrule
-% Vocab Curriculum          & CLIMB-tokens   &  9.70  & 75.09 & 66.43  & 68.71 & 68.61 \\
-% Data Curriculum           & CLIMB-data-split & 9.21 & 75.87 & 64.29  & 70.20 & 70.99 \\
-% Objective Curriculum      & CLIMB-multitask & 9.30 & 74.80 & 67.55  & 69.89 & 67.65 \\
-% \bottomrule
-% \end{tabular}
-% \caption{\label{tbl:submission-comparison} Comparison between the official shared task baselines, our BabyBERTa-style vanilla models, and our submitted curriculum learning models on the main evaluation tasks: BLiMP, (Super)GLUE, and MSGS. Our *small and *medium models are defined in Section \ref{subsec:baseline}. All models are trained on pre-processed data except for those labelled with *-raw, which are trained on mostly unprocessed data (except we join the input sentences). The `large-100M' model was a larger BabyBERTa-style model trained on the 100M BabyLM training set (all others have been trained on the 10M dataset available in the \textsc{strict-small} track). }
-% \end{table*}
-
-
-% --- Additional Stuff ---
-
-% \subsection{Curriculum Learning Approach}
-% Our work introduces curriculum learning to three primary components of language model pre-training: vocabulary (Section \ref{subsec:vocab-cl}), data sampling approach (Section \ref{subsec:data-cl}), and objective function selection (Section \ref{subsec:objective-cl}). This multi-faceted approach is inspired by how humans learn language, where different aspects of language acquisition develop simultaneously but at different rates. For each component, we implement dynamic difficulty scaling that evolves over the course of training, simulating the progressive nature of human language learning. The specific variables and configurations for each curriculum learning experiment are detailed in Table~\ref{tbl:configurations}.
-
-% \begin{table*}
-%     \centering
-%     \small
-%     \begin{tabular}{llc}
-%     \toprule
-%          Type & Model & Training Time \\
-%     \midrule
-%          Vanilla Models & CLIMB-small-raw & 12h \\
-%          & CLIMB-raw (medium) & 17h40m \\
-%     \midrule
-%          Data Curriculum & Log Source & 12h30m \\
-%          & Log Random + model ppl & 17h10m \\
-%          Objective Curriculum & Sequential All POS & 11h40m \\
-%          & Multitask All POS & 15h30m \\
-%          Vocabulary Curriculum & Linear POS & 11h50m \\
-%          & Log Token ID & 12h10m \\
-%     \midrule
-%         Combination & Log Data Split + Log Token ID & 12h30m \\
-%         & Log Random + model ppl + Log Token ID & 17h10m \\
-%     \bottomrule
-%     \end{tabular}
-%     \caption{Compute required to train our models. We report the model with the shortest and longest runtime for each experiment type. Each model is trained for 400,000 steps with 4 A100 GPUs.}
-%     \label{tbl:compute}
-% \end{table*}

@@ -3,7 +3,7 @@
 
 % Note: \posval and \negval color commands are defined in Chapter 3 (CLIMB)
 
-While Chapter 3 explored curriculum learning as a way to structure the input space and learning trajectory of a model, I now turn to a complementary question: \emph{how can internal representations themselves be shaped to better support generalisation --- particularly for uncommon tokens?} Just as children benefit from structured exposure to language, they also rely heavily on syntactic cues to make sense of unfamiliar words. This chapter investigates how language models might likewise leverage structural signals to improve lexical generalisation.
+While Chapter 3 explored curriculum learning as a way to structure the input space and learning trajectory of a model, I now turn to a complementary question: \emph{how can internal representations themselves be shaped to better support generalisation, particularly for uncommon tokens?} Just as children benefit from structured exposure to language, they also rely heavily on syntactic cues to make sense of unfamiliar words. This chapter investigates how language models might likewise leverage structural signals to improve lexical generalisation.
 
 One of the most striking capabilities of human learners is their ability to infer the meaning of unknown words from syntactic and semantic context; recall the example of the made-up word `zambled' from Chapter 2.
 
@@ -229,7 +229,7 @@ I conduct analyses to inspect the learning dynamics of my method and its effect 
 \paragraph{\smoothing reduces and can even eliminate frequency bias.}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
-    \vspace{-1em}
+    % \vspace{-1em}
     \centering
     \includegraphics[width=0.5\textwidth]{chapters/syntatic-smoothing/figures/biases.png}
     \caption{Frequency bias for the three open source models, the base model, the two label smoothing (LS) baselines and the two \smoothing (\texttt{SyS}) models.}
@@ -239,11 +239,13 @@ I conduct analyses to inspect the learning dynamics of my method and its effect 
 
 I find that all four pre-trained models exhibit strong frequency bias (see \cref{fig:biases}); they are more likely to incorrectly prefer ungrammatical sentences if they contain tokens that occur more frequently during training. This confirms the hypothesis that the evaluation of generalisation capabilities is obfuscated by frequency effects. 
 
-By contrast, the two \smoothing variants successfully reduce the frequency bias. The frequency bias is almost completely removed in the case of the \texttt{Mid} variant, which distributes exactly half of the training signal to syntactically similar tokens. I further observe that the Label Smoothing baselines also reduce bias but to a lesser extent than the corresponding \smoothing models with the same degree of smoothing. 
+By contrast, the two \smoothing variants successfully reduce the frequency bias. The frequency bias is nearly completely removed in the case of the \texttt{Mid} variant, which distributes exactly half of the training signal to syntactically similar tokens. I further observe that the Label Smoothing baselines also reduce bias but to a lesser extent than the corresponding \smoothing models with the same degree of smoothing. 
 
 \paragraph{\smoothing reduces anisotropy.}
 
-As shown in \cref{tbl:full-results}, all models with \smoothing reduce anisotropy over both the base model and label smoothing baselines.\footnote{Note that I do not compute the anisotropy for the three open-source pre-trained models (OPT, RoBERTa, T5) because these models use different architectural configurations than the models I train (e.g., larger hidden dimensions); as such, these models cannot be compared apples-to-apples.} Label smoothing reduces anisotropy, but not to the same extent as the \smoothing models. To better understand how anisotropy develops in a model, I compute the model's anisotropy scores at eight checkpoints during training, as shown in \cref{fig:anisotropy-learing-dynamics}. I find that a greater degree of smoothing leads to a greater reduction in anisotropy for the \smoothing variants (it is less clear if this is the case for label smoothing), supporting the hypothesis that syntactic initialisation helps promote better representation learning across the model's vocabulary. I also find that the pacing method leads to lower anisotropy than the flat method, with \texttt{SyS}-P (High) achieving the lowest anisotropy throughout.
+As shown in \cref{tbl:full-results}, all models with \smoothing reduce anisotropy over both the base model and label smoothing baselines.\footnote{Note that I do not compute the anisotropy for the three open-source pre-trained models (OPT, RoBERTa, T5) because these models use different architectural configurations than the models I train (e.g., larger hidden dimensions); as such, these models cannot be compared apples-to-apples.} Label smoothing reduces anisotropy, but not to the same extent as the \smoothing models. I also find that the computation of anisotropy shows relatively low variance when recomputed with different samples (for most models, less than 5\% from the mean). 
+
+To better understand how anisotropy develops in a model, I compute the model's anisotropy scores at eight checkpoints during training, as shown in \cref{fig:anisotropy-learing-dynamics}. I find that a greater degree of smoothing leads to a greater reduction in anisotropy for the \smoothing variants (it is less clear if this is the case for label smoothing), supporting the hypothesis that syntactic initialisation helps promote better representation learning across the model's vocabulary. I also find that the pacing method leads to lower anisotropy than the flat method, with \texttt{SyS}-P (High) achieving the lowest anisotropy throughout.
 
 \begin{figure}[ht!]
     \centering
@@ -261,7 +263,6 @@ As shown in \cref{tbl:full-results}, all models with \smoothing reduce anisotrop
     \caption{Anisotropy learning dynamics. \textbf{Left:} Comparison of the baseline RoBERTa model, two label smoothing (LS) baselines, and the \smoothing (\texttt{SyS}) models, with values in parentheses indicating the degree of smoothing. \textbf{Right:} Anisotropy learning dynamics across selected layers for the baseline and paced \texttt{SyS} model with high smoothing, highlighting the final layer difference at the end of training.}
     \label{fig:anisotropy-combined}
 \end{figure}
-
 
 Over the course of training, I observe a consistent double-dip trend: an initial dip followed by a sudden rise, followed by a second slow decrease in anisotropy. The \smoothing models do not see as large a sudden rise, maintaining a lower anisotropy throughout. To examine the learning dynamics in more detail, I also plot the evolution of the anisotropy across several layers of the baseline model and the \texttt{SyS}-P (High) variant, given in \cref{fig:anisotropy-combined}. Two observations stand out. The anisotropy of all layers in the \smoothing model is lower than in the corresponding layers in the baseline model across the entire learning process. In both the baseline model and the \smoothing model, earlier layers have lower anisotropy; this finding agrees with the same observation made by \citet{ethayarajh2019contextual}. Notably, in the final layer the anisotropy of the \smoothing model remains consistently low and does not increase significantly during training, in contrast to the drastic fluctuation observed in the baseline model. This is particularly interesting as the final layer is commonly used for fine-tuning in downstream tasks and is empirically found to encode more high-level semantic information than the earlier layers \citep{clark2019does}. 
 
