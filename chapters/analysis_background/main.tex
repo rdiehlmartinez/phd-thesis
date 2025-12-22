@@ -96,7 +96,7 @@ where \( \|\cdot\|_F \) denotes the Frobenius norm, which for a matrix is the sq
  
 \subsubsection{Applications to Language Models}
 
-These methods have been extensively applied to language models to understand the progression and stability of learned representations. For instance, \citet{saphra2019understanding} used SVCCA to track the alignment of ELMo's hidden states with syntactic annotations, finding that parts-of-speech (POS) information is learned early in training and primarily encoded in lower layers. Similarly, \citet{singh2019bert} applied CCA to multilingual BERT and discovered that representations in the deeper layers diverge across languages and form language-specific clusters.
+These methods have been extensively applied to language models to understand the progression and stability of learned representations. For instance, \citet{saphra2019understanding} used SVCCA to track the alignment of a recurrent language model's hidden states with syntactic annotations, finding that parts-of-speech (POS) information is learned early in training and primarily encoded in lower layers. Similarly, \citet{singh2019bert} applied CCA to multilingual BERT and discovered that representations in the deeper layers diverge across languages and form language-specific clusters.
 
 More recent work by \citet{nguyen2020wide} and \citet{phang2021finetuned} used CKA to identify `block structure' within deep Transformers, where layers cluster into groups that share similar representations. These structures are especially pronounced in larger models and later in training, where adjacent layers often encode similar abstractions. \citet{wu2020similarity} found that models from the same architecture family tend to exhibit stronger representational similarity, even if individual weights vary. Finally, \citet{brown2023understanding} analysed intra- and inter-model similarity within the Pythia model suite, using CKA to identify both convergence points and divergence in representation trajectories over time. Their findings support the idea that convergence is not uniform across training but rather unfolds in stages that reflect changes in capacity utilisation, generalisation, and abstraction.
 
@@ -146,7 +146,7 @@ Complementing sparsity analysis, research into \thesishl{norm dynamics} offers i
     \|\mathbf{A}\|_F = \sqrt{\sum_{i=1}^m \sum_{j=1}^n a_{ij}^2},
     \]
     analogous to the $\ell_2$ norm for vectors and sensitive to the overall energy of the matrix.
-    \item \textbf{Spectral norm}: the largest singular value of $\mathbf{A}$,
+    \item \textbf{Spectral norm}: the largest singular value ($\sigma$) of $\mathbf{A}$,
     \[
     \|\mathbf{A}\|_2 = \sigma_{\max}(\mathbf{A}),
     \]
@@ -161,7 +161,7 @@ Beyond sparsity and norms, understanding how many dimensions a model \textit{act
 
 Training often unfolds in distinct stages that is marked by shifts in representational rank. \citet{boix-adsera2023rank} showed that Transformer weights increase in rank incrementally from initialisation, mirroring stepwise acquisition of complexity. This is further supported by \citet{belrose2024neural}, who observed that models progressively encode more sophisticated statistical patterns, starting from unigrams and advancing towards complicated syntax. These dynamics are particularly relevant for small models. \citet{godey2024small} found that small language models hit a representational bottleneck at the output layer: the softmax saturates in rank even while loss continues to fall. This suggests underperformance may stem from expressivity ceilings, not optimisation failure. To characterise these dynamics, researchers have proposed several ways to estimate how many dimensions a model functionally uses. 
 
-One simple, approximate metric is the \thesishl{condition number} of a matrix. The condition number of a matrix $A$ measures how sensitive its output is to small changes in the input, and is defined as the ratio of its largest to smallest singular value:
+One simple, approximate metric is the \thesishl{condition number} ($\kappa$) of a matrix. The condition number of a matrix $A$ measures how sensitive its output is to small changes in the input, and is defined as the ratio of its largest to smallest singular value ($\sigma_{max}$ and $\sigma_{min}$):
 \[
 \kappa(A) = \frac{\sigma_{\max}(A)}{\sigma_{\min}(A)}.
 \]

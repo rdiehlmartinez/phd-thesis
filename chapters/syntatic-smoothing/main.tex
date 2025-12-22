@@ -9,7 +9,7 @@ One of the most striking capabilities of human learners is their ability to infe
 
 % Consider the sentence: ``the Golden Gate Bridge has been \emph{obnebulated} every morning this week, limiting visibility of the Pacific Ocean.'' Although most readers will not have encountered the word \textit{obnebulated}, we can make two confident inferences: (1) it is a verb, likely in the past participle form (given the ``has been'' auxiliary and the \textit{-ed} suffix), and (2) its meaning relates to fog or visibility. Human learners use this type of syntactic bootstrapping constantly.
 
-This ability is notably lacking in current language models. Despite their success on many NLP benchmarks \citep{touvron2023llama, chowdhery2023palm}, pre-trained Transformer language models still struggle with rare or unseen words. A key reason is that the vast majority of language models are pre-trained to maximise the log-likelihood of a word, given the surrounding context \citep{devlin2019bert, brown2020gpt3, chowdhery2023palm, touvron2023llama}. As language use is characterised by a Zipfian distribution \citep{zipf1935zipflaw}, language models are exposed to frequent tokens exponentially more often than infrequent ones during pre-training. Consequently, the representations of these frequent tokens are optimised based on exponentially more learning signals than those of low-frequency tokens. It has been shown that maximum likelihood objectives lead to representation degeneration in English language models because infrequent tokens are pushed into a narrow manifold of the representational space \citep{gao2018representation}. 
+This ability is notably lacking in current language models. Despite their success on many NLP benchmarks \citep{touvron2023llama, chowdhery2023palm}, pre-trained Transformer language models still struggle with rare or unseen words. A key reason is that the vast majority of language models are pre-trained to maximise the log-likelihood of a word, given the surrounding context \citep{devlin2019bert, brown2020gpt3, chowdhery2023palm, touvron2023llama}. As language use is characterised by a Zipfian distribution \citep{zipf1935zipflaw}, language models are exposed to frequent token types exponentially more often than infrequent ones during pre-training. Consequently, the representations of these frequent types are optimised based on exponentially more learning signals than those of low-frequency types. It has been shown that maximum likelihood objectives lead to representation degeneration in English language models because infrequent token types are pushed into a narrow manifold of the representational space \citep{gao2018representation}. 
 
 \begin{figure}[ht!]
     \centering
@@ -26,7 +26,7 @@ This representation degeneration problem is linked to the broader phenomenon of 
 \paragraph{Chapter Contributions} This work makes two key contributions:
 
 \begin{enumerate}
-    \item First, this chapter introduces \smoothing, a simple but cognitively motivated method for improving the representation of infrequent tokens during language model training.\footnote{Code available at: https://github.com/rdiehlmartinez/syntactic-smoothing.} Inspired by the human tendency to group unknown words with structurally similar known words, I propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent tokens benefit from updates to their syntactic neighbors, allowing them to ``learn by association'', as children often do.
+    \item First, this chapter introduces \smoothing, a simple but cognitively motivated method for improving the representation of infrequent token types during language model training.\footnote{Code available at: https://github.com/rdiehlmartinez/syntactic-smoothing.} Inspired by the human tendency to group unknown words with structurally similar known words, I propose redistributing part of the learning signal for each token across other tokens that share similar syntactic roles. Using this method, tokens that are seldom seen during training benefit from the more frequent updates of tokens that occur in similar syntactic functions.  In effect, infrequent token types benefit from updates to their syntactic neighbors, allowing them to ``learn by association'', as children often do.
     \item Next, I quantify the impact of this approach using a new diagnostic measure of \textbf{frequency bias}: a model's tendency to prefer grammatical sentences that contain high-frequency tokens over those with low-frequency ones. I then show that \smoothing reduces both frequency bias and anisotropy, without hurting performance on downstream tasks. These findings suggest that small structural changes rooted in cognitive observations can meaningfully improve the robustness and generalisation of small models.
      
 \end{enumerate}
@@ -40,7 +40,7 @@ The remainder of this chapter is organised as follows: \cref{sec:anisotropy-back
 \section{Anistropy}
 \label{sec:anisotropy-background}
 
-Through maximum likelihood training, language models implicitly learn to encode token frequency statistics. This training process gives rise to a frequency bias (which I define in \cref{sec:freq-bias}) in models that constrains their ability to generalise to infrequent tokens. In this chapter, I examine the tightly-coupled relationship between frequency bias and anisotropy. Before exploring this connection, in this section, I describe more concretely how anisotropy is defined and how it is measured.
+Through maximum likelihood training, language models implicitly learn to encode token type frequency statistics (i.e., how often each vocabulary item appears in the training corpus). This training process gives rise to a frequency bias (which I define in \cref{sec:freq-bias}) in models that constrains their ability to generalise to infrequent types. In this chapter, I examine the tightly-coupled relationship between frequency bias and anisotropy. Before exploring this connection, in this section, I describe more concretely how anisotropy is defined and how it is measured.
 
 % \subsection{Generalization to Infrequent Tokens}
 
@@ -50,7 +50,7 @@ Through maximum likelihood training, language models implicitly learn to encode 
 
 \subsection{Anisotropy in Representational Space}
 
-Language models trained as likelihood maximisers have been shown to yield degenerate representations for rare tokens \citep{gao2018representation}. Throughout training, infrequent tokens are disproportionately pushed in the negative direction of most hidden states, resulting in their clustering together irrespective of their semantic or syntactic properties. This clustering behaviour leads to anisotropy: rather than occupying a large region of the representational space, token representations lie along a narrow manifold \citep{gao2018representation, ethayarajh2019contextual}
+Language models trained as likelihood maximisers have been shown to yield degenerate representations for rare token types \citep{gao2018representation}. Throughout training, infrequent types are disproportionately pushed in the negative direction of most hidden states, resulting in their clustering together irrespective of their semantic or syntactic properties. This clustering behaviour leads to anisotropy: rather than occupying a large region of the representational space, token representations lie along a narrow manifold \citep{gao2018representation, ethayarajh2019contextual}
 
 Despite its prevalence, what impact anisotropy has on model performance and how it manifests itself in a model is not well understood. Some studies suggest that reducing anisotropy improves performance on non-contextual benchmarks, sentence comparison tasks, and multilingual benchmarks \citep{bis2021too, su2021whitening, rajaee2022isotropy}. Conversely, other research indicates that higher anisotropy might enhance semantic clustering tasks and that reducing anisotropy does not uniformly improve performance on common NLU tasks \citep{ait2023anisotropy, ding2022isotropy}. Furthermore, how anisotropy is formed and distributed across a model is not well understood. Some researchers argue that isotropy (the opposite of anisotropy) exists in local manifolds of contextual word representations \citep{cai2020isotropy}, while others contend that anisotropy arises from the learning dynamics of the query and key attention matrices in Transformer models \citep{godey2024anisotropy}. While this remains an open area of research, the definition of anisotropy is fairly well-established.
 
@@ -82,7 +82,7 @@ Here, $w_i$ and $w_j$ are two tokens sampled from the vocabulary, and $\cos$ is 
 
 % Existing methods to reduce anisotropy broadly fall into three categories. The first group of approaches transforms the hidden states of language models to remove semantically uninformative directions and to preserve the dimensions of maximal isotropy \citep{arora2016simple, mu2018all, raunak2019effective, su2021whitening,bis2021too}. This intervention style is based on the assumption that the top singular dimensions of pre-trained word representations encode frequency statistics rather than semantic or lexical information \citep{mu2018all}. The second category of methods introduces novel training objectives and regularization terms that reduce the effects of anisotropy \citep{gong2018frage, gao2018representation, wang2019improving}. This type of approach places an inductive bias on representations that push the embeddings of frequent and infrequent words to occupy a similar semantic space. The third set of approaches explores different training paradigms to directly minimise anisotropy, such as using normalizing flow models \citep{li2020sentence} or manipulating the gradients used in maximum likelihood models \citep{yu2022rare}.
 
-While frequency bias and anisotropy are prevalent in language modelling, quantifying their effects and understanding their impact on generalisation, particularly for infrequent words, remains an open area of research. This chapter introduces a novel method for improving the representation of infrequent tokens by integrating linguistic information. Moreover, I hypothesise that adjusting the learning process to better represent infrequent tokens will also reduce anisotropy, as these two phenomena are interconnected.
+While frequency bias and anisotropy are prevalent in language modelling, quantifying their effects and understanding their impact on generalisation, particularly for infrequent words, remains an open area of research. This chapter introduces a novel method for improving the representation of infrequent token types by integrating linguistic information. Moreover, I hypothesise that adjusting the learning process to better represent infrequent types will also reduce anisotropy, as these two phenomena are interconnected.
 
 The first step in this investigation is to develop a systematic way to measure frequency bias in language models, which I operationalise using the BLiMP dataset.
 
@@ -99,8 +99,10 @@ The first step in this investigation is to develop a systematic way to measure f
     \vspace{-1em}
 \end{wrapfigure}
 
-BLiMP is carefully balanced to ensure individual tokens occur equally in both sentence types. However, within a single pair, there may be an imbalance in average token frequency: For instance, the sentence
-\textit{Grace's piano teachers are \textbf{known}} has a log frequency of 8.35 while its associated minimal pair \textit{Grace's piano teachers are \textbf{replied}} has a log frequency of 6.20.  I hypothesise that despite the minimal difference in BLiMP pairs, models trained in a typical manner will be biased by token frequency when determining grammatical acceptability.
+BLiMP \citep{warstadt2020blimp} is a grammatical acceptability benchmark consisting of pairs of sentences that differ minimally: one sentence is grammatically correct and the other contains a syntactic error. To pass the benchmark, a model must assign higher probability to the correct sentence. BLiMP is carefully balanced to ensure individual tokens occur equally in both sentence types. 
+
+However, within a single pair, there may be an imbalance in average token type frequency: For instance, the sentence
+\textit{Grace's piano teachers are \textbf{known}} has a log frequency of 8.35 while its associated minimal pair \textit{Grace's piano teachers are \textbf{replied}} has a log frequency of 6.20.  I hypothesise that despite the minimal difference in BLiMP pairs, models trained in a typical manner will be biased by token type frequency when determining grammatical acceptability.
 
 My goal is to quantify how language model performance differs between BLIMP pairs with large positive frequency differences (where the correct sentence has more frequently occurring tokens) and with large negative frequency differences (where the correct sentence has much less frequently occurring tokens). I do so in three steps.
 
@@ -115,9 +117,9 @@ In practice, I find that standard Transformer language models, such as OPT-125M 
 \section{Syntactic Smoothing}
 \label{sec:smoothing-method}
 
-Transformer language models exhibit a strong frequency bias due to their maximum likelihood training objective, which limits infrequent tokens from receiving useful learning signals and thus hinders their ability to effectively encode linguistic information. To address this, I propose at each learning step to backpropagate the learning signal of a target token to all other tokens serving similar syntactic roles; this benefits infrequent tokens that appear less often in the training data.
+Transformer language models exhibit a strong frequency bias due to their maximum likelihood training objective, which limits infrequent tokens types from receiving useful learning signals and thus hinders their ability to effectively encode linguistic information. To address this, I propose at each learning step to backpropagate the learning signal of a target token to all other tokens serving similar syntactic roles; this benefits infrequent types that appear less often in the training data.
 
-\smoothing implements this strategy by distributing a portion of every update signal to all syntactically similar tokens using a syntactic similarity metric (operationalised below). This results in the representation of infrequent tokens approaching the average representation of all tokens that serve a similar syntactic function; e.g., the representation of a niche word like `obnebulated' would encode its syntactic role as a verb.
+\smoothing implements this strategy by distributing a portion of every update signal to all syntactically similar tokens using a syntactic similarity metric (operationalised below). This results in the representation of infrequent tokens types approaching the average representation of all tokens that serve a similar syntactic function; e.g., the representation of a niche word like `obnebulated' would encode its syntactic role as a verb.
 
 The \smoothing method consists of two components; (1) a similarity metric that uses part-of-speech distributions as a coarse proxy for syntactic similarity, and (2) an adjustment to the loss function to smooth the backpropagation signal over syntactically similar tokens during pre-training. 
 
@@ -203,7 +205,7 @@ Following the same approach as Chapter~\ref{chapter:CLIMB}, I report results as 
     \setlength{\tabcolsep}{5pt}
     \begin{tabular}{ll||cc|rr}
     \toprule
-    \textbf{Model}  & $\alpha$ & \textbf{Bias}$\downarrow$  & \textbf{Anisotropy}$\downarrow$ & $\Delta$\textbf{BLiMP} & $\Delta$\textbf{GLUE}\\
+    \textbf{Model}  & $\alpha$ & \textbf{Bias}$\downarrow$  & \textbf{Anisotropy}{\scriptsize(\%)}$\downarrow$ & $\Delta$\textbf{BLiMP} & $\Delta$\textbf{GLUE}\\
     \midrule
     \multirow{2}{*}{\makecell[l]{\texttt{Label}\\\texttt{Smoothing}}} & Low & 5.5 & 40.2\tiny{$\pm$1.4} & $\posval{+1.8}$\tiny{$\posval{\pm 3.1}$} & $0.0$\tiny{$\pm$1.2} \\
     & Mid & 2.7  & 40.3\tiny{$\pm$2.0} & $\posval{+1.6}$\tiny{$\posval{\pm 3.7}$} & $\posval{+0.1}$\tiny{$\posval{\pm 0.7}$} \\
@@ -217,7 +219,7 @@ Following the same approach as Chapter~\ref{chapter:CLIMB}, I report results as 
     \multicolumn{2}{l||}{Base Model (Baseline)} & 9.8 & 51.3\tiny{$\pm$1.2} & 71.4 & 69.6 \\
     \bottomrule
     \end{tabular}
-    \caption{\label{tbl:full-results} I report bias~($\downarrow$), anisotropy~($\downarrow$), and relative differences in BLiMP and GLUE performance compared to the base model. Anisotropy variability ($\pm$) is estimated by recomputing the metric 10 times with different random samples and reporting the standard deviation. Results for BLiMP and GLUE are reported as mean relative difference ($\pm$ std) across subtasks; \posval{green} indicates improvement, \negval{red} indicates decrease. The bottom row shows absolute scores for the base model. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
+    \caption{\label{tbl:full-results} I report bias~($\downarrow$), anisotropy~($\downarrow$), and relative differences in BLiMP and GLUE performance compared to the base model. Anisotropy is reported as a percentage. Anisotropy variability ($\pm$) is estimated by recomputing the metric 10 times with different random samples and reporting the standard deviation. Results for BLiMP and GLUE are reported as mean relative difference ($\pm$ std) across subtasks; \posval{green} indicates improvement, \negval{red} indicates decrease. The bottom row shows absolute scores for the base model. Paced (P. Low, Mid, High) variants use linear pacing to reduce the smoothing factor to zero over training.}
 \end{table*}
 
 The results are summarised in \cref{tbl:full-results}. I find that the method reduces frequency bias while retaining strong language modelling capabilities. At the same time, I observe that the models with the lowest frequency bias in each category of smoothing technique (i.e., paced and unpaced) also display the lowest anisotropy. I then extend the analysis beyond the specific phenomenon of frequency bias and anisotropy by examining the impact of \smoothing on the linguistic generalisation capabilities of the model and its downstream performance after fine-tuning. Finally, I find that an alternative syntactic scoring metric leads to similar results as the cosine-based definition.
@@ -285,13 +287,13 @@ For each model, I compute the model's frequency bias and anisotropy at multiple 
 \paragraph{Frequency Bias Disproportionately Affects Content Words.}
 \label{sec:word-class-versus-word-frequency}
 
-To better understand the linguistic categories most impacted by frequency bias, I analyse the relationship between token frequency and syntactic class. Specifically, I compare the POS tag distributions of the top 100 most frequent tokens and the bottom 100 least frequent tokens in the training data. 
+To better understand the linguistic categories most impacted by frequency bias, I analyse the relationship between token type frequency and syntactic class. Specifically, I compare the POS tag distributions of the top 100 most frequent types and the bottom 100 least frequent types in the training data. 
 
 \begin{wrapfigure}{r}{0.5\textwidth}
     \centering
     \vspace{-1.5em}
     \includegraphics[width=0.49\textwidth]{chapters/syntatic-smoothing/figures/top_versus_bottom_pos_dist.pdf}
-    \caption{Distribution across POS tags of the top \& bottom 100 most frequent tokens.}
+    \caption{Distribution across POS tags of the top \& bottom 100 most frequent token types.}
     \label{fig:top-100-pos-dist}
 \end{wrapfigure}
 
@@ -316,7 +318,7 @@ where KL$(M_i, M_j)$ is the Kullback-Leibler divergence between the POS distribu
 \small
 \begin{tabular}{l||cc|rr}
 \toprule
-\textbf{Model}  &  \textbf{Bias}$\downarrow$  & \textbf{Anisotropy}$\downarrow$ & $\Delta$\textbf{BLiMP} & $\Delta$\textbf{GLUE} \\
+\textbf{Model}  &  \textbf{Bias}$\downarrow$  & \textbf{Anisotropy}{\scriptsize(\%)}$\downarrow$ & $\Delta$\textbf{BLiMP} & $\Delta$\textbf{GLUE} \\
 \midrule
 \texttt{SyS} (Low) \hspace{0.38cm} [JS]  & 4.1 & 34.6\tiny{$\pm$1.9} & $\mathbf{\posval{+1.9}}$\tiny{$\posval{\pm 4.2}$} & $\mathbf{\posval{+1.0}}$\tiny{$\posval{\pm 2.6}$} \\
 \texttt{SyS} (Mid) \hspace{0.42cm} [JS]  & 3.6 & 34.7\tiny{$\pm$1.2} & $\negval{-0.1}$\tiny{$\negval{\pm 6.4}$} & $\negval{-1.2}$\tiny{$\negval{\pm 1.7}$} \\
@@ -328,7 +330,7 @@ Base Model (Baseline) & 9.8 & 51.3\tiny{$\pm$1.2} & 71.4 & 69.6 \\
 \bottomrule
 \end{tabular}
 \caption{\label{tbl:jsd-similarity-metric-results}
-Results for bias~($\downarrow$), anisotropy~($\downarrow$), and relative differences in BLiMP and GLUE performance for \smoothing (\texttt{SyS}) models using Jensen Shannon-based [JS] similarity. Anisotropy variability ($\pm$) is estimated by recomputing the metric 10 times with different random samples. Results for BLiMP and GLUE are reported as mean relative difference ($\pm$ std) across subtasks; \posval{green} indicates improvement, \negval{red} indicates decrease. The bottom row shows absolute scores for the base model.}
+Results for bias~($\downarrow$), anisotropy~($\downarrow$), and relative differences in BLiMP and GLUE performance for \smoothing (\texttt{SyS}) models using Jensen Shannon-based [JS] similarity. Anisotropy is reported as a percentage. Anisotropy variability ($\pm$) is estimated by recomputing the metric 10 times with different random samples. Results for BLiMP and GLUE are reported as mean relative difference ($\pm$ std) across subtasks; \posval{green} indicates improvement, \negval{red} indicates decrease. The bottom row shows absolute scores for the base model.}
 \end{table}
 
 Summarised in \cref{tbl:jsd-similarity-metric-results}, I note that the effect of using a Jensen Shannon-based definition of the similarity metric yields a similar decrease in frequency bias and anisotropy, as compared to the standard cosine-based definition of the similarity metric. In fact, for the low-level of smoothing, the Jensen Shannon-based definition yields a slightly larger decrease in frequency bias and anisotropy than the cosine-based definition. We leave a deeper exploration of this phenomenon in the \smoothing models to future work. With regards to BLiMP and GLUE, none of the models show significant improvements relative to the baseline across all subtasks, indicating that any improvements are not robust across evaluation tasks. The \texttt{SyS} (Low) [JS] variant is the only configuration to show consistent positive improvements on both BLiMP ($+1.9 \pm 4.2$) and GLUE ($+1.0 \pm 2.6$) relative to the baseline, though with considerable variance across subtasks.   
@@ -344,8 +346,6 @@ To evaluate this method, I introduced a new diagnostic for frequency bias, measu
 
 By connecting insights from cognitive science with concrete modifications to training, this chapter moves beyond architectural tweaks and examines how the learning process itself can be made more human-like. If curriculum learning structures what is learned and when, \smoothing\ focuses on how internal representations evolve to support abstraction and generalisation. Taken together, the findings from these two chapters provide a nuanced affirmation of \textbf{RQ1}: cognitively inspired strategies can improve the efficiency and robustness of small language models. \climb\ shows that developmentally informed curricula can under certain conditions provide gains in syntactic and semantic generalisation, while \smoothing\ demonstrates that lightweight inductive priors can improve lexical generalisation and reduce frequency bias and anisotropy without sacrificing downstream performance. More broadly, these results suggest that cognitively inspired methods offer a promising template for principled improvement of small language models.
 
+By connecting insights from cognitive science with concrete modifications to training, this chapter moves beyond architectural tweaks and examines how the learning process itself can be made more human-like. If curriculum learning structures what is learned and when, \smoothing\ focuses on how internal representations evolve to support abstraction and generalisation. Taken together, the findings from these two chapters provide a nuanced answer to \textbf{RQ1}: cognitively inspired strategies can improve small language models, but do not do so reliably. The developmentally motivated curricula of \climb fail to consistently outperform a well-tuned baseline, suggesting that intuitive cognitive analogies do not straightforwardly translate to practical gains. In contrast, \smoothing\ demonstrates that lightweight inductive priors can improve lexical generalisation and reduce frequency bias and anisotropy without sacrificing downstream performance. The contrast is instructive as it shows that cognitively inspired methods are not uniformly beneficial. However, the cognitive lens remains a useful hypothesis-generating framework for research on small language models. 
+
 In the chapters that follow, I turn from proposing interventions to analysing the learning process itself. Alongside developmentally informed training strategies, it is equally important to understand how small models learn, so that insights into their dynamics can in turn inform how we train them. This shift moves language model development toward a more scientific paradigm: rather than relying on heuristics, we can ground design choices in measurable evidence. To address \textbf{RQ2}, I introduce metrics for quantifying how effectively layers use their representational capacity and how reliably models converge to stable solutions. Building on these methods, I then present tools that enable researchers to apply such analyses in practice, supporting the scientific, hypothesis-driven development of small language models.
-
-
-
-

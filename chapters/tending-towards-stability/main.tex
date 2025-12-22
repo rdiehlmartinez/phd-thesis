@@ -58,7 +58,7 @@ where $\actcenter$ denotes mean-centred activations and $\|\cdot\|_F$ is the Fro
 While CKA and related metrics (e.g., SVCCA) have been widely used to study representational similarity \citep{wu2020similarity, phang2021finetuned, brown2023understanding}, I adapt this tool to a new setting: analysing the temporal dynamics of activation convergence across model sizes, rather than comparing across models or tasks.
 
 \paragraph{Parameter Structure via Proportional Effective Rank.}
-I further analyse the expressivity of each layer by computing the \textit{effective rank} of its write parameters; that is, the projection matrices that update the intermediate representations in the residual stream. The effective rank of a matrix $\vtheta \in \mathbb{R}^{d \times h}$ is defined as the entropy of its normalised singular values \citep{roy2007effectiverank}:
+I further analyse the expressivity of each layer by computing the \textit{effective rank} of its write parameters; that is, the projection matrices that update the intermediate representations in the residual stream. The effective rank of a matrix $\vtheta \in \mathbb{R}^{d \times h}$ is defined as the entropy of its normalised singular values ($\sigma_1, \dots, \sigma_K$) \citep{roy2007effectiverank}:
 \begin{align}
     \er(\vtheta) = \exp\left(-\sum_{k=1}^K \frac{\sigma_k}{\|\sigma\|_1} \log \frac{\sigma_k}{\|\sigma\|_1}\right)
 \end{align}
@@ -201,6 +201,8 @@ Before presenting the detailed analyses, I briefly describe the structure of the
 
 In addition to these averaged results, \cref{fig:cka_main_plot} displays the inter-quartile range of $\cka$ similarity values averaged across layers for the smallest and largest models, and \cref{fig:cka-layer-wise-lines}, \cref{fig:per_weight-layer-wise-lines}, and \cref{fig:per_grad-layer-wise-lines} provide a layer-wise breakdown of convergence and rank dynamics (for both weights and gradients), respectively. These figures allow us to distinguish aggregate trends from layer-specific behaviours and to track how each layer's representational capacity evolves during training.
 
+It is also important to caveat that the Pythia models use different learning rates across scales (see \cref{tab:model_hparams}), with smaller models trained at higher learning rates (e.g., $10^{-3}$ for \sevenmil vs.\ $1.6 \times 10^{-4}$ for \twobil). This confounds a pure apples-to-apples comparison of convergence dynamics, as differences in learning rate can independently affect how quickly and smoothly representations stabilise. I leave a controlled investigation of the interaction between model scale, learning rate, and convergence behaviour to future work.
+
 \subsection{Convergence Dynamics}
 \label{subsec:convergence-dynamics}
 
@@ -274,8 +276,6 @@ Based on recent work that identifies parameter rank differences across model siz
 
 Having found key differences in the convergence and parameter rank dynamics of larger and smaller models, I now investigate whether these differences are correlated. 
 
-
-
 % \begin{table}[!h]
 %     \centering
 %     \input{chapters/tending-towards-stability/tables/correlation_table}
@@ -309,8 +309,6 @@ Specifically, for each layer of a given model, I determine whether that layer ex
 \end{itemize}
 I observe a strong correlation for the $\attention$ layers across model sizes. For the $\mlp$ layers, the correlation with the gradients' $\per$ is strong for models up to \onebil, while the correlation with the parameters' $\per$ is strong only for the \sevenmil model. I hypothesise that this discrepancy can be explained by the fact that $\mlp$ layers have a large $\per$ throughout training across all model sizes, apart from those of the \sevenmil model. While these results are correlational, they provide a foundation for future work to test whether methods that specifically increase the PER of layers' parameters and gradients induce faster convergence of the layers' activations in small models.
 
-
-
 % ===========
 % CONCLUSIONS
 % ===========
@@ -318,7 +316,7 @@ I observe a strong correlation for the $\attention$ layers across model sizes. F
 
 My findings reveal consistent and interpretable distinctions in learning dynamics across model scales. Larger models exhibit faster and more monotonic convergence in their layer activations, and make fuller use of their representational capacity; this is evidenced by higher and more stable proportional effective ranks ($\per$) of both weights and gradients. In contrast, smaller models display delayed convergence, greater instability, and under-utilisation of available capacity. These patterns suggest that part of the capability gap between small and large models may stem not from optimisation failure per se, but from inefficient or truncated learning trajectories. 
 
-Taken together, these findings provide a focused answer to \textbf{RQ2}: we can quantify how small models learn --- where they stabilise late, where capacity collapses, and how rank usage tracks convergence. Importantly, these insights offer actionable hypotheses: for instance, that inducing higher-rank updates or penalising smaller effective ranks might help smaller models converge more like their larger counterparts. 
+Taken together, these findings provide a focused answer to \textbf{RQ2}: we can analyse how small models learn by quantifying where they stabilise late, where capacity collapses, and how rank usage tracks convergence. Importantly, these insights offer actionable hypotheses: for instance, that inducing higher-rank updates or penalising smaller effective ranks might help smaller models converge more like their larger counterparts. 
 
 However, testing such hypotheses directly, for instance by intervening on training dynamics and re-evaluating learning behaviour, is difficult in practice. Ideally, I would now like to modify the Pythia models (for example, to encourage higher effective rank early in training) and retrain them to see whether convergence patterns improve. Yet retraining Pythia is non-trivial. There are several practical limitations:
 
