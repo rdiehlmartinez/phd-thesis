@@ -3,7 +3,7 @@
 
 Understanding how language models learn, represent, and generalise linguistic knowledge requires a diverse set of analytical approaches. This chapter surveys foundational work in mechanistic interpretability that aims to reverse-engineer internal computations, and learning dynamics research that tracks how capabilities emerge over time during training. 
 
-My emphasis is on methodologies that provide insight into the internal mechanisms of Transformer-based models and on tools that help understand developmental trajectories of models. I also introduce the growing ecosystem of open-source model suites that enable this research. These tools will form the empirical and methodological foundation for the contributions in the next chapters, where I analyse how small models diverge from larger ones and propose new tools that improve the scientific development of small models. Again, for clarity, key terms and concepts are \thesishl{highlighted} in this chapter.
+My emphasis is on methodologies that provide insight into the internal mechanisms of Transformer-based models and on tools that help understand learning trajectories of models. I also introduce the growing ecosystem of open-source model suites that enable this research. These tools will form the empirical and methodological foundation for the contributions in the next chapters, where I analyse how small models diverge from larger ones and propose new tools that improve the scientific development of small models. Again, for clarity, key terms and concepts are \thesishl{highlighted} in this chapter.
 
 % \section{Attention Analysis and Probing}
 
@@ -161,18 +161,18 @@ Beyond sparsity and norms, understanding how many dimensions a model \textit{act
 
 Training often unfolds in distinct stages that is marked by shifts in representational rank. \citet{boix-adsera2023rank} showed that Transformer weights increase in rank incrementally from initialisation, mirroring stepwise acquisition of complexity. This is further supported by \citet{belrose2024neural}, who observed that models progressively encode more sophisticated statistical patterns, starting from unigrams and advancing towards complicated syntax. These dynamics are particularly relevant for small models. \citet{godey2024small} found that small language models hit a representational bottleneck at the output layer: the softmax saturates in rank even while loss continues to fall. This suggests underperformance may stem from expressivity ceilings, not optimisation failure. To characterise these dynamics, researchers have proposed several ways to estimate how many dimensions a model functionally uses. 
 
-One simple, approximate metric is the \thesishl{condition number} ($\kappa$) of a matrix. The condition number of a matrix $A$ measures how sensitive its output is to small changes in the input, and is defined as the ratio of its largest to smallest singular value ($\sigma_{max}$ and $\sigma_{min}$):
+One simple, approximate metric is the \thesishl{condition number} ($\kappa$) of a matrix. The condition number of a matrix $\mathbf{A}$ measures how sensitive its output is to small changes in the input, and is defined as the ratio of its largest to smallest singular value ($\sigma_{max}$ and $\sigma_{min}$):
 \[
-\kappa(A) = \frac{\sigma_{\max}(A)}{\sigma_{\min}(A)}.
+\kappa(\mathbf{A}) = \frac{\sigma_{\max}(\mathbf{A})}{\sigma_{\min}(\mathbf{A})}.
 \]
 A low condition number (close to $1$) indicates that all dimensions are scaled similarly, while a high condition number suggests that some directions in the space are much more amplified or attenuated than others. In the context of representation analysis, a high condition number implies that the model's representation is effectively confined to a narrow subspace, even if the nominal rank is high.
 
 \citet{garg2025utilizedrank} introduced utilised rank, which estimates the number of active dimensions in a layer's weight matrix by projecting it onto input/output subspaces derived from real data. Their analysis showed that many large models use only a small fraction of their nominal capacity; for example, ViT-L/16 utilises just $\sim$20\% of its available rank.
 
-Another approach is \thesishl{effective rank} (ER), a continuous measure of dimensionality based on the entropy of a matrix's singular values \citep{roy2007effectiverank}. Given singular values $\sigma_1, \dots, \sigma_r$, normalised as $p_i = \frac{\sigma_i}{\sum_j \sigma_j}$, of a matrix $\mathbb{A}$, the effective rank is defined as:
+Another approach is \thesishl{effective rank} (ER), a continuous measure of dimensionality based on the entropy of a matrix's singular values \citep{roy2007effectiverank}. Given singular values $\sigma_1, \dots, \sigma_r$, normalised as $p_i = \frac{\sigma_i}{\sum_j \sigma_j}$, of a matrix $\mathbf{A}$, the effective rank is defined as:
 
 \[
-\mathrm{ER}(A) = \exp\left(-\sum_{i=1}^r p_i \log p_i\right)
+\mathrm{ER}(\mathbf{A}) = \exp\left(-\sum_{i=1}^r p_i \log p_i\right)
 \]
 
 This metric ranges from 1 (collapsed representation) to $r$ (full rank), offering a smooth, interpretable way to track representational complexity. I adopt this measure in later chapters to analyse the learning dynamics of small language models.
@@ -181,7 +181,7 @@ This metric ranges from 1 (collapsed representation) to $r$ (full rank), offerin
 
 % More broadly, rank-based analyses suggest that low-rank structure is an emergent property of training itself. \citet{pellegrino2023lowrank} found that both biological and artificial networks tend to evolve along low-dimensional subspaces. \citet{feng2022rank} and \citet{minyoung2022lowrank} provide theoretical support, showing that neural networks exhibit a bias toward rank-deficient representations and structurally simple solutions.
 
-In sum, effective rank analysis deepens reseachers' understanding of how language models acquire, and allocate representational capacity. Later chapters build on this foundation, using effective rank to study capacity bottlenecks and phase transitions in small model training.
+In sum, effective rank analysis deepens researchers' understanding of how language models acquire, and allocate representational capacity. Later chapters build on this foundation, using effective rank to study capacity bottlenecks and phase transitions in small model training.
 
 \section{Model Suites for Learning Dynamics Research}
 

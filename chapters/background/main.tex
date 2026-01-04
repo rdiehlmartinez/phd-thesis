@@ -17,7 +17,7 @@ Training a language model is then equivalent to finding a set of parameters that
 \subsection{Neural Language Models}
 \label{sec:neural-language-models}
 
-A major breakthrough came with the introduction of neural probabilistic language models by \cite{bengio2003neural}, which proposed using \thesishl{feed-forward neural networks (FFNs)} to estimate the probability of word sequences. In this formulation, the model takes as input a fixed-size context of preceding words, represented as dense vectors (see \cref{sec:word-embeddings}), and passes them through one or more fully connected layers with nonlinear activations (see activation functions in \cref{sec:optimization}). Formally, given a vectorised representation of a concatenated sequence of words $\mathbf{x} = [\mathbf{x}_1; \dots; \mathbf{x}_n]$, where each word, $w_i$, is represented as a vector $\mathbf{x}_i$, the input is processed by a feed-forward neural network as:
+A major breakthrough came with the introduction of neural probabilistic language models by \cite{bengio2003neural}, which proposed using \thesishl{feed-forward neural networks (FFNs)} to estimate the probability of word sequences. In this formulation, the model takes as input a fixed-size context of preceding words, represented as dense vectors, and passes them through one or more fully connected layers with nonlinear activations (see activation functions in \cref{sec:optimization}). Formally, given a vectorised representation of a concatenated sequence of words $\mathbf{x} = [\mathbf{x}_1; \dots; \mathbf{x}_n]$, where each word, $w_i$, is represented as a vector $\mathbf{x}_i$, the input is processed by a feed-forward neural network as:
 \begin{equation}
 \mathbf{h} = \phi(W_1 \mathbf{x} + \mathbf{b}_1),
 \end{equation}
@@ -47,7 +47,7 @@ To address the limitations of static embeddings, \thesishl{attention mechanisms}
 \end{equation}
 where the attention weights $\alpha_i$ are computed using a compatibility function, typically the \thesishl{scaled dot-product}:
 \begin{equation}
-\alpha_i = \frac{\exp\left(\frac{\mathbf{q} \cdot \mathbf{k}i}{\sqrt{d_k}}\right)}{\sum_{j=1}^{n} \exp\left(\frac{\mathbf{q} \cdot \mathbf{k}_j}{\sqrt{d_k}}\right)},
+\alpha_i = \frac{\exp\left(\frac{\mathbf{q} \cdot \mathbf{k}_i}{\sqrt{d_k}}\right)}{\sum_{j=1}^{n} \exp\left(\frac{\mathbf{q} \cdot \mathbf{k}_j}{\sqrt{d_k}}\right)},
 \end{equation}
 with $d_k$ denoting the dimensionality of the key vectors. 
 
@@ -89,7 +89,7 @@ enforcing a unidirectional, left-to-right dependency. Autoregressive models lear
 \subsection{Training and Optimisation}
 \label{sec:optimization}
 
-In practice, training language models involves several interconnected components. Central to the training process is the choice of optimisation algorithm. Models are typicaly trained using \thesishl{gradient descent}, which iteratively updates model parameters to minimise a loss function. For a model with parameters $\theta$ and loss function $\mathcal{L}(\theta)$, the update rule at timestep $i+1$ is:
+In practice, training language models involves several interconnected components. Central to the training process is the choice of optimisation algorithm. Models are typically trained using \thesishl{gradient descent}, which iteratively updates model parameters to minimise a loss function. For a model with parameters $\theta$ and loss function $\mathcal{L}(\theta)$, the update rule at timestep $i+1$ is:
 \begin{equation}
     \theta_{i+1} = \theta_i - \alpha \nabla_{\theta_i} \mathcal{L}(\theta_i)
 \end{equation}
@@ -109,7 +109,7 @@ Evaluating language models can be done using both intrinsic metrics that measure
 \subsection{Strategies for Efficient Training}
 Training language models is computationally expensive and motivates the development of more efficient training strategies. Here I list just a few of the most common strategies.
 
-\thesishl{Knowledge distillation} trains a compact "student" model to replicate the behaviour of a larger "teacher" model, typically by matching the teacher's output probability distributions rather than just the hard labels \citep{hinton2015distilling}. This transfers the teacher's learned representations into a smaller architecture that is cheaper to deploy. DistilBERT~\citep{sanh2019distilbert} demonstrated that this approach can retain over 95\% of BERT's performance with roughly half the parameters and significantly faster inference.
+\thesishl{Knowledge distillation} trains a compact ``student" model to replicate the behaviour of a larger ``teacher" model, typically by matching the teacher's output probability distributions rather than just the hard labels \citep{hinton2015distilling}. This transfers the teacher's learned representations into a smaller architecture that is cheaper to deploy. DistilBERT~\citep{sanh2019distilbert} demonstrated that this approach can retain over 95\% of BERT's performance with roughly half the parameters and significantly faster inference.
 
 \thesishl{Pruning} reduces model size by identifying and removing weights that contribute little to performance. The \thesishl{Lottery Ticket Hypothesis} \citep{frankle2019lottery} provided theoretical grounding for this approach, showing that large networks contain sparse subnetworks that can match the accuracy of the full model. Pruning methods typically use model statistics and heuristics to decide which weights to prune \citep{lecun1990optimal, hassibi1993optimal,han2016deep}.
 
@@ -128,7 +128,9 @@ Finally, recent research challenges the long-standing assumption that massive da
     \label{fig:data-comparison}
 \end{figure}
 
-While current research directions for improving small model efficiency largely centre on optimisation and architectural innovations, these efforts are generally exploratory; they lack an underlying thesis for how to train models more efficiently. To make more grounded and robust progress in developing efficient training paradigms, it is valuable to establish a guiding framework or set of principles. One promising approach is to draw inspiration from how humans learn. The brain is a biologically constrained system that achieves remarkable linguistic competence with limited resources. \cref{fig:data-comparison} visualises the order of magnitude difference that language models are trained on versus the amount of data humans perceive. In this thesis, I argue that human language acquisition can serve as a framework to inform more efficient model training. In the following chapters, I explore two approaches to language modelling that are inspired by human language acquisition: curriculum learning and syntactic generalisation.
+While current research directions for improving small model efficiency largely centre on optimisation and architectural innovations, these efforts are generally exploratory; they lack an underlying thesis for how to train models more efficiently. To make more grounded and robust progress in developing efficient training paradigms, it is valuable to establish a guiding framework or set of principles. One promising approach is to draw inspiration from how humans learn. The brain is a biologically constrained system that achieves remarkable linguistic competence with limited resources. \cref{fig:data-comparison} visualises the order of magnitude difference that language models are trained on versus the amount of data humans perceive. In the following chapters, I explore two approaches to language modelling that are inspired by human language acquisition: curriculum learning and syntactic generalisation.
+
+% In this thesis, I argue that human language acquisition can serve as a framework to inform more efficient model training.
 
 
 \subsection{Curriculum Learning}

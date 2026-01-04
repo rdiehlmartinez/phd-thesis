@@ -23,7 +23,7 @@ This insight extends beyond academic interest. While frontier models dominate pu
 
 % We should also probably define what we mean by small models.
 
-The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Small language models, \textit{which I define as models with fewer than 1 Billion (1B) parameters}, offer a promising counterbalance. While the distinction between small and large models is relative, the 1B parameter threshold provides a practical cutoff: a model with 1B parameters requires approximately 4GB of memory (assuming 32-bit precision) and can therefore be managed on a single GPU or deployed on-device with the hardware available as of 2025. Models of this scale offer several key benefits over their large counterparts:
+The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Small language models, \textit{which I define as models with fewer than 1 billion (1B) parameters}, offer a promising counterbalance. While the distinction between small and large models is relative, the 1B parameter threshold provides a practical cutoff: a model with 1B parameters requires approximately 4GB of memory (assuming 32-bit precision) and can therefore be managed on a single GPU or deployed on-device with the hardware available as of 2025. Models of this scale offer several key benefits over their large counterparts:
 
 % The rapid scaling of language models has brought remarkable capabilities, but also surfaced significant challenges \citep{bommasani2021foundation}. Small language models—\textit{which I define as models with fewer than 1 billion (1B) parameters}—offer a promising counterbalance. A model with 1B parameters requires approximately 4GB of memory (assuming 32-bit precision) and can be managed on a single GPU or deployed on-device with hardware available as of 2025. Models at this scale offer several advantages over their larger counterparts.
 
@@ -35,7 +35,7 @@ The rapid scaling of language models has brought about remarkable capabilities, 
 
 \paragraph{Interpretability.} The internal mechanisms of neural architectures are more tractable in smaller models, making them better testbeds for developing scientific understanding \citep{elhage2021mathematical, elhage2022toy}. Progress in understanding larger models often begins with insights gained from studying smaller ones.
 
-\paragraph{Democratisation.} The cost of training large models puts them out of reach for most organisations \citep{cottier2024rising, sharir2020cost}. Minimal implementations like nanoGPT \citep{karpathy2023nanogpt} and \pico (Chapter 7) lower barriers to entry, enabling broader participation in language technology research.
+\paragraph{Democratisation.} The cost of training large models puts them out of reach for most organisations \citep{cottier2024rising, sharir2020cost}. Minimal implementations like nanoGPT \citep{karpathy2023nanogpt} and \pico (Chapter 7) lower barriers to entry, enabling broader participation in language modelling research.
 
 % The rapid scaling of language models has brought about remarkable capabilities, but it has also surfaced a host of challenges and risks \citep{bommasani2021foundation}. Small language models, \textit{which I define as models with fewer than 1 Billion (1B) parameters}, offer a promising counterbalance. While the distinction between small and large models is relative to the scale being compared, the 1B parameter threshold provides a practical cutoff: a model with 1B parameters requires approximately 4GB of memory (assuming 32-bit precision) and can therefore be managed on a single GPU or deployed on-device with the hardware available as of 2025. Models of this scale offer several key benefits over their large counterparts:
 
@@ -81,7 +81,7 @@ To complement this exploration of training strategies, the second research objec
     \textbf{Research Question 2 (RQ2): How can researchers more quantitatively understand how small models learn and how can this understanding be used to improve model design and training?}
 \end{quote}
 
-Improving training efficiency is only part of the broader challenge. Equally important is developing a deeper understanding of the underlying learning dynamics that drive how language models learn: How can we quantitatively study the learning process of language models? And how can we can we use these insights to improve model design and training? These questions demand not just better engineering, but a more scientific, principle-driven approach to model understanding.
+Improving training efficiency is only part of the broader challenge. Equally important is developing a deeper understanding of the underlying learning dynamics that drive how language models learn: How can we quantitatively study the learning process of language models? And how can we can we use these insights to improve model design and training?
 
 In recent years, efforts to improve small language models have often relied on empirical heuristics that offer marginal gains. This trial-and-error mindset obscures the mechanisms behind success and makes it difficult to generalise progress across tasks or domains. To make progress, the research community must focus on the learning process itself: how knowledge is acquired, how model capacity is structured and used, and how different factors shape convergence dynamics. Small models provide a unique lens for this investigation not only because they are easier to analyse, but because their behaviour often reveals the underlying structure of learning in ways large models conceal.
 
@@ -91,7 +91,7 @@ By focusing on measurable, interpretable properties of training, such as model c
 
 This thesis is organised into two parts, reflecting the two research threads:
 
-\subsection*{Part I: Cognitive Insights for Efficient Training (Chapters 2-–4)}
+\subsection*{Part I: Cognitive Insights for Efficient Training (Chapters 2--4)}
 
 \begin{itemize}
 
@@ -99,8 +99,7 @@ This thesis is organised into two parts, reflecting the two research threads:
 
     % I then review existing strategies for training language models more efficiently; from architectural innovations, optimisation techniques, and data calibration methods.
 
-    \item \textbf{Chapter 3:} \emph{Curriculum Learning for Infant-inspired Model Building: A Framework for Human-like Language Acquisition}  
-    explores a systematic investigation of curriculum learning strategies inspired by human language acquisition, focusing on their application to small language models. The work is motivated by the striking data efficiency of human language learning compared to current language models.
+    \item \textbf{Chapter 3:} \emph{Curriculum Learning for Infant-inspired Model Building: A Framework for Human-like Language Acquisition} investigates curriculum learning strategies inspired by human language acquisition, focusing on their application to small language models. The work is motivated by the striking data efficiency of human language learning compared to current language models.
 
     The chapter introduces \climb, a framework that operationalises three key aspects of human language acquisition into a curriculum learning framework: a vocabulary curriculum that gradually expands a model's lexicon, a data curriculum that orders training inputs by linguistic complexity and an objective curriculum that transitions from coarse word-class prediction to fine-grained masked language modelling.
 
@@ -115,7 +114,7 @@ This thesis is organised into two parts, reflecting the two research threads:
 \subsection*{Part II: An Analytical Lens on Learning Dynamics (Chapters 5--7)}
 
 \begin{itemize}
-    \item \textbf{Chapter 5:} \emph{Analysing Language Models: Foundations, Methods, and Tools} introduces the analytical foundations for studying the learning dynamics of language models. I present a range of complementary approaches for analysing these dynamics, including representational convergence and similarity metrics, and capacity usage via sparsity, norm evolution, and rank-based analysis. These tools can be used to reveal how internal structures in language models develop, and how the learning trajectories of smaller models diverge from their larger counterparts. The chapter also situates this analysis within the broader mechanistic interpretability literature. This background chapter lays the groundwork for the next two chapters, which apply these tools to understand and intervene in the learning dynamics of small language models.
+    \item \textbf{Chapter 5:} \emph{Analysing Language Models: Foundations, Methods, and Tools} introduces the analytical foundations for studying the learning dynamics of language models. I present a range of complementary approaches for analysing these dynamics, including representational convergence and capacity usage via sparsity, norm evolution, and rank-based analysis. These methods can reveal how internal structures in language models develop, and how the learning trajectories of smaller models diverge from their larger counterparts. The chapter also situates this analysis within the broader mechanistic interpretability literature. This background chapter lays the groundwork for the next two chapters, which apply these tools to understand and intervene in the learning dynamics of small language models.
 
     % memorisation and data influence methods, r
 
@@ -198,11 +197,12 @@ This thesis makes the following contributions to the study of small language mod
 The following papers and software packages form the core contents of this thesis.
 
 \begin{itemize}
-    \item Richard Diehl Martinez, Zebulon Goriely, Hope McGovern, Christoper Davis, Andrew Caines, Paula Buttery, Lisa Beinborn (2023). {\color{thesisblue}\href{https://aclanthology.org/2023.conll-babylm.10}{CLIMB – Curriculum Learning for Infant-inspired Model Building}}. In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 138--154, Singapore. Association for Computational Linguistics.
+    \item Richard Diehl Martinez, Zebulon Goriely, Hope McGovern, Christoper Davis, Andrew Caines, Paula Buttery, Lisa Beinborn (2023). {\color{thesisblue}\href{https://aclanthology.org/2023.conll-babylm.10}{CLIMB – Curriculum Learning for Infant-inspired Model Building}}. In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 112--127, Singapore. Association for Computational Linguistics.
 
     \item Richard Diehl Martinez, Zebulon Goriely, Andrew Caines, Paula Butery, Lisa Beinborn (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.emnlp-main.344/}{Mitigating Frequency Bias and Anisotropy in Language Model Pre-Training with Syntactic Smoothing}}. In \emph{Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing}, pages 5999--6011, Miami, Florida, USA. Association for Computational Linguistics.
 
-    \item Richard Diehl Martinez, Pietro Lesci, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.findings-emnlp.246/}{Tending Towards Stability: Convergence Challenges in Small Language Models}}. In \emph{Findings of the Association for Computational Linguistics: EMNLP 2024}, pages 4253--4263, Miami, Florida, USA. Association for Computational Linguistics.
+    \item Richard Diehl Martinez, Pietro Lesci, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.findings-emnlp.187/}{Tending Towards Stability: Convergence Challenges in Small Language Models}}. In \emph{Findings of the Association for Computational Linguistics: EMNLP 2024}, pages 3275--3286, Miami, Florida, USA. Association for Computational Linguistics.
+
 
     \item Richard Diehl Martinez, David Demitri Africa, Yuval Weiss, Suchir Salhan, Ryan Daniels, Paula Buttery (2025). {\color{thesisblue}\href{https://aclanthology.org/2025.emnlp-demos.22/}{Pico: A Modular Framework for Hypothesis-Driven Small Language Model Research}}. In \emph{Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing: System Demonstrations}, pages 295--306, Suzhou, China. Association for Computational Linguistics.
 
@@ -238,7 +238,7 @@ The following papers and software packages form the core contents of this thesis
 % I also worked on the following papers during my PhD (not included in this thesis).
 
 \begin{itemize}
-    \item Cole Simmons, Richard Diehl Martinez, Dan Jurafsky (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.ml4al-1.20/}{SumTablets: A Transliteration Dataset of Sumerian Tablets}}. In \emph{Proceedings of the 1st Workshop on Machine Learning for Ancient Languages}, pages 192-202, Bangkok, Thailand. Association for Computational Linguistics.
+    \item Cole Simmons, Richard Diehl Martinez, Dan Jurafsky (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.ml4al-1.20/}{SumTablets: A Transliteration Dataset of Sumerian Tablets}}. In \emph{Proceedings of the 1st Workshop on Machine Learning for Ancient Languages}, pages 192--202, Bangkok, Thailand. Association for Computational Linguistics.
     \item Zebulon Goriely, Richard Diehl Martinez, Andrew Caines, Paula Buttery, Lisa Beinborn (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.conll-babylm.4/}{From Babble to Words: Pre-Training Language Models on Continuous Streams of Phonemes}}, In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 37--53, Miami, Florida, USA. Association for Computational Linguistics.
     \item Suchir Salhan, Richard Diehl Martinez, Zebulon Goriely, Paula Buttery (2024). {\color{thesisblue}\href{https://aclanthology.org/2024.conll-babylm.15/}{Less is More: Pre-Training Cross-Lingual Small-Scale Language Models with Cognitively-Plausible Curriculum Learning Strategies}}, In \emph{Proceedings of the BabyLM Challenge at the 27th Conference on Computational Natural Language Learning}, pages 174--188, Miami, Florida, USA. Association for Computational Linguistics.
     \item  Richard Diehl Martinez$^{\dagger}$, Suchir Salhan$^{\dagger}$, Zebulon Goriely, Paula Buttery (2025). {\color{thesisblue}\href{https://aclanthology.org/2025.babylm-main.10}{What is the Best Sequence Length for BabyLM?}}. In \emph{Proceedings of the First BabyLM Workshop}, pages 130--146, Suzhou, China. Association for Computational Linguistics. $^{\dagger}$Equal contribution.

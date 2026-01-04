@@ -46,7 +46,7 @@ To explore this tension systematically, I develop \climb within the context of t
 
 \end{enumerate}
 
-\paragraph{Addressing RQ1} This chapter addresses the first research question of this thesis. By translating developmental principles into three structured curricula and systematically evaluating them, I provide a rigorous test of whether cognitively inspired training protocols improve the efficiency of small-scale pre-training. The largely negative results reported here offer a cautionary perspective on \textbf{RQ1}: while the motivation for drawing on human learning remains compelling, simple operationalisations of developmental principles may not transfer straightforwardly to neural language models. 
+\paragraph{Addressing RQ1} This chapter addresses the first research question of this thesis. By translating developmental principles into three structured curricula and systematically evaluating them, I provide a rigorous test of whether cognitively inspired training protocols improve the efficiency of small-scale pre-training. The negative results reported here offer a cautionary perspective on \textbf{RQ1}: while the motivation for drawing on human learning remains compelling, simple operationalisations of developmental principles may not transfer straightforwardly to neural language models. 
 
 \vspace{1em}
 
@@ -129,10 +129,10 @@ Medium & 10 & 10 & 500 & 2,000  & 16,384 & 94K      & 76.09      & 60.03        
 Large  & 12 & 12 & 768 & 3,072 & 16,384  & 62K      & 75.08      & 63.45      & 14.22     \\
 \bottomrule
 \end{tabular}
-\caption{\label{tbl:baseline-size-comparison} The vanilla BabyBERTa-style models evaluated on original BLiMP and the supplemental BLiMP-like tasks prepared for BabyLM (BLiMP.S=BLiMP Supplement). Models are grouped by their vocabulary sizes. L denotes the number of Transformer layers and H the number of attention heads per layer. The Hidden dimension (Hidden) represents the size of token representations at each layer, while the Intermediate dimension (Int.) indicates the expanded dimension size in the feed-forward network (typically 4x the hidden dimension).}
+\caption{\label{tbl:baseline-size-comparison} The vanilla BabyBERTa-style models evaluated on original BLiMP and the supplemental BLiMP-like tasks prepared for BabyLM (BLiMP.S=BLiMP Supplement). Models are grouped by their vocabulary sizes. L denotes the number of Transformer layers and H the number of attention heads per layer. The Hidden dimension (Hidden) represents the size of token representations at each layer, while the Intermediate dimension (Int.) indicates the expanded dimension size in the feed-forward network (typically 4x the hidden dimension). Arrows indicate direction of improvement.}
 \end{table*}
 
-I investigate three different sizes of a vanilla Pre-Layer Norm RoBERTa model \citep{liu2019roberta} based on the BabyBERTa model \citep{huebner2021babyberta}: `small', `medium', and `large'. \cref{tbl:baseline-size-comparison} lists the model configurations and presents the results for the different model sizes evaluated by perplexity, on BLiMP \citep{warstadt2020blimp} and on the supplementary BLiMP-like tasks issued by the BabyLM organisers (`Blimp.Supp'). The medium model with a small vocabulary size performs the best overall; however, the small model achieves similar results. Therfore, to save on compute and keep to the restrained intentions of the \textsc{strict-small} track, I used the small model in the subsequent curriculum learning experiments.
+I investigate three different sizes of a vanilla Pre-Layer Norm RoBERTa model \citep{liu2019roberta} based on the BabyBERTa model \citep{huebner2021babyberta}: `small', `medium', and `large'. \cref{tbl:baseline-size-comparison} lists the model configurations and presents the results for the different model sizes evaluated by perplexity, on BLiMP \citep{warstadt2020blimp} and on the supplementary BLiMP-like tasks issued by the BabyLM organisers (`Blimp.Supp'). The medium model with a small vocabulary size performs the best overall; however, the small model achieves similar results. Therefore, to save on compute and keep to the restrained intentions of the \textsc{strict-small} track, I used the small model in the subsequent curriculum learning experiments.
 
 \begin{wrapfigure}{r}{0.40\textwidth}
     \vspace{-1em}
@@ -210,7 +210,7 @@ I explore three strategies for selecting which tokens to include at each stage o
     \item \verydarkgreenhighlight{\textbf{Hybrid selection} (Hybrid)} I combine frequency and word class constraints by sorting words by their frequency within each part-of-speech category. This approach allows for more granular control over vocabulary expansion while maintaining the developmental progression of word classes.
 \end{enumerate}
 
-The rate at which the vocabulary expands is controlled by a pacing function. I experiment with both linear and logarithmic pacing functions, with the latter potentially better reflecting the rapid early vocabulary growth observed in children. \cref{fig:pacing_fn} illustrates how the percentage of unmasked vocabulary increases over the course of training under these different pacing regimes. This approach represents, to my knowledge, the first systematic attempt at implementing a vocabulary curriculum in language model training, offering a more cognitively plausible alternative to the standard practice of training with a fixed, full vocabulary from the outset.
+The rate at which the vocabulary expands is controlled by a pacing function. I experiment with both linear and logarithmic pacing functions, with the latter potentially better reflecting the rapid early vocabulary growth observed in children. This approach represents, to my knowledge, the first systematic attempt at implementing a vocabulary curriculum in language model training, offering a more cognitively plausible alternative to the standard practice of training with a fixed, full vocabulary from the outset.
 
 % \newpage
 
@@ -218,7 +218,7 @@ The rate at which the vocabulary expands is controlled by a pacing function. I e
 \label{subsec:data-cl}
 
 \begin{wrapfigure}{r}{0.45\textwidth}    
-    \vspace{-6em}
+    \vspace{-3em}
     \centering
     \small
     \renewcommand{\arraystretch}{0.9}
@@ -323,7 +323,7 @@ Below, I summarise key findings according to the three curriculum learning appro
 
 As a general note, the results of this comprehensive exploration are largely negative: \textbf{none of the curriculum learning strategies consistently outperform the vanilla baseline} when accounting for the high variance across subtasks. The mean differences are typically small (often $<1$ percentage point) relative to their standard deviations (often $>2$ percentage points), indicating that any observed effects are not statistically robust. While a few configurations show nominal improvements on specific benchmarks, these gains do not generalise across evaluation tasks and are likely within the noise of the evaluation. Despite these null results, this systematic investigation serves an important purpose: it establishes what does \emph{not} work under these conditions and provides a comprehensive reference for future research on curriculum learning in resource-constrained settings.
 
-Furthermore, these largely negative results align with a growing body of evidence questioning the efficacy of curriculum learning in neural language modelling. \citet{wu2021when} conducted extensive experiments across thousands of orderings and found that any observed benefits were primarily attributable to dynamic training set size rather than the ordering itself. Similarly, \citet{surkov2022datacurricula} demonstrated that curricula based on various complexity measures rarely outperform random sampling for large language models like BERT and T5. My findings extend this cautionary evidence to the resource-constrained setting of the BabyLM challenge.%, suggesting that the difficulties of curriculum learning may be exacerbated, rather than ameliorated, when data is scarce.
+Furthermore, these largely negative results align with a growing body of evidence questioning the efficacy of curriculum learning in neural language modelling. \citet{wu2021when} conducted extensive experiments across thousands of orderings and found that any observed benefits were primarily attributable to dynamic training set size rather than the ordering itself. Similarly, \citet{surkov2022datacurricula} demonstrated that curricula based on various complexity measures rarely outperform random sampling for large language models like BERT and T5. My findings extend this evidence to the resource-constrained setting of the BabyLM challenge.%, suggesting that the difficulties of curriculum learning may be exacerbated, rather than ameliorated, when data is scarce.
 
 %Additionally, \cref{fig:combined-boxplots} visualises a joint comparisons of all the curricula for the BLiMP and SuperGLUE tasks.
 
