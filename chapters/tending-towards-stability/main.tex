@@ -145,15 +145,15 @@ I use the Pythia model suite \citep{biderman2023pythia}, composed of \integer{8}
 Intermediate checkpoints are available every \q{1}{\thousand} steps and at log-spaced intervals early in training. I consider models up to \q{2.8}{\billion} parameters (i.e., \sevenmil, \sixmil, \fourmil, \onebil, and \twobil) evaluated at the following steps: \integer{0}, all log-spaced steps $\{1, 2, 4, \smalldots, 512\}$, \q{1}{\thousand}, \q{3}{\thousand}, and then every \q{10}{\thousand} steps up to \q{143}{\thousand}.
 I evaluate each checkpoint on the last batch of the training set and collect its activations.
 
-I use the publicly available Pythia model suite \citep{biderman2023pythia}, which was trained on the Pile \citep{gao2020pile}. Both the preprocessed training data and intermediate checkpoints are publicly available.\footnote{\href{https://github.com/EleutherAI/pythia}{\myemph{github.com/EleutherAI/pythia}} (Apache License 2.0).} 
+I use the publicly available Pythia model suite \citep{biderman2023pythia}, which was trained on the Pile \citep{gao2020pile}. Both the preprocessed training data and intermediate checkpoints are publicly available.%\footnote{\href{https://github.com/EleutherAI/pythia}{\myemph{github.com/EleutherAI/pythia}} (Apache License 2.0).} 
 
 \paragraph{Data.}
-The Pile is a \q{300}{\billion}-token curated open-source collection of English documents, spanning a wide range of domains (e.g., books, academic publications, Wikipedia).\footnote{\href{https://github.com/EleutherAI/the-pile}{\myemph{github.com/EleutherAI/the-pile}} (MIT License).}  
+The Pile is a \q{300}{\billion}-token curated open-source collection of English documents, spanning a wide range of domains (e.g., books, academic publications, Wikipedia).%\footnote{\href{https://github.com/EleutherAI/the-pile}{\myemph{github.com/EleutherAI/the-pile}} (MIT License).}  
 The deduplicated version of the dataset is obtained by applying a near-deduplication method based on \myemph{MinHashLSH} and has \q{207}{\billion} tokens.
 Thus, models trained on this version of the dataset are trained for circa \float[1]{1.5} epochs to keep an equal token count relative to the non-deduplicated versions.
-The dataset is shuffled, tokenised, and \enquote{packed} into sequences of \integer{2049} tokens with no end-of-document token.\footnote{\href{https://github.com/EleutherAI/pythia/issues/123}{\myemph{github.com/EleutherAI/pythia/issues/123}}.}
-Noticeably, the packing process implies that the second half-epoch of deduplicated data contains the same documents but not necessarily the same sequences. 
-By design, each sequence can pack multiple documents and tokens can attend across document boundaries.
+The dataset is shuffled, tokenised, and \enquote{packed} into sequences of \integer{2049} tokens with no end-of-document token.%\footnote{\href{https://github.com/EleutherAI/pythia/issues/123}{\myemph{github.com/EleutherAI/pythia/issues/123}}.}
+
+Noticeably, the packing process implies that the second half-epoch of deduplicated data contains the same documents but not necessarily the same sequences. By design, each sequence can pack multiple documents and tokens can attend across document boundaries.
 
 \paragraph{Models.}
 The Pythia model suite is composed of 16 models: Transformers of \integer{8} different sizes trained on the Pile as-is and deduplicated.
@@ -172,23 +172,12 @@ Additionally, log-spaced checkpoints are available early in training (steps $\{2
 % =======
 % RESULTS
 % =======
-\clearpage
+% \clearpage
 \section{Results}
 \label{sec:tending-towards-stability-results}
 
-\begin{wrapfigure}{r}{0.55\columnwidth}
-    \vspace{-36pt}
-    \centering
-    \includegraphics[width=0.54\columnwidth]{chapters/tending-towards-stability/figures/cka_main_plot.pdf}
-    \caption{$\cka$ similarity (current vs.\ last checkpoint) of $\attention$ and $\mlp$ activations for Pythia \sixmil and \twobil. Distribution across layers: \integer{10}, \integer{25}, \integer{50}, \integer{75}, and \integer{90} percentiles per checkpoint.}
-    \label{fig:cka_main_plot}
-    \vspace{-1em}
-\end{wrapfigure}
 
 The analysis reveals systematic differences in the learning dynamics of transformer layers across model scales. I study these dynamics through two complementary lenses: the convergence behaviour of layer activations and the $\per$ of layer parameters and their gradients. Together, these measures provide insight into how layers develop and utilise capacity over time during training.
-
-Before presenting the detailed analyses, I briefly describe the structure of the main figures. \cref{fig:main-results} summarises my core findings across three axes: (1) the convergence of activations as measured by $\cka$ similarity to final checkpoint activations (first column), (2) the $\per$ of layers' parameters (second column), and (3) the $\per$ of the corresponding parameter gradients (third column). Each row shows statistics for a different operation ($\attention$ (top) and $\mlp$ (bottom)) and each line represents the mean value across layers for five Pythia models ranging from 70M to 2.8B parameters.
-
 
 \begin{figure*}[h!]
     \centering
@@ -199,9 +188,34 @@ Before presenting the detailed analyses, I briefly describe the structure of the
 \end{figure*}
 
 
+
+\begin{wrapfigure}{r}{0.45\columnwidth}
+    % \vspace{-50pt}
+    \centering
+    \includegraphics[width=0.45\columnwidth]{chapters/tending-towards-stability/figures/cka_main_plot.pdf}
+    \caption{$\cka$ similarity (current vs.\ last checkpoint) distributions across layers of $\attention$ and $\mlp$ activations for Pythia \sixmil and \twobil.}
+    \label{fig:cka_main_plot}
+    \vspace{-1em}
+\end{wrapfigure}
+
+Before presenting the analyses, I briefly describe the structure of the main figures. \cref{fig:main-results} summarises my core findings across three axes: (1) the convergence of activations as measured by $\cka$ similarity to final checkpoint activations (first column), (2) the $\per$ of layers' parameters (second column), and (3) the $\per$ of the corresponding parameter gradients (third column). Each row shows statistics for a different operation ($\attention$ (top) and $\mlp$ (bottom)) and each line represents the mean value across layers for five Pythia models ranging from 70M to 2.8B parameters.
+
 In addition to these averaged results, \cref{fig:cka_main_plot} displays the inter-quartile range of $\cka$ similarity values averaged across layers for the smallest and largest models, and \cref{fig:cka-layer-wise-lines}, \cref{fig:per_weight-layer-wise-lines}, and \cref{fig:per_grad-layer-wise-lines} provide a layer-wise breakdown of convergence and rank dynamics (for both weights and gradients), respectively. These figures allow us to distinguish aggregate trends from layer-specific behaviours and to track how each layer's representational capacity evolves during training.
 
-It is also important to caveat that the Pythia models use different learning rates across scales (see \cref{tab:model_hparams}), with smaller models trained at higher learning rates (e.g., $10^{-3}$ for \sevenmil vs.\ $1.6 \times 10^{-4}$ for \twobil). This confounds a pure apples-to-apples comparison of convergence dynamics, as differences in learning rate can independently affect how quickly and smoothly representations stabilise. I leave a controlled investigation of the interaction between model scale, learning rate, and convergence behaviour to future work.
+To ascertain the degree of variability in $\cka$ and $\per$, I conduct two analyses on the last $\mlp$ layer of each model. For $\cka$, I subsample 50\% of the activation data 10 times at four checkpoints (1000, 43000, 93000, and 143000), computing the mean and standard deviation across subsamples. For gradient PER, I compute the metric using 10 consecutive gradient snapshots centred around each checkpoint step and report the corresponding statistics.\footnote{For the final checkpoint (143000), I use only the five preceding gradient steps.} An similar analysis of weight $\per$ variability is not possible, as I stored only a single weight snapshot per checkpoint; however, I expect its variability to be comparable to that of the gradient $\per$, given that weights are updated directly from the gradients.
+
+\begin{figure*}[h!]
+    \centering
+    \includegraphics[width=0.85\linewidth]{chapters/tending-towards-stability/figures/last_layer_mlp_styled.pdf}
+    \vspace{-10pt}
+    \caption{Variability analysis for the last $\mlp$ layer across Pythia model scales. \textbf{Left:} $\cka$ similarity (current vs.\ final checkpoint) with error bars showing standard deviation across 10 subsamples of 20\% of the activation data. \textbf{Right:} Gradient $\per$ with error bars showing standard deviation across 10 consecutive gradient snapshots around each checkpoint.} %The consistently tight confidence intervals across model scales and training stages indicate that both metrics are robust to sampling noise.}
+    \label{fig:cka-per-variability}
+\end{figure*}
+
+As shown in \cref{fig:cka-per-variability}, the resulting standard deviations are consistently small across all model scales and training stages. The tight error bars, particularly for gradient $\per$, where standard deviations rarely exceed 0.005, suggest that these learning dynamics metrics are robust to sampling noise and that such noise is unlikely to significantly affect the analysis.
+
+However, it is also important to caveat that the Pythia models use different learning rates across scales (see \cref{tab:model_hparams}), with smaller models trained at higher learning rates (e.g., $10^{-3}$ for \sevenmil vs.\ $1.6 \times 10^{-4}$ for \twobil). This confounds a pure apples-to-apples comparison of convergence dynamics, as differences in learning rate can independently affect how quickly and smoothly representations stabilise. I leave a controlled investigation of the interaction between model scale, learning rate, and convergence behaviour to future work.
+
 
 \subsection{Convergence Dynamics}
 \label{subsec:convergence-dynamics}
@@ -222,8 +236,7 @@ Across model sizes, earlier layers' activations converge faster to their final s
 \end{result}
     
 
-
-\clearpage
+% \clearpage
 
 \begin{figure*}[h!]
     \centering
