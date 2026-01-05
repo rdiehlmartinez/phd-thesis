@@ -32,7 +32,7 @@ The remainder of the chapter proceeds as follows. I formalise the analytical fra
 \section{Methodology and Analytical Framing}
 \label{sec:methodology}
 
-To better understand training inefficiencies in small language models, I examine how internal representations evolve during pretraining across model sizes. The analysis focuses on the \textit{residual stream}, which I introduce in Chapter 5. The residual stream tracks a model's internal representation of the input sequence as it is processed through the network. I use this framework to study the activation dynamics and parameter behaviour of a model over the course of training.
+To better understand training inefficiencies in small language models, I examine how internal representations evolve during pre-training across model sizes. The analysis focuses on the \textit{residual stream}, which I introduce in Chapter 5. The residual stream tracks a model's internal representation of the input sequence as it is processed through the network. I use this framework to study the activation dynamics and parameter behaviour of a model over the course of training.
 
 This section goes beyond Chapter 5 and formalises the analytical tools I use and how they allow us to quantify differences in convergence patterns across layers and model scales.
 
@@ -143,9 +143,7 @@ These tools allow us to answer the following questions: Do different-sized model
 
 I use the Pythia model suite \citep{biderman2023pythia}, composed of \integer{8} Transformers of different sizes trained for \q{143}{\thousand} steps on the deduplicated\footnote{There exists a non-deduplicated (or standard) version of the Pile dataset used to train a first version of the Pythia suite.} version of the Pile dataset \citep{gao2020pile}.
 Intermediate checkpoints are available every \q{1}{\thousand} steps and at log-spaced intervals early in training. I consider models up to \q{2.8}{\billion} parameters (i.e., \sevenmil, \sixmil, \fourmil, \onebil, and \twobil) evaluated at the following steps: \integer{0}, all log-spaced steps $\{1, 2, 4, \smalldots, 512\}$, \q{1}{\thousand}, \q{3}{\thousand}, and then every \q{10}{\thousand} steps up to \q{143}{\thousand}.
-I evaluate each checkpoint on the last batch of the training set and collect its activations.
-
-I use the publicly available Pythia model suite \citep{biderman2023pythia}, which was trained on the Pile \citep{gao2020pile}. Both the preprocessed training data and intermediate checkpoints are publicly available.%\footnote{\href{https://github.com/EleutherAI/pythia}{\myemph{github.com/EleutherAI/pythia}} (Apache License 2.0).} 
+I evaluate each checkpoint on the last batch of the training set and collect its activations. Note that the Pythia model suite was trained on the Pile \citep{gao2020pile}. Both the preprocessed training data and intermediate checkpoints are publicly available.%\footnote{\href{https://github.com/EleutherAI/pythia}{\myemph{github.com/EleutherAI/pythia}} (Apache License 2.0).} 
 
 \paragraph{Data.}
 The Pile is a \q{300}{\billion}-token curated open-source collection of English documents, spanning a wide range of domains (e.g., books, academic publications, Wikipedia).%\footnote{\href{https://github.com/EleutherAI/the-pile}{\myemph{github.com/EleutherAI/the-pile}} (MIT License).}  
@@ -164,7 +162,7 @@ Additionally, log-spaced checkpoints are available early in training (steps $\{2
 \begin{table}[!t]
     \centering
     \input{chapters/tending-towards-stability/tables/pythia-details_table}
-    \caption{Details on the architecture and training hyper-parameters for models in the Pythia suite used in this paper. $\numlayers$ is the number of layers, $\residualdim$ is the dimension of the residual stream. The number of hidden dimensions per head is simpl the number of heads divided by the number of dimensions in the residual stream.}
+    \caption{Details on the architecture and training hyper-parameters for models in the Pythia suite used in this paper. $\numlayers$ is the number of layers, $\residualdim$ is the dimension of the residual stream. The number of hidden dimensions per head is simply the number of heads divided by the number of dimensions in the residual stream.}
     \label{tab:model_hparams}
 \end{table}
 
